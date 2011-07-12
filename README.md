@@ -1,4 +1,4 @@
-* Matrix Developer Toolbar --- a Firefox extension to empower developers and authors using MySource / Squiz Matrix CMS
+Matrix Developer Toolbar --- a Firefox extension to empower developers and authors using MySource / Squiz Matrix CMS
 ======================================================================================================================
 
 This Firefox extensions provides a series of enhancements and tools to empower developers and authors using MySource / Squiz Matrix CMS.
