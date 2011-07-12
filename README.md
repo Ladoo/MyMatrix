@@ -1,9 +1,3 @@
-#+TITLE: Matrix Toolbar -- a Firefox extension to empower developers and authors using MySource / Squiz Matrix CMS
-#+KEYWORDS: javascript, js, developer, firefox, extension
-#+DESCRIPTION: Developer toolbar for Squiz Matrix developers and authors
-#+AUTHOR: Anton Babushkin
-#+EMAIL: babushkin.anton@gmail.com
-
 * Matrix Developer Toolbar --- a Firefox extension to empower developers and authors using MySource / Squiz Matrix CMS
 ======================================================================================================================
 
