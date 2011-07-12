@@ -1,0 +1,13 @@
+<?xml version="1.0"?> 
+<?xml-stylesheet href="chrome://matrixdevelopertoolbar/skin/skin.css" type="text/css"?> 
+<!DOCTYPE sample SYSTEM "chrome://matrixdevelopertoolbar/locale/translations.dtd">
+
+<overlay id="matrixdevelopertoolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<toolbox id="navigator-toolbox">
+		<toolbar id="matrix-dev-toolbox">
+			<toolbarbutton label="Test" />
+		</toolbar>
+	</toolbox>
+
+</overlay>
