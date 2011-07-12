@@ -3,10 +3,21 @@
 <!DOCTYPE sample SYSTEM "chrome://matrixdevelopertoolbar/locale/translations.dtd">
 
 <overlay id="matrixdevelopertoolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<script src="matrixdevelopertoolbar.js"></script>
 
 	<toolbox id="navigator-toolbox">
-		<toolbar id="matrix-dev-toolbox">
-			<toolbarbutton label="Test" />
+		<toolbar id="matrixdevelopertoolbar">
+			<toolbarbutton id="matrixdeveloper-clear-cache" />
+			<toolbarbutton id="matrixdeveloper-syntax-highlight" label="Syntax highlighting" type="checkbox" />
+			<toolbarbutton id="matrixdeveloper-wysiwyg-replacer" label="WYSIWYG replacer" type="menu">
+				<menupopup>
+					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="Default Matrix WYSIWYG" value="1" />
+					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="CKEditor" value="2" />
+					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="NicEditor" value="3" />
+				</menupopup>
+			</toolbarbutton>
+			<toolbarbutton id="matrixdeveloper-asset-enhancer"></toolbarbutton>
 		</toolbar>
 	</toolbox>
 
