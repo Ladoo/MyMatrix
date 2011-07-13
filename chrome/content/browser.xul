@@ -8,7 +8,7 @@
 
 	<toolbox id="navigator-toolbox">
 		<toolbar id="matrixdevelopertoolbar">
-			<toolbarbutton id="matrixdeveloper-clear-cache" />
+			<button id="matrixdeveloper-clear-cache" label="Clear Cache" />
 			<toolbarbutton id="matrixdeveloper-syntax-highlight" label="Syntax highlighting" type="checkbox" />
 			<toolbarbutton id="matrixdeveloper-wysiwyg-replacer" label="WYSIWYG replacer" type="menu">
 				<menupopup>
@@ -17,7 +17,24 @@
 					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="NicEditor" value="3" />
 				</menupopup>
 			</toolbarbutton>
-			<toolbarbutton id="matrixdeveloper-asset-enhancer"></toolbarbutton>
+			<toolbarbutton id="matrixdeveloper-asset-enhancer" label="Asset enhancements" type="menu">
+				<menupopup>
+					<menuitem name="matrixdeveloper-assetenhancer" type="checkbox" label="All" value="all" />
+					<menuseparator />
+					<menuitem name="matrixdeveloper-assetenhancer" type="checkbox" label="Asset Listing" value="page_asset_listing" />
+					<menuitem name="matrixdeveloper-assetenhancer" type="checkbox" label="Remap Manager" value="remap_manager" />
+				</menupopup>				
+			</toolbarbutton>
+			<toolbarbutton id="matrixdeveloper-keyboard-shortcuts" type="menu" label="Keyboard shortcuts">
+				<menupopup>
+					<menuitem name="matrixdeveloper-keyboardshortcuts" type="radio" label="ON" value="1" checked="true" />
+					<menuitem name="matrixdeveloper-keyboardshortcuts" type="radio" label="OFF" value="0" />
+					<menuseparator />
+					<menuitem name="matrixdeveloper-keyboardshortcuts-config" label="Configuration" />
+				</menupopup>
+			</toolbarbutton>
+			<toolbarspring />
+			<label id="matrixdeveloper-running-matrix" value="Not running MySource / Squiz Matrix" style="color: #990000" />
 		</toolbar>
 	</toolbox>
 
