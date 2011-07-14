@@ -120,6 +120,16 @@ var mdt = function(){
 							embedCodeMirror();
 						}
 						break;
+					case "css_file":
+						if (mdt.aboutTab.screenBrowsing === "edit_file") {
+							embedCodeMirror();
+						}
+						break;
+					case "design_css":
+						if (mdt.aboutTab.screenBrowsing === "parse_file") {
+							embedCodeMirror();
+						}
+						break;
 					default:
 						break;
 				}
