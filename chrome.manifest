@@ -5,4 +5,4 @@ overlay chrome://browser/content/browser.xul chrome://matrixdevelopertoolbar/con
 locale	matrixdevelopertoolbar	en-US	locale/en-US/
 
 skin	matrixdevelopertoolbar	classic/1.0	skin/
-style	chrome://global/content/customizeToolbar.xul	chrome://matrixdevelopertoolbar/skin/skin.css
+style	chrome://global/content/style.xul	chrome://matrixdevelopertoolbar/skin/skin.css

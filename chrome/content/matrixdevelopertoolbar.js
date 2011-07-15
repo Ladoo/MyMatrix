@@ -3,61 +3,21 @@ var mdt = function(){
 	
 	function isMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Running MySource / Squiz Matrix");
+		label.setAttribute("value", "Matrix detected");
 		label.style.color = "#007b0e";
-		showToolbar();
+		label.className = "active";
 	}
 	
 	function isNotMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Not running MySource / Squiz Matrix");
-		label.style.color = "#990000";
-		hideToolbar();
-	}
-	
-	function showToolbar(){
-		document.getElementById("matrixdevelopertoolbar").style.display = "";
-	}
-	
-	function hideToolbar(){
-		document.getElementById("matrixdevelopertoolbar").style.display = "none";
-	}
-	
-	function getMainFrame(){
-		return content.frames[3];
-	}
-	
-	function embedCodeMirror(){
-		var main = getMainFrame().document;
-		var head = main.getElementsByTagName("head")[0];
-		
-		if (!main.getElementById("matrixdevelopertoolbar-codemirror-js")) {
-			var codeMirrorScript = main.createElement("script");
-			codeMirrorScript.id = "matrixdevelopertoolbar-codemirror-js";
-			codeMirrorScript.src = "chrome://matrixdevelopertoolbar/content/codemirror-compressed.js";
-			head.appendChild(codeMirrorScript);
-		}
-		
-		if (!main.getElementById("matrixdevelopertoolbar-codemirror-styles")) {
-			var codeMirrorStyles = main.createElement("link");
-			codeMirrorStyles.id = "matrixdevelopertoolbar-codemirror-styles";
-			codeMirrorStyles.type = "text/css";
-			codeMirrorStyles.rel = "stylesheet";
-			codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/lib/codemirror.css";
-			head.appendChild(codeMirrorStyles);
-		
-			codeMirrorStyles = main.createElement("link");
-			codeMirrorStyles.type = "text/css";
-			codeMirrorStyles.rel = "stylesheet";
-			codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/theme/default.css";	
-			head.appendChild(codeMirrorStyles);
-		}
+		label.setAttribute("value", "Matrix not detected");
+		label.style.color = "#990000";mdt.mainFrame
+		label.className = "";
 	}
 	
 	return {
 		// general settings
 		settings: {
-			
 		},
 		
 		// about the current tab the user is browsing
@@ -67,7 +27,8 @@ var mdt = function(){
 			isMatrixBackend: false,
 			isMatrixSite: false,
 			assetType: null,
-			screenBrowsing: null
+			screenBrowsing: null,
+			mainFrame: null
 		},
 		
 		init: function(){
@@ -77,7 +38,8 @@ var mdt = function(){
 		
 		bootstrap: function(){
 			if (mdt.isMatrixBackend()) {
-				mdt.injectPageModifiers();
+				mdt.mainFrame = content.frames[3];
+				mdt.insertPageHelpers();
 				mdt.determineAssetType();
 				mdt.determineAssetScreen();
 				isMatrix();
@@ -90,22 +52,33 @@ var mdt = function(){
 				isNotMatrix();
 			}			
 		},
+		
+		insertPageHelpers: function(){
+			var main = mdt.mainFrame.document;
+			var head = main.getElementsByTagName("head")[0];
+			
+			if (!main.getElementById("matrixtoolbar-jquery")) {
+				var jq = main.createElement("script");
+				jq.id = "matrixtoolbar-jquery";
+				jq.src = "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js";
+				head.appendChild(jq);
+				mdt.mainFrame.$j = mdt.mainFrame.jQuery.noConflict();
+			}
+		},
 
 		determineAssetType: function(){
 			// wrap it in a try catch clause so that the toolbar still functions even if we can't detect the asset type
 			try {
-				var assetType = getMainFrame().document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
+				var assetType = mdt.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
 				if (typeof(assetType) !== "undefined") {
 					mdt.aboutTab.assetType = assetType;
 				}
 			} catch (e) {
-				// no debugging yet
-				//alert (e.message);
 			}
 		},
 		
 		determineAssetScreen: function(){
-			var screenMenu = getMainFrame().document.getElementById("screen_menu");
+			var screenMenu = mdt.mainFrame.document.getElementById("screen_menu");
 			if (screenMenu) {
 				mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
 			}
@@ -113,47 +86,57 @@ var mdt = function(){
 		
 		enhanceAsset: function(){
 			if (mdt.aboutTab.assetType) {
-				
-				switch (mdt.aboutTab.assetType) {
-					case "js_file":
-						if (mdt.aboutTab.screenBrowsing === "edit_file") {
-							embedCodeMirror();
+				for (var c in mdt.assetEnhancers.assets) {
+					var asset = mdt.assetEnhancers.assets[c];
+					if (asset.typeCode === mdt.aboutTab.assetType) {
+						try {
+							if (typeof(asset.uiEnhancements) !== "undefined" && asset.autoEnhance) {
+								asset.uiEnhancements();
+							}
+						} catch (e) {
 						}
-						break;
-					case "css_file":
-						if (mdt.aboutTab.screenBrowsing === "edit_file") {
-							embedCodeMirror();
-						}
-						break;
-					case "design_css":
-						if (mdt.aboutTab.screenBrowsing === "parse_file") {
-							embedCodeMirror();
-						}
-						break;
-					default:
-						break;
+					} 
 				}
 			}
 		},
 		
-		injectPageModifiers: function(){
-			var main = getMainFrame().document;
-			var head = main.getElementsByTagName("head")[0];
-
-			if (!main.getElementById("matrixdevelopertoolbar-main-js")) {
-				var mainScript = main.createElement("script");
-				mainScript.id = "matrixdevelopertoolbar-main-js";
-				mainScript.src = "chrome://matrixdevelopertoolbar/content/matrixdevelopertoolbar-page-embed.js";
-				head.appendChild(mainScript);
-			}			
+		collapseSections: function(){
+			var sections = mdt.mainFrame.document.getElementsByClassName("sq-backend-section-heading");
+			for (var counter in sections) {
+				var section = sections[counter];
+				
+			}
 		},
 		
 		replaceWYSIWYG: function(){
 			
 		},
 		
-		highlightSyntax: function(){
-			
+		enableSyntaxHighlighter: function(){
+			var main = mdt.mainFrame.document;
+			var head = main.getElementsByTagName("head")[0];
+
+			if (!main.getElementById("matrixdevelopertoolbar-codemirror-js")) {
+				var codeMirrorScript = main.createElement("script");
+				codeMirrorScript.id = "matrixdevelopertoolbar-codemirror-js";
+				codeMirrorScript.src = "chrome://matrixdevelopertoolbar/content/codemirror-compressed.js";
+				head.appendChild(codeMirrorScript);
+			}
+
+			if (!main.getElementById("matrixdevelopertoolbar-codemirror-styles")) {
+				var codeMirrorStyles = main.createElement("link");
+				codeMirrorStyles.id = "matrixdevelopertoolbar-codemirror-styles";
+				codeMirrorStyles.type = "text/css";
+				codeMirrorStyles.rel = "stylesheet";
+				codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/lib/codemirror.css";
+				head.appendChild(codeMirrorStyles);
+
+				codeMirrorStyles = main.createElement("link");
+				codeMirrorStyles.type = "text/css";
+				codeMirrorStyles.rel = "stylesheet";
+				codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/theme/default.css";	
+				head.appendChild(codeMirrorStyles);
+			}			
 		},
 		
 		isMatrixBackend: function(){

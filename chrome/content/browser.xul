@@ -4,12 +4,13 @@
 
 <overlay id="matrixdevelopertoolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
+	<script src="lib/jquery-1.6.2.min.js"></script>
 	<script src="matrixdevelopertoolbar.js"></script>
+	<script src="assetEnhancers.js"></script>
 
 	<toolbox id="navigator-toolbox">
 		<toolbar id="matrixdevelopertoolbar">
 			<button id="matrixdeveloper-clear-cache" label="Clear Cache" />
-			<toolbarbutton id="matrixdeveloper-syntax-highlight" label="Syntax highlighting" type="checkbox" />
 			<toolbarbutton id="matrixdeveloper-wysiwyg-replacer" label="WYSIWYG replacer" type="menu">
 				<menupopup>
 					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="Default Matrix WYSIWYG" value="1" />
@@ -34,7 +35,7 @@
 				</menupopup>
 			</toolbarbutton>
 			<toolbarspring />
-			<label id="matrixdeveloper-running-matrix" value="Not running MySource / Squiz Matrix" style="color: #990000" />
+			<label id="matrixdeveloper-running-matrix" value="Matrix not detected" style="color: #990000" />
 		</toolbar>
 	</toolbox>
 
