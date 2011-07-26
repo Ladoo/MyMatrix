@@ -11,7 +11,7 @@ var mdt = function(){
 	function isNotMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
 		label.setAttribute("value", "Matrix not detected");
-		label.style.color = "#990000";mdt.mainFrame
+		label.style.color = "#990000";mdt.aboutTab.mainFrame
 		label.className = "";
 	}
 	
@@ -32,13 +32,15 @@ var mdt = function(){
 		},
 		
 		init: function(){
-			gBrowser.addEventListener("load", mdt.bootstrap, true);
+			gBrowser.addEventListener("load", function(){
+				content.addEventListener("load", mdt.bootstrap, false);
+			}, true);
 			gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
 		},
 		
 		bootstrap: function(){
 			if (mdt.isMatrixBackend()) {
-				mdt.mainFrame = content.frames[3];
+				mdt.aboutTab.mainFrame = content.frames[3];
 				mdt.insertPageHelpers();
 				mdt.determineAssetType();
 				mdt.determineAssetScreen();
@@ -54,22 +56,22 @@ var mdt = function(){
 		},
 		
 		insertPageHelpers: function(){
-			var main = mdt.mainFrame.document;
+			var main = mdt.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
 			
-			if (!main.getElementById("matrixtoolbar-jquery")) {
+			if (!main.getElementById("matrixtoolbar-jquery") && typeof(head) === "object") {
 				var jq = main.createElement("script");
 				jq.id = "matrixtoolbar-jquery";
 				jq.src = "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js";
 				head.appendChild(jq);
-				mdt.mainFrame.$j = mdt.mainFrame.jQuery.noConflict();
+			} else {
 			}
 		},
 
 		determineAssetType: function(){
 			// wrap it in a try catch clause so that the toolbar still functions even if we can't detect the asset type
 			try {
-				var assetType = mdt.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
+				var assetType = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
 				if (typeof(assetType) !== "undefined") {
 					mdt.aboutTab.assetType = assetType;
 				}
@@ -78,7 +80,7 @@ var mdt = function(){
 		},
 		
 		determineAssetScreen: function(){
-			var screenMenu = mdt.mainFrame.document.getElementById("screen_menu");
+			var screenMenu = mdt.aboutTab.mainFrame.document.getElementById("screen_menu");
 			if (screenMenu) {
 				mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
 			}
@@ -97,11 +99,12 @@ var mdt = function(){
 						}
 					} 
 				}
+			} else {
 			}
 		},
 		
 		collapseSections: function(){
-			var sections = mdt.mainFrame.document.getElementsByClassName("sq-backend-section-heading");
+			var sections = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-section-heading");
 			for (var counter in sections) {
 				var section = sections[counter];
 				
@@ -113,7 +116,7 @@ var mdt = function(){
 		},
 		
 		enableSyntaxHighlighter: function(){
-			var main = mdt.mainFrame.document;
+			var main = mdt.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
 
 			if (!main.getElementById("matrixdevelopertoolbar-codemirror-js")) {
