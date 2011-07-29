@@ -21,13 +21,13 @@ var mdt = function(){
 		},
 		
 		// about the current tab the user is browsing
-		// everything from the asset type
 		// not really necessary at this stage of the extensions..but maybe one day?
 		aboutTab: {
 			isMatrixBackend: false,
 			isMatrixSite: false,
 			assetType: null,
 			screenBrowsing: null,
+			featuresAvailable: [],
 			mainFrame: null
 		},
 		
@@ -41,11 +41,12 @@ var mdt = function(){
 		bootstrap: function(){
 			if (mdt.isMatrixBackend()) {
 				mdt.aboutTab.mainFrame = content.frames[3];
+				mdt.aboutTab.mainFrame.addEventListener("DOMActivate", mdt.bootstrap, false);
 				mdt.insertPageHelpers();
 				mdt.determineAssetType();
 				mdt.determineAssetScreen();
 				isMatrix();
-				mdt.enhanceAsset();
+				mdt.determineFeatures();
 			}
 			else if (mdt.isMatrixSite()) {
 				isMatrix();
@@ -53,6 +54,24 @@ var mdt = function(){
 			else {
 				isNotMatrix();
 			}			
+		},
+		
+		injectScript: function(id, src, callback){
+			var main = mdt.aboutTab.mainFrame.document;
+			var head = main.getElementsByTagName("head")[0];
+			id = "matrixdevelopertoolbar-" + id;
+			if (!main.getElementById(id)) {
+				var script = main.createElement("script");
+				script.type = "text/javascript";
+				script.setAttribute("id", id);
+				script.setAttribute("src", src);
+				script.setAttribute("onload", callback);
+				head.appendChild(script);		
+				
+				return script;		
+			} else {
+				return null;
+			}
 		},
 		
 		insertPageHelpers: function(){
@@ -86,7 +105,23 @@ var mdt = function(){
 			}
 		},
 		
-		enhanceAsset: function(){
+		determineFeatures: function(){
+			mdt.featureDefinitions.features.forEach(function(feature){
+				if (feature.detect()){
+					if (mdt.featureIsEnabled(feature.id)) {
+						feature.init();
+					} else {
+						feature.destroy();
+					}
+				}
+			});	
+		},
+		
+		featureIsEnabled: function(){
+			return true;
+		},
+		
+		/*enhanceAsset: function(){
 			if (mdt.aboutTab.assetType) {
 				for (var c in mdt.assetEnhancers.assets) {
 					var asset = mdt.assetEnhancers.assets[c];
@@ -101,7 +136,7 @@ var mdt = function(){
 				}
 			} else {
 			}
-		},
+		},*/
 		
 		collapseSections: function(){
 			var sections = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-section-heading");
@@ -115,31 +150,15 @@ var mdt = function(){
 			
 		},
 		
-		enableSyntaxHighlighter: function(){
-			var main = mdt.aboutTab.mainFrame.document;
-			var head = main.getElementsByTagName("head")[0];
-
-			if (!main.getElementById("matrixdevelopertoolbar-codemirror-js")) {
-				var codeMirrorScript = main.createElement("script");
-				codeMirrorScript.id = "matrixdevelopertoolbar-codemirror-js";
-				codeMirrorScript.src = "chrome://matrixdevelopertoolbar/content/codemirror-compressed.js";
-				head.appendChild(codeMirrorScript);
+		onObjectAvailable: function(obj, where, callback){
+			//alert (mdt.aboutTab.mainFrame.CodeMirror);
+			if (typeof(where[obj]) !== "undefined") {
+				callback();
+			} else {
+				setTimeout(function(){
+					mdt.onObjectAvailable(obj, where, callback);
+				}, 5000);
 			}
-
-			if (!main.getElementById("matrixdevelopertoolbar-codemirror-styles")) {
-				var codeMirrorStyles = main.createElement("link");
-				codeMirrorStyles.id = "matrixdevelopertoolbar-codemirror-styles";
-				codeMirrorStyles.type = "text/css";
-				codeMirrorStyles.rel = "stylesheet";
-				codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/lib/codemirror.css";
-				head.appendChild(codeMirrorStyles);
-
-				codeMirrorStyles = main.createElement("link");
-				codeMirrorStyles.type = "text/css";
-				codeMirrorStyles.rel = "stylesheet";
-				codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/theme/default.css";	
-				head.appendChild(codeMirrorStyles);
-			}			
 		},
 		
 		isMatrixBackend: function(){
