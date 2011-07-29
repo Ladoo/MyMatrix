@@ -4,9 +4,8 @@
 
 <overlay id="matrixdevelopertoolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
-	<script src="lib/jquery-1.6.2.min.js"></script>
-	<script src="matrixdevelopertoolbar.js"></script>
-	<script src="assetEnhancers.js"></script>
+	<script src="matrix_toolbar.js"></script>
+	<script src="feature_definitions.js"></script>
 
 	<toolbox id="navigator-toolbox">
 		<toolbar id="matrixdevelopertoolbar">
