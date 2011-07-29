@@ -11,7 +11,7 @@ var mdt = function(){
 	function isNotMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
 		label.setAttribute("value", "Matrix not detected");
-		label.style.color = "#990000";mdt.mainFrame
+		label.style.color = "#990000";mdt.aboutTab.mainFrame
 		label.className = "";
 	}
 	
@@ -21,29 +21,32 @@ var mdt = function(){
 		},
 		
 		// about the current tab the user is browsing
-		// everything from the asset type
 		// not really necessary at this stage of the extensions..but maybe one day?
 		aboutTab: {
 			isMatrixBackend: false,
 			isMatrixSite: false,
 			assetType: null,
 			screenBrowsing: null,
+			featuresAvailable: [],
 			mainFrame: null
 		},
 		
 		init: function(){
-			gBrowser.addEventListener("load", mdt.bootstrap, true);
+			gBrowser.addEventListener("load", function(){
+				content.addEventListener("load", mdt.bootstrap, false);
+			}, true);
 			gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
 		},
 		
 		bootstrap: function(){
 			if (mdt.isMatrixBackend()) {
-				mdt.mainFrame = content.frames[3];
+				mdt.aboutTab.mainFrame = content.frames[3];
+				mdt.aboutTab.mainFrame.addEventListener("DOMActivate", mdt.bootstrap, false);
 				mdt.insertPageHelpers();
 				mdt.determineAssetType();
 				mdt.determineAssetScreen();
 				isMatrix();
-				mdt.enhanceAsset();
+				mdt.determineFeatures();
 			}
 			else if (mdt.isMatrixSite()) {
 				isMatrix();
@@ -53,23 +56,41 @@ var mdt = function(){
 			}			
 		},
 		
+		injectScript: function(id, src, callback){
+			var main = mdt.aboutTab.mainFrame.document;
+			var head = main.getElementsByTagName("head")[0];
+			id = "matrixdevelopertoolbar-" + id;
+			if (!main.getElementById(id)) {
+				var script = main.createElement("script");
+				script.type = "text/javascript";
+				script.setAttribute("id", id);
+				script.setAttribute("src", src);
+				script.setAttribute("onload", callback);
+				head.appendChild(script);		
+				
+				return script;		
+			} else {
+				return null;
+			}
+		},
+		
 		insertPageHelpers: function(){
-			var main = mdt.mainFrame.document;
+			var main = mdt.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
 			
-			if (!main.getElementById("matrixtoolbar-jquery")) {
+			if (!main.getElementById("matrixtoolbar-jquery") && typeof(head) === "object") {
 				var jq = main.createElement("script");
 				jq.id = "matrixtoolbar-jquery";
 				jq.src = "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js";
 				head.appendChild(jq);
-				mdt.mainFrame.$j = mdt.mainFrame.jQuery.noConflict();
+			} else {
 			}
 		},
 
 		determineAssetType: function(){
 			// wrap it in a try catch clause so that the toolbar still functions even if we can't detect the asset type
 			try {
-				var assetType = mdt.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
+				var assetType = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
 				if (typeof(assetType) !== "undefined") {
 					mdt.aboutTab.assetType = assetType;
 				}
@@ -78,13 +99,29 @@ var mdt = function(){
 		},
 		
 		determineAssetScreen: function(){
-			var screenMenu = mdt.mainFrame.document.getElementById("screen_menu");
+			var screenMenu = mdt.aboutTab.mainFrame.document.getElementById("screen_menu");
 			if (screenMenu) {
 				mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
 			}
 		},
 		
-		enhanceAsset: function(){
+		determineFeatures: function(){
+			mdt.featureDefinitions.features.forEach(function(feature){
+				if (feature.detect()){
+					if (mdt.featureIsEnabled(feature.id)) {
+						feature.init();
+					} else {
+						feature.destroy();
+					}
+				}
+			});	
+		},
+		
+		featureIsEnabled: function(){
+			return true;
+		},
+		
+		/*enhanceAsset: function(){
 			if (mdt.aboutTab.assetType) {
 				for (var c in mdt.assetEnhancers.assets) {
 					var asset = mdt.assetEnhancers.assets[c];
@@ -97,11 +134,12 @@ var mdt = function(){
 						}
 					} 
 				}
+			} else {
 			}
-		},
+		},*/
 		
 		collapseSections: function(){
-			var sections = mdt.mainFrame.document.getElementsByClassName("sq-backend-section-heading");
+			var sections = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-section-heading");
 			for (var counter in sections) {
 				var section = sections[counter];
 				
@@ -112,31 +150,15 @@ var mdt = function(){
 			
 		},
 		
-		enableSyntaxHighlighter: function(){
-			var main = mdt.mainFrame.document;
-			var head = main.getElementsByTagName("head")[0];
-
-			if (!main.getElementById("matrixdevelopertoolbar-codemirror-js")) {
-				var codeMirrorScript = main.createElement("script");
-				codeMirrorScript.id = "matrixdevelopertoolbar-codemirror-js";
-				codeMirrorScript.src = "chrome://matrixdevelopertoolbar/content/codemirror-compressed.js";
-				head.appendChild(codeMirrorScript);
+		onObjectAvailable: function(obj, where, callback){
+			//alert (mdt.aboutTab.mainFrame.CodeMirror);
+			if (typeof(where[obj]) !== "undefined") {
+				callback();
+			} else {
+				setTimeout(function(){
+					mdt.onObjectAvailable(obj, where, callback);
+				}, 5000);
 			}
-
-			if (!main.getElementById("matrixdevelopertoolbar-codemirror-styles")) {
-				var codeMirrorStyles = main.createElement("link");
-				codeMirrorStyles.id = "matrixdevelopertoolbar-codemirror-styles";
-				codeMirrorStyles.type = "text/css";
-				codeMirrorStyles.rel = "stylesheet";
-				codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/lib/codemirror.css";
-				head.appendChild(codeMirrorStyles);
-
-				codeMirrorStyles = main.createElement("link");
-				codeMirrorStyles.type = "text/css";
-				codeMirrorStyles.rel = "stylesheet";
-				codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/theme/default.css";	
-				head.appendChild(codeMirrorStyles);
-			}			
 		},
 		
 		isMatrixBackend: function(){
