@@ -36,7 +36,7 @@ mdt.featureDefinitions = {
 				{					
 					"id": "remap_manager",
 					"name": "Remap Manager",
-					"layout_type": "grouped_checkboxes",
+					"layout_type": "grouped_checkbox",
 					"values": [ "Thumbnail", "Status" ]
 				}
 			],
@@ -57,39 +57,53 @@ mdt.featureDefinitions = {
 			},
 			init: function(){
 				var cmInit = "(function(){\
-					$('textarea[id*=\"bodycopy\"], textarea[id*=\"parse_file\"]').each(function(){\
-						CodeMirror.fromTextArea(this);\
+					$('textarea[id*=\"bodycopy\"], textarea[id*=\"file\"],').each(function(){\
+						var cm = CodeMirror.fromTextArea(this);\
+						cm.setOption('theme', 'neat');\
+						cm.setOption('tabMode', 'shift');\
+						cm.setOption('matchBrackets', 'true');\
+						cm.setOption('lineNumbers', 'true');\
 					});\
 				})();";
 				
-				mdt.injectScript("codemirror-js", "chrome://matrixdevelopertoolbar/content/codemirror-compressed.js", cmInit);
-			
-				var main = mdt.aboutTab.mainFrame.document;
-				var head = main.getElementsByTagName("head")[0];
-						
-
-/*
-					mdt.onObjectAvailable("CodeMirror", mdt.aboutTab.mainFrame, function(){
-						main.$('textarea[id*="bodycopy"]').each(function(){
-							main.CodeMirror.fromTextArea(this);
-						});
-					});
-*/
-	
-				if (!main.getElementById("matrixdevelopertoolbar-codemirror-styles")) {
-					var codeMirrorStyles = main.createElement("link");
-					codeMirrorStyles.id = "matrixdevelopertoolbar-codemirror-styles";
-					codeMirrorStyles.type = "text/css";
-					codeMirrorStyles.rel = "stylesheet";
-					codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/lib/codemirror.css";
-					head.appendChild(codeMirrorStyles);
-	
-					codeMirrorStyles = main.createElement("link");
-					codeMirrorStyles.type = "text/css";
-					codeMirrorStyles.rel = "stylesheet";
-					codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/theme/default.css";	
-					head.appendChild(codeMirrorStyles);
-				}				
+				var pathToFiles = mdt.settings.paths.lib + "SyntaxHighlighter/CodeMirror/";
+				
+				mdt.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js", cmInit);
+				mdt.injectStyleSheet("codemirror-css", pathToFiles + "codemirror.css");
+				mdt.injectStyleSheet("codemirror-theme-default", pathToFiles + "default.css");
+				mdt.injectStyleSheet("codemirror-theme-elegant", pathToFiles + "elegant.css");
+				mdt.injectStyleSheet("codemirror-theme-neat", pathToFiles + "neat.css");
+				mdt.injectStyleSheet("codemirror-theme-night", pathToFiles + "night.css");
+			},
+			destroy: function(){
+			}
+		},
+		{
+			"id": "wysiwyg_replace",
+			"name": "WYSIWYG replacer",
+			"description": "",
+			"layout_type": "checkbox",
+			"advanced_options": [
+				{
+					"id": "types",
+					"name": "WYSIWYG types",
+					"layout_type": "grouped_radio",
+					"values": [ "CKEditor", "WYMEditor" ]
+				}
+			],
+			detect: function(){
+				var wysiwygExists = false;
+				var tables = mdt.aboutTab.mainFrame.document.getElementsByTagName("table");
+				for (var counter in tables) {
+					var t = tables[counter];
+					if (t.getAttribute("content_type") === "content_type") {
+						wysiwygExists = true;
+						break;
+					}
+				}
+				return ( (mdt.aboutTab.screenBrowsing === "bodycopy") && (wysiwygExists) ) ? true : false;
+			},
+			init: function(){
 			},
 			destroy: function(){
 			}
