@@ -29,8 +29,8 @@ var mdt = function(){
 		aboutTab: {
 			isMatrixBackend: false,
 			isMatrixSite: false,
-			assetType: null,
-			screenBrowsing: null,
+			assetType: "",
+			screenBrowsing: "",
 			featuresAvailable: [],
 			mainFrame: null
 		},
@@ -40,12 +40,12 @@ var mdt = function(){
 				content.addEventListener("load", mdt.bootstrap, false);
 			}, true);
 			gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
+			gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
 		},
 		
 		bootstrap: function(){
 			if (mdt.isMatrixBackend()) {
 				mdt.aboutTab.mainFrame = content.frames[3];
-				mdt.aboutTab.mainFrame.addEventListener("load", mdt.bootstrap, false);
 				mdt.insertPageHelpers();
 				mdt.determineAssetType();
 				mdt.determineAssetScreen();
@@ -70,7 +70,9 @@ var mdt = function(){
 				script.setAttribute("type", "text/javascript");
 				script.setAttribute("id", id);
 				script.setAttribute("src", src);
-				script.setAttribute("onload", callback);
+				if (typeof(callback) !== "undefined") {
+					script.setAttribute("onload", callback);
+				}
 				head.appendChild(script);		
 				
 				return script;		
@@ -98,16 +100,7 @@ var mdt = function(){
 		},
 		
 		insertPageHelpers: function(){
-			var main = mdt.aboutTab.mainFrame.document;
-			var head = main.getElementsByTagName("head")[0];
-			
-			if (!main.getElementById("matrixtoolbar-jquery") && typeof(head) === "object") {
-				var jq = main.createElement("script");
-				jq.id = "matrixtoolbar-jquery";
-				jq.src = "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js";
-				head.appendChild(jq);
-			} else {
-			}
+			mdt.injectScript("jquery", "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js");
 		},
 
 		determineAssetType: function(){
@@ -138,6 +131,19 @@ var mdt = function(){
 					}
 				}
 			});	
+		},
+		
+
+		// TODO: Find a way to determine when a script has loaded on a page and let the extension sandbox know about it
+		
+		objectHasLoaded: function(obj, where, callback){
+			if (typeof(where[obj]) !== "undefined") {
+				callback();
+			} else {
+				setTimeout(function(){
+					mdt.objectHasLoaded(obj, where, callback);
+				}, 5000);
+			}
 		},
 		
 		featureIsEnabled: function(){

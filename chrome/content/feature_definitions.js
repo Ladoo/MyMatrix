@@ -53,10 +53,17 @@ mdt.featureDefinitions = {
 			"description": "Coding in Matrix is finally beautiful.",
 			"layout_type": "checkbox",
 			detect: function(){
-				return ((mdt.aboutTab.screenBrowsing.search(/(edit_file|parse_file|contents)/) > -1) && (mdt.aboutTab.mainFrame.document.getElementsByTagName("textarea").length > 0)) ? true : false;
+				var textareas = mdt.aboutTab.mainFrame.document.getElementsByTagName("textarea"), tExists = false;
+				for (var counter in textareas) {
+					var t = textareas[counter];
+					if (typeof(t.id) !== "undefined" && t.id.search(/wysiwyg/) === -1) {
+						tExists = true;
+					}
+				}
+				return ((mdt.aboutTab.screenBrowsing.search(/(edit_file|parse_file|contents)/) > -1) && tExists) ? true : false;
 			},
 			init: function(){
-				var cmInit = "(function(){\
+				var init = "(function(){\
 					$('textarea[id*=\"bodycopy\"], textarea[id*=\"file\"],').each(function(){\
 						var cm = CodeMirror.fromTextArea(this);\
 						cm.setOption('theme', 'neat');\
@@ -68,7 +75,7 @@ mdt.featureDefinitions = {
 				
 				var pathToFiles = mdt.settings.paths.lib + "SyntaxHighlighter/CodeMirror/";
 				
-				mdt.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js", cmInit);
+				mdt.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js", init);
 				mdt.injectStyleSheet("codemirror-css", pathToFiles + "codemirror.css");
 				mdt.injectStyleSheet("codemirror-theme-default", pathToFiles + "default.css");
 				mdt.injectStyleSheet("codemirror-theme-elegant", pathToFiles + "elegant.css");
@@ -96,14 +103,31 @@ mdt.featureDefinitions = {
 				var tables = mdt.aboutTab.mainFrame.document.getElementsByTagName("table");
 				for (var counter in tables) {
 					var t = tables[counter];
-					if (t.getAttribute("content_type") === "content_type") {
-						wysiwygExists = true;
-						break;
+					if (typeof(t.getAttribute) !== "undefined") {
+						if (t.getAttribute("content_type") === "content_type_wysiwyg") {
+							wysiwygExists = true;
+							break;
+						}
 					}
 				}
-				return ( (mdt.aboutTab.screenBrowsing === "bodycopy") && (wysiwygExists) ) ? true : false;
+
+				return ( (mdt.aboutTab.assetType === "bodycopy") && wysiwygExists ) ? true : false;
 			},
 			init: function(){
+				var pathToFiles = mdt.settings.paths.lib + "WYSIWYG/CKEditor/";
+				var init = "(function(){\
+					$(document).ready(function(){\
+						$('table[content_type] textarea').each(function(){\
+							if ($(this).attr('id').search(/wysiwyg/) !== -1) {\
+								var $table = $(this).parents('table[content_type]');\
+								$(this).appendTo($table.parent());\
+								$table.children().hide();\
+								CKEDITOR.replace($(this).attr('id'));\
+							}\
+						});\
+					});\
+				})();";
+				mdt.injectScript("ckeditor-main-js", pathToFiles + "ckeditor.js", init);	
 			},
 			destroy: function(){
 			}
