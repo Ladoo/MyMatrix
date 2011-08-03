@@ -1,6 +1,7 @@
 var mdt = function(){
 	// privates (stop looking)
 	var prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 	
 	function isMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
@@ -14,6 +15,18 @@ var mdt = function(){
 		label.setAttribute("value", "Matrix not detected");
 		label.style.color = "#990000";
 		label.className = "";
+	}
+	
+	function error(message){
+		Components.utils.reportError(message);
+	}
+
+	function dump(obj) {
+	    var out = '';
+	    for (var i in obj) {
+	        out += i + ": " + obj[i] + "\n";
+	    }
+	    ffConsole.logStringMessage(out);
 	}
 	
 	return {
@@ -37,10 +50,9 @@ var mdt = function(){
 		
 		init: function(){
 			gBrowser.addEventListener("load", function(){
-				content.addEventListener("load", mdt.bootstrap, false);
+				gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
 			}, true);
 			gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
-			gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
 		},
 		
 		bootstrap: function(){
@@ -51,6 +63,7 @@ var mdt = function(){
 				mdt.determineAssetScreen();
 				isMatrix();
 				mdt.determineFeatures();
+				dump(mdt.aboutTab);
 			}
 			else if (mdt.isMatrixSite()) {
 				isMatrix();
@@ -111,26 +124,39 @@ var mdt = function(){
 					mdt.aboutTab.assetType = assetType;
 				}
 			} catch (e) {
+				error("Cannot determine asset type: " + e.message);
 			}
 		},
 		
 		determineAssetScreen: function(){
-			var screenMenu = mdt.aboutTab.mainFrame.document.getElementById("screen_menu");
-			if (screenMenu) {
-				mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
+			try {
+				var screenMenu = mdt.aboutTab.mainFrame.document.getElementById("screen_menu");
+				if (screenMenu) {
+					mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
+				} else {
+					mdt.aboutTab.screenBrowsing = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-main-heading")[0].textContent.replace(/\t/g, '').replace(/\s/, '');
+				} 
+			} catch (e) {
+				error("Cannot determine asset screen: " + e.message);
 			}
 		},
 		
 		determineFeatures: function(){
-			mdt.featureDefinitions.features.forEach(function(feature){
-				if (feature.detect()){
-					if (mdt.featureIsEnabled(feature.id)) {
-						feature.init();
-					} else {
-						feature.destroy();
+			try {
+				mdt.aboutTab.featuresAvailable = [];
+				mdt.featureDefinitions.features.forEach(function(feature){
+					if (feature.detect()){
+						mdt.aboutTab.featuresAvailable.push(feature.id);
+						if (mdt.featureIsEnabled(feature.id)) {
+							feature.init();
+						} else {
+							feature.destroy();
+						}
 					}
-				}
-			});	
+				});	
+			} catch (e) {
+				error("Cannot detect features: " + e.message);		
+			}
 		},
 		
 
@@ -142,7 +168,7 @@ var mdt = function(){
 			} else {
 				setTimeout(function(){
 					mdt.objectHasLoaded(obj, where, callback);
-				}, 5000);
+				}, 30);
 			}
 		},
 		

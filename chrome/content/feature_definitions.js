@@ -20,6 +20,7 @@ mdt.featureDefinitions = {
 			"name": "Seamless Saving",
 			"description": "",
 			"layout_type": "checkbox",
+			"experimental": false,
 			detect: function(){	
 			},
 			init: function(){
@@ -32,6 +33,7 @@ mdt.featureDefinitions = {
 			"name": "Auto section collapsing",
 			"description": "",
 			"layout_type": "checkbox",
+			"experimental": false,
 			"advanced_options": [
 				{					
 					"id": "remap_manager",
@@ -52,6 +54,7 @@ mdt.featureDefinitions = {
 			"name": "Syntax Highlighter",
 			"description": "Coding in Matrix is finally beautiful.",
 			"layout_type": "checkbox",
+			"experimental": true,
 			detect: function(){
 				var textareas = mdt.aboutTab.mainFrame.document.getElementsByTagName("textarea"), tExists = false;
 				for (var counter in textareas) {
@@ -90,6 +93,7 @@ mdt.featureDefinitions = {
 			"name": "WYSIWYG replacer",
 			"description": "",
 			"layout_type": "checkbox",
+			"experimental": true,
 			"advanced_options": [
 				{
 					"id": "types",
@@ -122,12 +126,50 @@ mdt.featureDefinitions = {
 								var $table = $(this).parents('table[content_type]');\
 								$(this).appendTo($table.parent());\
 								$table.children().hide();\
-								CKEDITOR.replace($(this).attr('id'));\
+								CKEDITOR.replace($(this).attr('id'), { toolbar: 'Coder' });\
 							}\
 						});\
 					});\
 				})();";
 				mdt.injectScript("ckeditor-main-js", pathToFiles + "ckeditor.js", init);	
+			},
+			destroy: function(){
+			}
+		},
+		{
+			"id": "drag_drop_files",
+			"name": "Drag and Drop File Upload",
+			"description": "Uploading files, made fun.",
+			"layout_type": "checkbox",
+			"experimental": false,
+			detect: function(){
+				// Works in these situations:
+				// 1) There is a browse button on the page
+				// 2) You're editing a page (e.g. Standard Page, News Item, etc.)
+				var tab = mdt.aboutTab, 
+					main = tab.mainFrame;
+				
+				var lastLineage = main.document.getElementById("main_form").action.match(/sq_asset_path=.*/)[0].split(","),
+					browseButtonExists = false;
+				lastLineage = lastLineage[lastLineage.length - 1];
+				
+				var browseButtons = main.document.getElementsByTagName("input");
+				for (var c in browseButtons) {
+					var bw = browseButtons[c];
+					if (typeof(bw.type) !== "undefined" && bw.type === "file") {
+						browseButtonExists = true;
+						break;
+					}
+				}
+				
+				return ( 
+						(tab.assetType === "news_item") || 
+						(tab.screenBrowsing === "contents" && tab.assetType === "bodycopy") ||
+						(tab.screenBrowsing.search(/bulk file/i) > -1)  && (browseButtonExists)
+					) ? true : false;
+			},
+			init: function(){
+				dump("This works..");
 			},
 			destroy: function(){
 			}
