@@ -20,6 +20,7 @@ mdt.featureDefinitions = {
 			"name": "Seamless Saving",
 			"description": "",
 			"layout_type": "checkbox",
+			"experimental": false,
 			detect: function(){	
 			},
 			init: function(){
@@ -32,11 +33,12 @@ mdt.featureDefinitions = {
 			"name": "Auto section collapsing",
 			"description": "",
 			"layout_type": "checkbox",
+			"experimental": false,
 			"advanced_options": [
 				{					
 					"id": "remap_manager",
 					"name": "Remap Manager",
-					"layout_type": "grouped_checkboxes",
+					"layout_type": "grouped_checkbox",
 					"values": [ "Thumbnail", "Status" ]
 				}
 			],
@@ -52,44 +54,127 @@ mdt.featureDefinitions = {
 			"name": "Syntax Highlighter",
 			"description": "Coding in Matrix is finally beautiful.",
 			"layout_type": "checkbox",
+			"experimental": true,
 			detect: function(){
-				return ((mdt.aboutTab.screenBrowsing.search(/(edit_file|parse_file|contents)/) > -1) && (mdt.aboutTab.mainFrame.document.getElementsByTagName("textarea").length > 0)) ? true : false;
+				var textareas = mdt.aboutTab.mainFrame.document.getElementsByTagName("textarea"), tExists = false;
+				for (var counter in textareas) {
+					var t = textareas[counter];
+					if (typeof(t.id) !== "undefined" && t.id.search(/wysiwyg/) === -1) {
+						tExists = true;
+					}
+				}
+				return ((mdt.aboutTab.screenBrowsing.search(/(edit_file|parse_file|contents)/) > -1) && tExists) ? true : false;
 			},
 			init: function(){
-				var cmInit = "(function(){\
-					$('textarea[id*=\"bodycopy\"], textarea[id*=\"parse_file\"]').each(function(){\
-						CodeMirror.fromTextArea(this);\
+				var init = "(function(){\
+					$('textarea[id*=\"bodycopy\"], textarea[id*=\"file\"],').each(function(){\
+						var cm = CodeMirror.fromTextArea(this);\
+						cm.setOption('theme', 'neat');\
+						cm.setOption('tabMode', 'shift');\
+						cm.setOption('matchBrackets', 'true');\
+						cm.setOption('lineNumbers', 'true');\
 					});\
 				})();";
 				
-				mdt.injectScript("codemirror-js", "chrome://matrixdevelopertoolbar/content/codemirror-compressed.js", cmInit);
-			
-				var main = mdt.aboutTab.mainFrame.document;
-				var head = main.getElementsByTagName("head")[0];
-						
+				var pathToFiles = mdt.settings.paths.lib + "SyntaxHighlighter/CodeMirror/";
+				
+				mdt.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js", init);
+				mdt.injectStyleSheet("codemirror-css", pathToFiles + "codemirror.css");
+				mdt.injectStyleSheet("codemirror-theme-default", pathToFiles + "default.css");
+				mdt.injectStyleSheet("codemirror-theme-elegant", pathToFiles + "elegant.css");
+				mdt.injectStyleSheet("codemirror-theme-neat", pathToFiles + "neat.css");
+				mdt.injectStyleSheet("codemirror-theme-night", pathToFiles + "night.css");
+			},
+			destroy: function(){
+			}
+		},
+		{
+			"id": "wysiwyg_replace",
+			"name": "WYSIWYG replacer",
+			"description": "",
+			"layout_type": "checkbox",
+			"experimental": true,
+			"advanced_options": [
+				{
+					"id": "types",
+					"name": "WYSIWYG types",
+					"layout_type": "grouped_radio",
+					"values": [ "CKEditor", "WYMEditor" ]
+				}
+			],
+			detect: function(){
+				var wysiwygExists = false;
+				var tables = mdt.aboutTab.mainFrame.document.getElementsByTagName("table");
+				for (var counter in tables) {
+					var t = tables[counter];
+					if (typeof(t.getAttribute) !== "undefined") {
+						if (t.getAttribute("content_type") === "content_type_wysiwyg") {
+							wysiwygExists = true;
+							break;
+						}
+					}
+				}
 
-/*
-					mdt.onObjectAvailable("CodeMirror", mdt.aboutTab.mainFrame, function(){
-						main.$('textarea[id*="bodycopy"]').each(function(){
-							main.CodeMirror.fromTextArea(this);
-						});
-					});
-*/
-	
-				if (!main.getElementById("matrixdevelopertoolbar-codemirror-styles")) {
-					var codeMirrorStyles = main.createElement("link");
-					codeMirrorStyles.id = "matrixdevelopertoolbar-codemirror-styles";
-					codeMirrorStyles.type = "text/css";
-					codeMirrorStyles.rel = "stylesheet";
-					codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/lib/codemirror.css";
-					head.appendChild(codeMirrorStyles);
-	
-					codeMirrorStyles = main.createElement("link");
-					codeMirrorStyles.type = "text/css";
-					codeMirrorStyles.rel = "stylesheet";
-					codeMirrorStyles.href = "chrome://matrixdevelopertoolbar/content/theme/default.css";	
-					head.appendChild(codeMirrorStyles);
-				}				
+				return ( (mdt.aboutTab.assetType === "bodycopy") && wysiwygExists ) ? true : false;
+			},
+			init: function(){
+				var pathToFiles = mdt.settings.paths.lib + "WYSIWYG/CKEditor/";
+				var init = "(function(){\
+					$(document).ready(function(){\
+						$('table[content_type] textarea').each(function(){\
+							if ($(this).attr('id').search(/wysiwyg/) !== -1) {\
+								var $table = $(this).parents('table[content_type]');\
+								$(this).appendTo($table.parent());\
+								$table.children().hide();\
+								CKEDITOR.replace($(this).attr('id'), { toolbar: 'Coder' });\
+							}\
+						});\
+					});\
+				})();";
+				mdt.injectScript("ckeditor-main-js", pathToFiles + "ckeditor.js", init);	
+			},
+			destroy: function(){
+			}
+		},
+		{
+			"id": "drag_drop_files",
+			"name": "Drag and Drop File Upload",
+			"description": "Uploading files, made fun.",
+			"layout_type": "checkbox",
+			"experimental": false,
+			detect: function(){
+				// Works in these situations:
+				// 1) There is a browse button on the page
+				// 2) You're editing a page (e.g. Standard Page, News Item, etc.)
+				var tab = mdt.aboutTab, 
+					main = tab.mainFrame;
+				
+				// TODO: Find out why it doesn't work on Design Parse files
+				var lastLineage = main.document.getElementById("main_form").action.match(/sq_asset_path=.*/)[0].split(","),
+					browseButtonExists = false;
+				lastLineage = lastLineage[lastLineage.length - 1];
+				
+				var browseButtons = main.document.getElementsByTagName("input");
+				for (var c in browseButtons) {
+					var bw = browseButtons[c];
+					if (typeof(bw.type) !== "undefined" && bw.type === "file") {
+						browseButtonExists = true;
+						break;
+					}
+				}
+				
+				return ( 
+						(tab.assetType === "news_item") || 
+						(tab.screenBrowsing === "contents" && tab.assetType === "bodycopy") ||
+						(tab.screenBrowsing.search(/bulk file/i) > -1)  && (browseButtonExists)
+					) ? true : false;
+			},
+			init: function(){
+				var pathToFiles = mdt.settings.paths.lib + "DragDrop/";
+				mdt.injectStyleSheet("jquery-ui-css", pathToFiles + "jquery.fileupload-ui.css");
+				mdt.injectScript("jquery-ui", pathToFiles + "jquery.fileupload-ui.js");
+				mdt.injectScript("jquery-fp", pathToFiles + "jquery.fileupload.js");
+				mdt.injectScript("jquery-tp", pathToFiles + "jquery.iframe-transport.js");
 			},
 			destroy: function(){
 			}

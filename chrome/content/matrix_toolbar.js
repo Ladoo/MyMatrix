@@ -1,5 +1,7 @@
 var mdt = function(){
+	// privates (stop looking)
 	var prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 	
 	function isMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
@@ -11,42 +13,60 @@ var mdt = function(){
 	function isNotMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
 		label.setAttribute("value", "Matrix not detected");
-		label.style.color = "#990000";mdt.aboutTab.mainFrame
+		label.style.color = "#990000";
 		label.className = "";
+	}
+	
+	function error(message){
+		if (mdt.settings.debug) Components.utils.reportError(message);
+	}
+
+	function dump(obj) {
+		if (mdt.settings.debug) {
+		    var out = '';
+		    for (var i in obj) {
+		        out += i + ": " + obj[i] + "\n";
+		    }
+		    ffConsole.logStringMessage(out);
+	    }
 	}
 	
 	return {
 		// general settings
 		settings: {
+			debug: true,
+			paths: {
+				content: "chrome://matrixdevelopertoolbar/content/",
+				lib: "chrome://matrixdevelopertoolbar/content/lib/"
+			}
 		},
 		
 		// about the current tab the user is browsing
-		// not really necessary at this stage of the extensions..but maybe one day?
 		aboutTab: {
 			isMatrixBackend: false,
 			isMatrixSite: false,
-			assetType: null,
-			screenBrowsing: null,
+			assetType: "",
+			screenBrowsing: "",
 			featuresAvailable: [],
 			mainFrame: null
 		},
 		
 		init: function(){
 			gBrowser.addEventListener("load", function(){
-				content.addEventListener("load", mdt.bootstrap, false);
-			}, true);
-			gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
+				gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
+				gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
+			}, true);	
 		},
 		
 		bootstrap: function(){
 			if (mdt.isMatrixBackend()) {
 				mdt.aboutTab.mainFrame = content.frames[3];
-				mdt.aboutTab.mainFrame.addEventListener("DOMActivate", mdt.bootstrap, false);
 				mdt.insertPageHelpers();
 				mdt.determineAssetType();
 				mdt.determineAssetScreen();
 				isMatrix();
 				mdt.determineFeatures();
+				dump(mdt.aboutTab);
 			}
 			else if (mdt.isMatrixSite()) {
 				isMatrix();
@@ -56,16 +76,19 @@ var mdt = function(){
 			}			
 		},
 		
+		// main public methods
 		injectScript: function(id, src, callback){
 			var main = mdt.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
 			id = "matrixdevelopertoolbar-" + id;
 			if (!main.getElementById(id)) {
 				var script = main.createElement("script");
-				script.type = "text/javascript";
+				script.setAttribute("type", "text/javascript");
 				script.setAttribute("id", id);
 				script.setAttribute("src", src);
-				script.setAttribute("onload", callback);
+				if (typeof(callback) !== "undefined") {
+					script.setAttribute("onload", callback);
+				}
 				head.appendChild(script);		
 				
 				return script;		
@@ -74,17 +97,26 @@ var mdt = function(){
 			}
 		},
 		
-		insertPageHelpers: function(){
+		injectStyleSheet: function(id, href){
 			var main = mdt.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
-			
-			if (!main.getElementById("matrixtoolbar-jquery") && typeof(head) === "object") {
-				var jq = main.createElement("script");
-				jq.id = "matrixtoolbar-jquery";
-				jq.src = "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js";
-				head.appendChild(jq);
+			id = "matrixdevelopertoolbar-" + id;
+			if (!main.getElementById(id)) {
+				var css = main.createElement("link");
+				css.setAttribute("type", "text/css");
+				css.setAttribute("id", id);
+				css.setAttribute("href", href);
+				css.setAttribute("rel", "stylesheet");
+				head.appendChild(css);		
+				
+				return css;		
 			} else {
-			}
+				return null;
+			}		
+		},
+		
+		insertPageHelpers: function(){
+			mdt.injectScript("jquery", "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js");
 		},
 
 		determineAssetType: function(){
@@ -95,70 +127,60 @@ var mdt = function(){
 					mdt.aboutTab.assetType = assetType;
 				}
 			} catch (e) {
+				error("Cannot determine asset type: " + e.message);
 			}
 		},
 		
 		determineAssetScreen: function(){
-			var screenMenu = mdt.aboutTab.mainFrame.document.getElementById("screen_menu");
-			if (screenMenu) {
-				mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
+			try {
+				var screenMenu = mdt.aboutTab.mainFrame.document.getElementById("screen_menu");
+				if (screenMenu) {
+					mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
+				} else {
+					mdt.aboutTab.screenBrowsing = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-main-heading")[0].textContent.replace(/\t/g, '').replace(/\s/, '');
+				} 
+			} catch (e) {
+				error("Cannot determine asset screen: " + e.message);
 			}
 		},
 		
 		determineFeatures: function(){
-			mdt.featureDefinitions.features.forEach(function(feature){
-				if (feature.detect()){
-					if (mdt.featureIsEnabled(feature.id)) {
-						feature.init();
-					} else {
-						feature.destroy();
-					}
-				}
-			});	
-		},
-		
-		featureIsEnabled: function(){
-			return true;
-		},
-		
-		/*enhanceAsset: function(){
-			if (mdt.aboutTab.assetType) {
-				for (var c in mdt.assetEnhancers.assets) {
-					var asset = mdt.assetEnhancers.assets[c];
-					if (asset.typeCode === mdt.aboutTab.assetType) {
-						try {
-							if (typeof(asset.uiEnhancements) !== "undefined" && asset.autoEnhance) {
-								asset.uiEnhancements();
+			try {
+				mdt.aboutTab.featuresAvailable = [];
+				mdt.featureDefinitions.features.forEach(function(feature){
+					try {
+						if (feature.detect()){
+							mdt.aboutTab.featuresAvailable.push(feature.id);
+							if (mdt.featureIsEnabled(feature.id)) {
+								feature.init();
+							} else {
+								feature.destroy();
 							}
-						} catch (e) {
 						}
-					} 
-				}
-			} else {
-			}
-		},*/
-		
-		collapseSections: function(){
-			var sections = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-section-heading");
-			for (var counter in sections) {
-				var section = sections[counter];
-				
+					} catch (e) {
+						error("Feature detection failed (" + feature.id + "): " + e.message);
+					}
+				});	
+			} catch (e) {
+				error("Cannot detect features: " + e.message);		
 			}
 		},
 		
-		replaceWYSIWYG: function(){
-			
-		},
+
+		// TODO: Find a way to determine when a script has loaded on a page and let the extension sandbox know about it
 		
-		onObjectAvailable: function(obj, where, callback){
-			//alert (mdt.aboutTab.mainFrame.CodeMirror);
+		objectHasLoaded: function(obj, where, callback){
 			if (typeof(where[obj]) !== "undefined") {
 				callback();
 			} else {
 				setTimeout(function(){
-					mdt.onObjectAvailable(obj, where, callback);
-				}, 5000);
+					mdt.objectHasLoaded(obj, where, callback);
+				}, 30);
 			}
+		},
+		
+		featureIsEnabled: function(){
+			return true;
 		},
 		
 		isMatrixBackend: function(){
