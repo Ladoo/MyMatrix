@@ -1,0 +1,29 @@
+#dropListing {
+	margin-left: 20px;
+	border: 1px solid #d0d0d0;
+	width: 500px;
+	height: 400px;
+}
+
+/*
+	Drop Overlay
+	Used on:
+	- File upload
+*/
+#drop {
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0;
+	background-color: black;
+	color: white;
+	font-size: 1.3em;
+	width: 500px;
+	padding: 10px;
+	border-radius: 4px;
+	text-align: center;
+}
+
+#drop p {
+	color: white !important;
+}
