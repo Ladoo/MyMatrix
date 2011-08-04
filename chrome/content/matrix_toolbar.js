@@ -18,20 +18,23 @@ var mdt = function(){
 	}
 	
 	function error(message){
-		Components.utils.reportError(message);
+		if (mdt.settings.debug) Components.utils.reportError(message);
 	}
 
 	function dump(obj) {
-	    var out = '';
-	    for (var i in obj) {
-	        out += i + ": " + obj[i] + "\n";
+		if (mdt.settings.debug) {
+		    var out = '';
+		    for (var i in obj) {
+		        out += i + ": " + obj[i] + "\n";
+		    }
+		    ffConsole.logStringMessage(out);
 	    }
-	    ffConsole.logStringMessage(out);
 	}
 	
 	return {
 		// general settings
 		settings: {
+			debug: true,
 			paths: {
 				content: "chrome://matrixdevelopertoolbar/content/",
 				lib: "chrome://matrixdevelopertoolbar/content/lib/"
@@ -51,8 +54,8 @@ var mdt = function(){
 		init: function(){
 			gBrowser.addEventListener("load", function(){
 				gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
-			}, true);
-			gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
+				gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
+			}, true);	
 		},
 		
 		bootstrap: function(){
@@ -145,13 +148,17 @@ var mdt = function(){
 			try {
 				mdt.aboutTab.featuresAvailable = [];
 				mdt.featureDefinitions.features.forEach(function(feature){
-					if (feature.detect()){
-						mdt.aboutTab.featuresAvailable.push(feature.id);
-						if (mdt.featureIsEnabled(feature.id)) {
-							feature.init();
-						} else {
-							feature.destroy();
+					try {
+						if (feature.detect()){
+							mdt.aboutTab.featuresAvailable.push(feature.id);
+							if (mdt.featureIsEnabled(feature.id)) {
+								feature.init();
+							} else {
+								feature.destroy();
+							}
 						}
+					} catch (e) {
+						error("Feature detection failed (" + feature.id + "): " + e.message);
 					}
 				});	
 			} catch (e) {

@@ -149,6 +149,7 @@ mdt.featureDefinitions = {
 				var tab = mdt.aboutTab, 
 					main = tab.mainFrame;
 				
+				// TODO: Find out why it doesn't work on Design Parse files
 				var lastLineage = main.document.getElementById("main_form").action.match(/sq_asset_path=.*/)[0].split(","),
 					browseButtonExists = false;
 				lastLineage = lastLineage[lastLineage.length - 1];
@@ -169,7 +170,11 @@ mdt.featureDefinitions = {
 					) ? true : false;
 			},
 			init: function(){
-				dump("This works..");
+				var pathToFiles = mdt.settings.paths.lib + "DragDrop/";
+				mdt.injectStyleSheet("jquery-ui-css", pathToFiles + "jquery.fileupload-ui.css");
+				mdt.injectScript("jquery-ui", pathToFiles + "jquery.fileupload-ui.js");
+				mdt.injectScript("jquery-fp", pathToFiles + "jquery.fileupload.js");
+				mdt.injectScript("jquery-tp", pathToFiles + "jquery.iframe-transport.js");
 			},
 			destroy: function(){
 			}
