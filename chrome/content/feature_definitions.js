@@ -165,16 +165,13 @@ mdt.featureDefinitions = {
 				
 				return ( 
 						(tab.assetType === "news_item") || 
-						(tab.screenBrowsing === "contents" && tab.assetType === "bodycopy") ||
-						(tab.screenBrowsing.search(/bulk file/i) > -1)  && (browseButtonExists)
+						(tab.screenBrowsing === "contents" && tab.assetType === "bodycopy") || (browseButtonExists)
 					) ? true : false;
 			},
 			init: function(){
 				var pathToFiles = mdt.settings.paths.lib + "DragDrop/";
-				mdt.injectStyleSheet("jquery-ui-css", pathToFiles + "jquery.fileupload-ui.css");
-				mdt.injectScript("jquery-ui", pathToFiles + "jquery.fileupload-ui.js");
-				mdt.injectScript("jquery-fp", pathToFiles + "jquery.fileupload.js");
-				mdt.injectScript("jquery-tp", pathToFiles + "jquery.iframe-transport.js");
+				mdt.injectScript("dragdrop-js", pathToFiles + "dragdrop.js");
+				mdt.injectStyleSheet("dragdrop-css", pathToFiles + "dragdrop.css");
 			},
 			destroy: function(){
 			}
