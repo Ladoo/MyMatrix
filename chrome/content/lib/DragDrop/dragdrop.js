@@ -2,20 +2,17 @@
 // Code was slightly modified (to play nice with jQuery and follow conventions) for this implementation, however the core has remained
 // http://www.thecssninja.com/javascript/fileapi
 
-if (concierge) {
-	concierge.dragDrop = {};
-}
-
 $(document).ready(function(){
-	var $dropContainer, $dropListing;
+	concierge.dragDrop = {};
+	var $dropContainer, $dropPreview;
 	
 	// Drag Enter (File Upload)
 	function showOverlay(){
-		$("#drop").css("opacity", 0.5);
+		$("#drop").css("opacity", 0.5).show();
 	}
 	
 	function hideOverlay(e){
-		$("#drop").css("opacity", 0);
+		$("#drop").css("opacity", 0).hide();
 	}
 	
 	// Not sure why I need to implement this
@@ -31,14 +28,14 @@ $(document).ready(function(){
 	}
 	
 	concierge.dragDrop.init = function(){
-		$("#sq-content").append("<ul id='dropListing'></ul>");
+		$("#sq-content").append("<div id='dropPreview'></div>");
 		$("#main_form").append("<div id='drop'><h1>Drop your file here</h1></div>");
 		var $inputRow = $("input[type=file]").parents("tr:first");
 		$("#drop").css("top", $inputRow.position().top).css("left", $inputRow.position().left).css("width", $inputRow.width());
 		
 		
-		$dropListing = $("#dropListing");
-		$dropContainer = $("#drop");
+		$dropPreview = $("#dropPreview");
+		$dropContainer = $("#main_form");
 		$dropContainer.bind({
 			dragenter: function(e){
 				e.preventDefault();
@@ -48,7 +45,7 @@ $(document).ready(function(){
 			dragleave: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				if (notInDropZone($dropContainer, e)) {
+				if (notInDropZone($("#drop"), e)) {
 					hideOverlay(e);
 				}
 			},
@@ -61,6 +58,7 @@ $(document).ready(function(){
 		$dropContainer[0].addEventListener("drop", function(e){
 			concierge.dragDrop.handleDrop(e);
 			hideOverlay(e);
+			e.preventDefault();
 		}, false);
 	};
 	
@@ -69,11 +67,39 @@ $(document).ready(function(){
 	};
 	
 	concierge.dragDrop.prepareUpload = function(file, index, bin){
-		// Hard-coded for single uploads at the moment
-		var $fileInput = $("input[type=file]");
-		var name = $fileInput.attr("name");
-		$fileInput.remove();
-		$("#main_form").append("<input type='file' value='" + file.mozFullPath + "' name='" + name + "' />");	
+		var $fileInput = $("#main_form input[type=file]").hide();
+		$fileInput.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' class='sq-form-field drag-temp' value='Browse…' />");
+		var data = new FormData();
+		data.append("image_0", file);
+		concierge.dragDrop.formData = data;
+		
+		$("#sq_commit_button").attr("onclick", "").bind("click", function(){
+			concierge.dragDrop.beginUpload();
+			$(this).attr("disabled", "disabled");
+			return false;
+		});
+	};
+	
+	concierge.dragDrop.beginUpload = function(){
+		var d = concierge.dragDrop.formData;
+		$("#main_form").find("input,select,textarea").each(function(){
+			var $this = $(this);
+			if (typeof($this.attr("name")) !== "undefined" && $this.attr("type") !== "file") {
+				d.append($this.attr("name"), $this.val());
+			} 
+		});
+		
+		$.ajax({
+			url: $("#main_form").attr("action"),
+			type: "POST",
+			data: d,
+			processData: false,
+			contentType: false,
+			success: function(data){
+				var location = data.match(/action="(?:[^\\"]+|\\.)*"/)[0];
+				window.location.href = location;
+			}
+		});
 	};
 
 	concierge.dragDrop.handleDrop = function(event){
@@ -105,7 +131,7 @@ $(document).ready(function(){
 			file = event.target.file,
 			getBinaryDataReader = new FileReader();
 
-		$dropListing.append("<li><img id='item " + index + "' src='" + data + "' /></li>");
+		$dropPreview.append("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
 			concierge.dragDrop.prepareUpload(file, index, evt.target.result);
 		}, false);

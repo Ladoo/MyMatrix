@@ -1,8 +1,12 @@
-#dropListing {
-	margin-left: 20px;
-	border: 1px solid #d0d0d0;
-	width: 500px;
-	height: 400px;
+#dropPreview {
+	position: absolute;
+	top: 85px;
+	right: 20px;
+}
+
+#dropPreview img {
+	max-width: 300px;
+	max-height: 200px;
 }
 
 /*
@@ -22,6 +26,7 @@
 	padding: 10px;
 	border-radius: 4px;
 	text-align: center;
+	display: none;
 }
 
 #drop p {

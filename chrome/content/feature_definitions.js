@@ -170,19 +170,8 @@ mdt.featureDefinitions = {
 			},
 			init: function(){
 				var pathToFiles = mdt.settings.paths.lib + "DragDrop/";
-
-				mdt.injectScript("base64", mdt.settings.paths.lib + "base64_decode.js");
-				mdt.injectScript("base64_utf", mdt.settings.paths.lib + "utf8_decode.js");
 				mdt.injectScript("dragdrop-js", pathToFiles + "dragdrop.js");
 				mdt.injectStyleSheet("dragdrop-css", pathToFiles + "dragdrop.css");
-
-/*
-				mdt.injectStyleSheet("jquery-ui-css", pathToFiles + "jquery.fileupload-ui.css");
-				mdt.injectScript("jquery-ui", pathToFiles + "jquery.fileupload-ui.js");
-				mdt.injectScript("jquery-tp", pathToFiles + "jquery.iframe-transport.js");
-				mdt.injectScript("jquery-fp", pathToFiles + "jquery.fileupload.js");
-*/
-				//mdt.injectScript("dragdrop-js", pathToFiles + "dragdrop2.js");
 			},
 			destroy: function(){
 			}
