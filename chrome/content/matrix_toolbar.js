@@ -117,6 +117,7 @@ var mdt = function(){
 		
 		insertPageHelpers: function(){
 			mdt.injectScript("jquery", "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js");
+			mdt.injectScript("concierge", "chrome://matrixdevelopertoolbar/content/lib/concierge.js");
 		},
 
 		determineAssetType: function(){
