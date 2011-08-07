@@ -1,29 +1,20 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://global/skin/skin.css" type="text/css"?>
-
-<prefwindow title="Link Target Finder Preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-
-	<prefpane label="Link Target Finder Preferences">
-		<preferences>
-			<preference id="link-target-finder-autorun" name="extensions.matrixdevelopertoolbar.autorun" type="bool"/>
-		</preferences>
-
-		<groupbox>
-			<caption label="Settings"/>
-			<grid>
-				<columns>
-					<column flex="4"/>
-
-					<column flex="1"/>
-				</columns>
-				<rows>
-					<row>
-						<label control="autorun" value="Autorun"/>
-						<checkbox id="autorun" preference="link-target-finder-autorun"/>
-					</row>
-				</rows>
-			</grid>
-		</groupbox>	
-	</prefpane>
-
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>  
+<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" buttons="accept" buttonlabelaccept="Close" title="Preferences">
+	  <prefpane id="saveoptions" label="Matrix Developer Toolbar Preferences">
+			<preferences>
+				<preference id="pref-toolbar-enabled" name="extensions.matrixtoolbar.enabled" type="bool" instantApply="true"/>
+				<preference id="pref-seamless-saving" name="extensions.matrixtoolbar.seamlesssaving" type="bool" instantApply="true"/>
+				<preference id="pref-auto-collapse" name="extensions.matrixtoolbar.autocollapse" type="bool" instantApply="true"/>
+				<preference id="pref-syntax-highlighter" name="extensions.matrixtoolbar.syntaxhighlighter" type="bool" instantApply="true"/>
+				<preference id="pref-wsywig-replace" name="extensions.matrixtoolbar.wysiwygreplace" type="bool" instantApply="true"/>
+				<preference id="pref-drag-drop-files" name="extensions.matrixtoolbar.dragdropfiles" type="bool" instantApply="true"/>
+			</preferences>
+		<checkbox label="Toolbar Enabled" preference="pref-toolbar-enabled"/>
+		<checkbox label="Seamless Saving" preference="pref-seamless-saving" id="steve"/>
+		<checkbox label="Auto Collapse" preference="pref-auto-collapse"/>
+		<checkbox label="Syntax Highlighting" preference="pref-syntax-highlighter"/>
+		<checkbox label="Replace WSYWIG" preference="pref-wsywig-replace"/>
+		<checkbox label="Drag &amp; Drop Files" preference="pref-drag-drop-files"/>
+	  </prefpane>
 </prefwindow>

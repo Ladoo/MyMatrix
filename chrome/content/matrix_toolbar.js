@@ -1,6 +1,6 @@
 var mdt = function(){
 	// privates (stop looking)
-	var prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+	//var prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 	
 	function isMatrix(){
@@ -13,6 +13,13 @@ var mdt = function(){
 	function isNotMatrix(){
 		var label = document.getElementById("matrixdeveloper-running-matrix");
 		label.setAttribute("value", "Matrix not detected");
+		label.style.color = "#990000";
+		label.className = "";
+	}
+	
+	function toolbarDisabled() {
+		var label = document.getElementById("matrixdeveloper-running-matrix");
+		label.setAttribute("value", "Toolbar Disabled");
 		label.style.color = "#990000";
 		label.className = "";
 	}
@@ -52,10 +59,20 @@ var mdt = function(){
 		},
 		
 		init: function(){
-			gBrowser.addEventListener("load", function(){
-				gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
-				gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
-			}, true);	
+			//check if toolbar is enabled
+			mdt.prefManager = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
+			//window.alert("blah");
+			mdt.preferences.init();
+			if( mdt.preferences.isEnabled() ) {
+				gBrowser.addEventListener("load", function(){
+					gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
+					gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
+				}, true);
+			} 
+			else {
+				toolbarDisabled();
+				//code here to destroy all activated toolbar features
+			}	
 		},
 		
 		bootstrap: function(){
@@ -180,8 +197,9 @@ var mdt = function(){
 			}
 		},
 		
-		featureIsEnabled: function(){
-			return true;
+		featureIsEnabled: function(feature_id){
+			thePref = mdt.prefManager.prefs.get("extensions.matrixtoolbar." + feature_id);
+			return thePref.value;
 		},
 		
 		isMatrixBackend: function(){
