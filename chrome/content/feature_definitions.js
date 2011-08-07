@@ -16,7 +16,7 @@
 mdt.featureDefinitions = {
 	features: [
 		{
-			"id": "seamless_saving",
+			"id": "seamlesssaving",
 			"name": "Seamless Saving",
 			"description": "",
 			"layout_type": "checkbox",
@@ -29,7 +29,7 @@ mdt.featureDefinitions = {
 			}
 		},
 		{
-			"id": "auto_collapse",
+			"id": "autocollapse",
 			"name": "Auto section collapsing",
 			"description": "",
 			"layout_type": "checkbox",
@@ -50,7 +50,7 @@ mdt.featureDefinitions = {
 			}
 		},
 		{
-			"id": "syntax_highlighter",
+			"id": "syntaxhighlighter",
 			"name": "Syntax Highlighter",
 			"description": "Coding in Matrix is finally beautiful.",
 			"layout_type": "checkbox",
@@ -89,7 +89,7 @@ mdt.featureDefinitions = {
 			}
 		},
 		{
-			"id": "wysiwyg_replace",
+			"id": "wysiwygreplace",
 			"name": "WYSIWYG replacer",
 			"description": "",
 			"layout_type": "checkbox",
@@ -137,7 +137,7 @@ mdt.featureDefinitions = {
 			}
 		},
 		{
-			"id": "drag_drop_files",
+			"id": "dragdropfiles",
 			"name": "Drag and Drop File Upload",
 			"description": "Uploading files, made fun.",
 			"layout_type": "checkbox",
