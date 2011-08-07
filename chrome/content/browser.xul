@@ -5,34 +5,18 @@
 <overlay id="matrixdevelopertoolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
 	<script src="matrix_toolbar.js"></script>
+	<script src="preferences.js"></script>
 	<script src="feature_definitions.js"></script>
 
 	<toolbox id="navigator-toolbox">
-		<toolbar id="matrixdevelopertoolbar">
-			<button id="matrixdeveloper-clear-cache" label="Clear Cache" />
-			<toolbarbutton id="matrixdeveloper-wysiwyg-replacer" label="WYSIWYG replacer" type="menu">
+		<toolbar id="matrixdevelopertoolbar">			
+			<toolbarbutton id="matrixdeveloper-toolbar-masterswitch" label="Matrix Toolbar" type="menu">
 				<menupopup>
-					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="Default Matrix WYSIWYG" value="1" />
-					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="CKEditor" value="2" />
-					<menuitem name="matrixdeveloper-wysiwyg" type="radio" label="NicEditor" value="3" />
+					<menuitem name="matrixdeveloper-masterswitch" type="radio" label="Enabled" value="1" selected="true" />
+					<menuitem name="matrixdeveloper-masterswitch" type="radio" label="Disabled" value="2" />
 				</menupopup>
 			</toolbarbutton>
-			<toolbarbutton id="matrixdeveloper-asset-enhancer" label="Asset enhancements" type="menu">
-				<menupopup>
-					<menuitem name="matrixdeveloper-assetenhancer" type="checkbox" label="All" value="all" />
-					<menuseparator />
-					<menuitem name="matrixdeveloper-assetenhancer" type="checkbox" label="Asset Listing" value="page_asset_listing" />
-					<menuitem name="matrixdeveloper-assetenhancer" type="checkbox" label="Remap Manager" value="remap_manager" />
-				</menupopup>				
-			</toolbarbutton>
-			<toolbarbutton id="matrixdeveloper-keyboard-shortcuts" type="menu" label="Keyboard shortcuts">
-				<menupopup>
-					<menuitem name="matrixdeveloper-keyboardshortcuts" type="radio" label="ON" value="1" checked="true" />
-					<menuitem name="matrixdeveloper-keyboardshortcuts" type="radio" label="OFF" value="0" />
-					<menuseparator />
-					<menuitem name="matrixdeveloper-keyboardshortcuts-config" label="Configuration" />
-				</menupopup>
-			</toolbarbutton>
+			<button id="matrixdeveloper-preferences" label="Matrix Toolbar Preferences" onclick="mdt.preferences.setToolbarPreferences();" />
 			<toolbarspring />
 			<label id="matrixdeveloper-running-matrix" value="Matrix not detected" style="color: #990000" />
 		</toolbar>
