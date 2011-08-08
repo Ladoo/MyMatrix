@@ -93,6 +93,10 @@ var mdt = function(){
 			}			
 		},
 		
+		error: function(m){
+			error(m);
+		},
+		
 		// main public methods
 		injectScript: function(id, src, callback){
 			var main = mdt.aboutTab.mainFrame.document;

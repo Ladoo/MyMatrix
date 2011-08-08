@@ -19,7 +19,7 @@ mdt.preferences = {
 					mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).events.addListener("change", function(aEvent){ mdt.determineFeatures(); });
 			} 
 			catch (e) {
-				error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
+				mdt.error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
 			}
 		});	
 	},

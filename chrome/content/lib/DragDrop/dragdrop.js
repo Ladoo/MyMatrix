@@ -68,14 +68,27 @@ $(document).ready(function(){
 	
 	concierge.dragDrop.prepareUpload = function(file, index, bin){
 		var $fileInput = $("#main_form input[type=file]").hide();
-		$fileInput.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' class='sq-form-field drag-temp' value='Browse…' />");
+		$fileInput.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
 		var data = new FormData();
 		data.append("image_0", file);
 		concierge.dragDrop.formData = data;
 		
+		concierge.dragDrop.oldSubmit = $("#sq_commit_button").attr("onclick");
 		$("#sq_commit_button").attr("onclick", "").bind("click", function(){
 			concierge.dragDrop.beginUpload();
 			$(this).attr("disabled", "disabled");
+			return false;
+		});
+		
+		$("#drag-temp-browse").bind("click", function(){
+			// delete any dragged data
+			$(".drag-temp").remove();
+			concierge.dragDrop.formData = null;
+			$("#dropPreview").empty();
+			
+			// completely restore previous state
+			$("#sq_commit_button").unbind("click").attr("onclick", concierge.dragDrop.oldSubmit);
+			$("#main_form input[type=file]").show().trigger("click");
 			return false;
 		});
 	};

@@ -175,6 +175,38 @@ mdt.featureDefinitions = {
 			},
 			destroy: function(){
 			}
+		},
+		{
+			"id": "smartTypeSelector",
+			"name": "Intelligent asset type selector.",
+			"description": "Converts all drop down asset type selectors to friendlier, more intelligent ones.",
+			"layout_type": "checkbox",
+			"experimental": false,
+			detect: function(){
+				var tab = mdt.aboutTab,
+					main = tab.mainFrame,
+					selectFields = main.document.getElementById("main_form").getElementsByTagName("select"),
+					regex = /(types\[type_code\]\[\]|create_types\[\]|add_layouts\[\]|new_type)/,
+					exists = false;
+				
+
+				for (var c in selectFields) {
+					var field = selectFields[c];
+					if ( (typeof(field.id) !== "undefined") && (field.id.search(regex) > -1) ) {
+						exists = true;
+						break;
+					}
+				}
+				
+				return exists;
+			},
+			init: function(){
+				var pathToFiles = mdt.settings.paths.lib + "SmartTypeSelector/";
+				mdt.injectScript("sts-js", pathToFiles + "sts.js");
+				mdt.injectStyleSheet("sts-css", pathToFiles + "sts.css");		
+			},
+			destroy: function(){
+			}
 		}
 	]
 }
