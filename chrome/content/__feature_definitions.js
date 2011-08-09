@@ -188,9 +188,47 @@ mdt.featureDefinitions = {
 			init: function(){
 				var tab = mdt.aboutTab; 
 				main = tab.mainFrame;
+				
 				if ( main.document.getElementById("matrixdevelopertoolbar-remap-massuncheck-all") == null ) {
-					var pathToFiles = mdt.settings.paths.lib + "RemapMassUncheck/";
-					mdt.injectScript("remap-uncheck-js", pathToFiles + "remap-uncheck.js");
+					var uncheckButton = main.document.createElement("input");
+					var checkButton = main.document.createElement("input");
+					
+					uncheckButton.id = "matrixdevelopertoolbar-remap-massuncheck-all";
+					uncheckButton.type = "button";
+					uncheckButton.value = "Uncheck All";
+					checkButton.id = "matrixdevelopertoolbar-remap-masscheck-all";
+					checkButton.type = "button";
+					checkButton.value = "Check All";
+					
+					var targetLocation = main.document.getElementById("remap_manager_19_REMAP_URL_FILTER");
+					targetLocation.parentNode.insertBefore(uncheckButton,targetLocation);
+					targetLocation.parentNode.insertBefore(checkButton,targetLocation);
+					uncheckButton = main.document.getElementById("matrixdevelopertoolbar-remap-massuncheck-all");
+					checkButton = main.document.getElementById("matrixdevelopertoolbar-remap-masscheck-all");
+					uncheckButton.addEventListener("click", this.massUncheck(),false);
+					//checkButton.addEventListener("click",function(){this.massUncheck(true,1)},false);
+				}
+			},
+			massUncheck: function() {
+				var tab = mdt.aboutTab; 
+				main = tab.mainFrame;
+				//neverDeleteBoxes = main.document.getElementsByName("remap_manager_19_never_delete_remap");
+				var checkboxName = new RegExp("remap_manager_19_never_delete_remap");
+				neverDeleteBoxes = main.document.getElementsByTagName("input");
+				//mdt.dump(neverDeleteBoxes);
+				arr = [];
+				for( i in neverDeleteBoxes ) {
+					if(checkboxName.test(neverDeleteBoxes[i].name)){
+						arr.push(neverDeleteBoxes[i]);
+					}
+				}
+				//window.alert(arr.length);
+				//mdt.error('test');
+				for( j in arr ) {
+					test = main.document.getElementsByName(arr[j].name);    
+					mdt.dump(test);
+					test[0].checked = false;
+					test[0].value = 0;
 				}
 			},
 			destroy: function(){
