@@ -147,19 +147,22 @@ mdt.featureDefinitions = {
 				// 1) There is a browse button on the page
 				// 2) You're editing a page (e.g. Standard Page, News Item, etc.)
 				var tab = mdt.aboutTab, 
-					main = tab.mainFrame;
+					main = tab.mainFrame,
+					mainForm = main.document.getElementById("main_form");
 				
 				// TODO: Find out why it doesn't work on Design Parse files
-				var lastLineage = main.document.getElementById("main_form").action.match(/sq_asset_path=.*/)[0].split(","),
-					browseButtonExists = false;
-				lastLineage = lastLineage[lastLineage.length - 1];
-				
-				var browseButtons = main.document.getElementsByTagName("input");
-				for (var c in browseButtons) {
-					var bw = browseButtons[c];
-					if (typeof(bw.type) !== "undefined" && bw.type === "file") {
-						browseButtonExists = true;
-						break;
+				if (mainForm.length > 0) {
+					if (mainForm.action.search(/sq_asset_path/) !== -1) {
+						 var lastLineage = mainForm.action.match(/sq_asset_path=.*/)[0].split(",");
+						 lastLineage = lastLineage[lastLineage.length - 1];
+					}
+					var inputControls = main.document.getElementsByTagName("input"), browseButtonExists = false;
+					for (var c in inputControls) {
+						var ic = inputControls[c];
+						if (typeof(ic.type) !== "undefined" && ic.type === "file") {
+							browseButtonExists = true;
+							break;
+						}
 					}
 				}
 				

@@ -1,12 +1,17 @@
 .sst-selector {
+	
+}
+
+.sst-selector .groups {
+	height: 230px;
 	overflow-y: scroll;
-	height: 200px;
+	width: 100%%
 }
 
 .sst-selector .search {
 	display: block;
-	width: 98%;
-	padding: 5px;
+	width: 99.5%;
+	padding: 5px 0 5px .5%;
 	border-top: 1px solid #c1c1c1;
 	border-bottom: 1px solid #c1c1c1;
 	background-color: #f6f6f6;
@@ -56,13 +61,30 @@
 
 .sst-selector li {
 	list-style-type: none;
+	margin-top: 1px;
+	position: relative;
 }
 
-.sst-selector li span {
+.sst-selector li span.icon {
 	padding: 5px 10px 5px;
-}
-
-.sst-selector li span {
 	background-position: center center;
 	background-repeat: no-repeat;
 }
+
+.sst-selector li span.toggle {
+    border: 1px solid #D0D0D0;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 1px 1px #999999;
+    cursor: pointer;
+    padding: 1px 3px;
+    position: absolute;
+    right: 4px;
+}
+
+.sst-selector li span.toggle-on {
+    background-color: #342939;
+    border-color: black;
+    box-shadow: 0 0 2px #222222;
+    color: white;
+}
+

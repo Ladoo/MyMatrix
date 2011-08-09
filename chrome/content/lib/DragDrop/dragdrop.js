@@ -66,17 +66,33 @@ $(document).ready(function(){
 		console.log("error: " + error.code);
 	};
 	
-	concierge.dragDrop.prepareUpload = function(file, index, bin){
-		var $fileInput = $("#main_form input[type=file]").hide();
-		$fileInput.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
-		var data = new FormData();
-		data.append("image_0", file);
-		concierge.dragDrop.formData = data;
+	concierge.dragDrop.prepareUpload = function(file, index, bin, bulk){
+		if (!bulk) {
+			var $input = $("#main_form input[type=file]").hide();
+			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
+			
+			var data = new FormData();
+			data.append($input.attr("name"), file);
+			concierge.dragDrop.formData = data;			
+		} else {
+			local_file_table.addRow();
+			var $input = $(local_file_table.tbody).find("tr:last input");
+			$input.after("<input type='text' name='" + $input.attr("name") + " id='" + $input.attr("id") + "' ' />");
+			local_file_table.fileSelected($input.next(), local_file_table.id_count);
+			
+			if (concierge.dragDrop.formData) {
+				concierge.dragDrop.formData.append($input.attr("name"), file);
+			} else {
+				var data = new FormData();
+				data.append($input.attr("name"), file);
+				concierge.dragDrop.formData = data;	
+			}
+		}
 		
 		concierge.dragDrop.oldSubmit = $("#sq_commit_button").attr("onclick");
 		$("#sq_commit_button").attr("onclick", "").bind("click", function(){
 			concierge.dragDrop.beginUpload();
-			$(this).attr("disabled", "disabled");
+			$(this).attr("disabled", true);
 			return false;
 		});
 		
@@ -130,15 +146,26 @@ $(document).ready(function(){
 			reader = new FileReader();
 			reader.index = i;
 			reader.file = file;	
-			reader.addEventListener("loadend", function(e){ 
-				concierge.dragDrop.buildImageListItem(e);
-				e.preventDefault();
-			}, false);
-			reader.readAsDataURL(file);
+			// file previews are only available in single drag/drop operations
+			if (typeof(local_file_table) === "undefined") {
+				reader.addEventListener("loadend", function(e){
+					if (e.target.file.type.search(/image/) > -1) {
+						concierge.dragDrop.showPreview(e);
+					}
+					e.preventDefault();
+				}, false);
+				reader.readAsDataURL(file);
+			} else {
+				reader.addEventListener("loadend", function(e){
+					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, evt.target.result, true);
+					e.preventDefault();
+				}, false);
+				reader.readAsBinaryString(file);			
+			}
 		}
 	};
 	
-	concierge.dragDrop.buildImageListItem = function(event){
+	concierge.dragDrop.showPreview = function(event){
 		var data = event.target.result,
 			index = event.target.index,
 			file = event.target.file,
@@ -146,7 +173,7 @@ $(document).ready(function(){
 
 		$dropPreview.append("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
-			concierge.dragDrop.prepareUpload(file, index, evt.target.result);
+			concierge.dragDrop.prepareUpload(file, index, evt.target.result, false);
 		}, false);
 		getBinaryDataReader.readAsBinaryString(file);
 	};
