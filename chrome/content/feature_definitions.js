@@ -16,19 +16,6 @@
 mdt.featureDefinitions = {
 	features: [
 		{
-			"id": "seamlesssaving",
-			"name": "Seamless Saving",
-			"description": "",
-			"layout_type": "checkbox",
-			"experimental": false,
-			detect: function(){	
-			},
-			init: function(){
-			},
-			destroy: function(){
-			}
-		},
-		{
 			"id": "autocollapse",
 			"name": "Auto section collapsing",
 			"description": "",
@@ -191,6 +178,27 @@ mdt.featureDefinitions = {
 				if ( main.document.getElementById("matrixdevelopertoolbar-remap-massuncheck-all") == null ) {
 					var pathToFiles = mdt.settings.paths.lib + "RemapMassUncheck/";
 					mdt.injectScript("remap-uncheck-js", pathToFiles + "remap-uncheck.js");
+				}
+			},
+			destroy: function(){
+			}
+		},
+		{
+			"id": "seamlesssaving",
+			"name": "Seamless Saving",
+			"description": "AJAX saving of form data",
+			"layout_type": "checkbox",
+			"experimental": false,
+			detect: function(){	
+				return (mdt.aboutTab.assetType === 'bodycopy') ? true : false;
+			},
+			init: function(){
+				var tab = mdt.aboutTab; 
+				main = tab.mainFrame;
+				if ( main.document.getElementById("sq_commit_button") ) {
+					var pathToFiles = mdt.settings.paths.lib + "SeamlessSave/";
+					mdt.injectScript("jquery-form-js", pathToFiles + "jquery.form.js");
+					mdt.injectScript("seamless-save-js", pathToFiles + "seamless-save.js");
 				}
 			},
 			destroy: function(){
