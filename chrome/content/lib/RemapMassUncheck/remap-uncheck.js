@@ -3,7 +3,7 @@ $(document).ready(function(){
 	//inject the button into the page
 	$('#remap_manager_19_remap_urls_page').before('<div style="text-align: right;"><input type="button" id="matrixdevelopertoolbar-remap-massuncheck-all" value="Uncheck All Never Delete"></div>');
 	
-	//check the lock status for the page
+	//check the lock status for the page - THERE MUST BE A BETTER WAY TO CHECK THIS!
 	var lockStatus = $('.sq-backend-button-fake').html();
 	
 	//enable/disable the button based on lock status

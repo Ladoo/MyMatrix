@@ -12,10 +12,15 @@ $(document).ready(function(){
     }; 
  
 	//add ajax click event
-   $('#sq_commit_button').click(function() { 
-		$('#main_form').ajaxSubmit(options); 
-		// return false to prevent normal browser submit and page navigation 
-		return false; 
+   $('#sq_commit_button').click(function() {
+		if( $('#matrixdevelopertoolbar-lock-countdown').length && $('.countdown_amount').html() === '00:00:00' ) {
+			window.alert('Locks Expired');
+			return false;
+		} else {
+			$('#main_form').ajaxSubmit(options); 
+			// return false to prevent normal browser submit and page navigation 
+			return false; 
+		}
 	});
 	
 });
