@@ -16,10 +16,10 @@ mdt.preferences = {
 		//add listener change event for all features defined in feature_definitions.js
 		mdt.featureDefinitions.features.forEach(function(feature){
 			try {
-					mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).events.addListener("change", function(aEvent){ mdt.determineFeatures(); });
+				mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).events.addListener("change", function(aEvent){ mdt.determineFeatures(); });
 			} 
 			catch (e) {
-				error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
+				mdt.error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
 			}
 		});	
 	},

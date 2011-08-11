@@ -8,12 +8,8 @@
 	<script src="preferences.js"></script>
 	<script src="feature_definitions.js"></script>
 
-	<toolbox id="navigator-toolbox">
-		<toolbar id="matrixdevelopertoolbar">			
-			<button id="matrixdeveloper-preferences" label="Matrix Toolbar" onclick="mdt.preferences.setToolbarPreferences();" />
-			<toolbarspring />
-			<label id="matrixdeveloper-running-matrix" value="Matrix not detected" style="color: #990000" />
-		</toolbar>
-	</toolbox>
+	<toolbar id="nav-bar">
+		<toolbarbutton id="matrixtools-button" class="toolbarbutton-1 matrixtools-button-inactive" disabled="true" removable="true" type="menu-button" label="Matrix Tools" />
+	</toolbar>
 
 </overlay>

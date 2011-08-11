@@ -4,17 +4,26 @@
 
 $(document).ready(function(){
 	concierge.dragDrop = {};
-	var $dropContainer, $dropPreview;
 	
 	// Drag Enter (File Upload)
 	function dragActive(){
-		$("#dropBox").addClass("active");
-		$("#dropBox").text("Drop your file(s) now.");
+		var $dropBox = $("#dropBox");
+		$dropBox.addClass("active").removeClass("inactive");
+		if (concierge.dragDrop.isBulkFileTool()) { 
+			$dropBox.text("Drop files to import here.");
+		} else {
+			$dropBox.text("Drop file to upload here.");
+		}
 	}
 	
 	function dragNotActive(e){
-		$("#dropBox").removeClass("active");
-		$("#dropBox").text("Drag your file(s) here.");
+		var $dropBox = $("#dropBox");
+		$dropBox.removeClass("active").addClass("inactive");
+		if (concierge.dragDrop.isBulkFileTool()) { 
+			$dropBox.text("Drag files to import here.");
+		} else {
+			$dropBox.text("Drag file to upload here.");
+		}
 	}
 	
 	// Not sure why I need to implement this
@@ -31,11 +40,15 @@ $(document).ready(function(){
 	
 	concierge.dragDrop.init = function(){
 		$("#sq-content").append("<div id='dropPreview'></div>");
-		var $inputRow = $("input[type=file]").parents("tr:first");		
-		$("#bulk_file_import_table_container, div[id*=file_upload]").after("<div id='dropBox'></div>");
+		var $inputRow = $("input[type=file]").parents("tr:first");
+		var dropBoxHTML = "<div id='dropBox' class='inactive'></div>";
+		if (concierge.dragDrop.isBulkFileTool()) {
+			$("#bulk_file_import_table_container").before(dropBoxHTML);
+		} else {
+			$("div[id*=file_upload]").after(dropBoxHTML);
+		}
 		dragNotActive(); 
 		
-		$dropPreview = $("#dropPreview");
 		$dropContainer = $("#main_form");
 		$dropContainer.bind({
 			dragenter: function(e){
@@ -63,12 +76,8 @@ $(document).ready(function(){
 		}, false);
 	};
 	
-	concierge.dragDrop.uploadError = function(error){
-		console.log("error: " + error.code);
-	};
-	
-	concierge.dragDrop.prepareUpload = function(file, index, bin, bulk){
-		if (!bulk) {
+	concierge.dragDrop.prepareUpload = function(file, index, bin){
+		if (!concierge.dragDrop.isBulkFileTool()) {
 			var $input = $("#main_form input[type=file]").hide();
 			$input.prevAll("input").remove();
 			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
@@ -165,12 +174,12 @@ $(document).ready(function(){
 			reader.index = i;
 			reader.file = file;	
 			// file previews are only available in single drag/drop operations
-			if (typeof(local_file_table) === "undefined") {
+			if (!concierge.dragDrop.isBulkFileTool()) {
 				reader.addEventListener("loadend", function(e){
 					if (e.target.file.type.search(/image/) > -1) {
 						concierge.dragDrop.showPreview(e);
 					} else {
-						concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result, false);
+						concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
 					}
 					e.preventDefault();
 				}, false);
@@ -179,7 +188,7 @@ $(document).ready(function(){
 				break;
 			} else {
 				reader.addEventListener("loadend", function(e){
-					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result, true);
+					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
 					e.preventDefault();
 				}, false);
 				reader.readAsBinaryString(file);			
@@ -193,11 +202,15 @@ $(document).ready(function(){
 			file = event.target.file,
 			getBinaryDataReader = new FileReader();
 
-		$dropPreview.html("<img id='item " + index + "' src='" + data + "' />");
+		$("#dropPreview").html("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
 			concierge.dragDrop.prepareUpload(file, index, evt.target.result, false);
 		}, false);
 		getBinaryDataReader.readAsBinaryString(file);
+	};
+	
+	concierge.dragDrop.isBulkFileTool = function(){
+		return (typeof(local_file_table) === "undefined" ? false : true);
 	};
 
 	
