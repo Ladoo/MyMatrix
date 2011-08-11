@@ -1,7 +1,7 @@
 var mdt = function(){
 	// privates (stop looking)
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
-	
+		
 	function isMatrix(){
 		var button = document.getElementById("matrixtools-button");
 		button.className = "toolbarbutton-1 matrixtools-button-active";
@@ -15,10 +15,8 @@ var mdt = function(){
 	}
 	
 	function toolbarDisabled() {
-		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Toolbar Disabled");
-		label.style.color = "#990000";
-		label.className = "";
+		var label = document.getElementById("matrixtools-button");
+		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-inactive");
 	}
 	
 	return {
