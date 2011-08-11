@@ -9,7 +9,6 @@
 				<preference id="pref-syntax-highlighter" name="extensions.matrixtoolbar.syntaxhighlighter" type="bool" instantApply="true"/>
 				<preference id="pref-wsywig-replace" name="extensions.matrixtoolbar.wysiwygreplace" type="bool" instantApply="true"/>
 				<preference id="pref-drag-drop-files" name="extensions.matrixtoolbar.dragdropfiles" type="bool" instantApply="true"/>
-				<preference id="pref-remap-uncheck" name="extensions.matrixtoolbar.remapmanageruncheck" type="bool" instantApply="true"/>
 			</preferences>
 		<checkbox label="Toolbar Enabled" preference="pref-toolbar-enabled"/>
 		<checkbox label="Seamless Saving" preference="pref-seamless-saving" id="steve"/>
@@ -17,6 +16,5 @@
 		<checkbox label="Syntax Highlighting" preference="pref-syntax-highlighter"/>
 		<checkbox label="Replace WSYWIG" preference="pref-wsywig-replace"/>
 		<checkbox label="Drag &amp; Drop Files" preference="pref-drag-drop-files"/>
-		<checkbox label="Remap Manager Mass Uncheck" preference="pref-remap-uncheck"/>
 	  </prefpane>
 </prefwindow>

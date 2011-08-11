@@ -1,5 +1,6 @@
 var mdt = function(){
 	// privates (stop looking)
+	//var prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 	
 	function isMatrix(){
@@ -19,6 +20,20 @@ var mdt = function(){
 		label.setAttribute("value", "Toolbar Disabled");
 		label.style.color = "#990000";
 		label.className = "";
+	}
+	
+	function error(message){
+		if (mdt.settings.debug) Components.utils.reportError(message);
+	}
+
+	function dump(obj) {
+		if (mdt.settings.debug) {
+		    var out = '';
+		    for (var i in obj) {
+		        out += i + ": " + obj[i] + "\n";
+		    }
+		    ffConsole.logStringMessage(out);
+	    }
 	}
 	
 	return {
@@ -44,6 +59,7 @@ var mdt = function(){
 		init: function(){
 			//check if toolbar is enabled
 			mdt.prefManager = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
+			//window.alert("blah");
 			mdt.preferences.init();
 			if( mdt.preferences.isEnabled() ) {
 				gBrowser.addEventListener("load", function(){
@@ -53,7 +69,7 @@ var mdt = function(){
 			} 
 			else {
 				toolbarDisabled();
-				//TODO code here to destroy all activated toolbar features
+				//code here to destroy all activated toolbar features
 			}	
 		},
 		
@@ -65,7 +81,7 @@ var mdt = function(){
 				mdt.determineAssetScreen();
 				isMatrix();
 				mdt.determineFeatures();
-				mdt.dump(mdt.aboutTab);
+				dump(mdt.aboutTab);
 			}
 			else if (mdt.isMatrixSite()) {
 				isMatrix();
@@ -74,30 +90,12 @@ var mdt = function(){
 				isNotMatrix();
 			}			
 		},
-<<<<<<< HEAD
 		
 		error: function(m){
 			error(m);
 		},
 		
-=======
-				
->>>>>>> upstream/master
 		// main public methods
-		error: function(message) {
-			if (mdt.settings.debug) Components.utils.reportError(message);
-		},
-		
-		dump: function(obj) {
-			if (mdt.settings.debug) {
-				var out = '';
-				for (var i in obj) {
-					out += i + ": " + obj[i] + "\n";
-				}
-				ffConsole.logStringMessage(out);
-			}
-		},
-		
 		injectScript: function(id, src, callback){
 			var main = mdt.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
@@ -149,7 +147,7 @@ var mdt = function(){
 					mdt.aboutTab.assetType = assetType;
 				}
 			} catch (e) {
-				mdt.error("Cannot determine asset type: " + e.message);
+				error("Cannot determine asset type: " + e.message);
 			}
 		},
 		
@@ -162,7 +160,7 @@ var mdt = function(){
 					mdt.aboutTab.screenBrowsing = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-main-heading")[0].textContent.replace(/\t/g, '').replace(/\s/, '');
 				} 
 			} catch (e) {
-				mdt.error("Cannot determine asset screen: " + e.message);
+				error("Cannot determine asset screen: " + e.message);
 			}
 		},
 		
@@ -184,7 +182,7 @@ var mdt = function(){
 					}
 				});	
 			} catch (e) {
-				mdt.error("Cannot detect features: " + e.message);		
+				error("Cannot detect features: " + e.message);		
 			}
 		},
 		
@@ -223,7 +221,7 @@ var mdt = function(){
 			} else {
 				return false;
 			}
-		}		
+		}
 	};
 }();
 
