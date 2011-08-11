@@ -10,18 +10,10 @@
 
 	<toolbox id="navigator-toolbox">
 		<toolbar id="matrixdevelopertoolbar">			
-			<toolbarbutton id="matrixdeveloper-toolbar-masterswitch" label="Matrix Toolbar" type="menu">
-				<menupopup>
-					<menuitem name="matrixdeveloper-masterswitch" type="radio" label="Enabled" value="1" selected="true" />
-					<menuitem name="matrixdeveloper-masterswitch" type="radio" label="Disabled" value="2" />
-				</menupopup>
-			</toolbarbutton>
-			<button id="matrixdeveloper-preferences" label="Matrix Toolbar Preferences" onclick="mdt.preferences.setToolbarPreferences();" />
+			<button id="matrixdeveloper-preferences" label="Matrix Toolbar" onclick="mdt.preferences.setToolbarPreferences();" />
+			<toolbarspring />
+			<label id="matrixdeveloper-running-matrix" value="Matrix not detected" style="color: #990000" />
 		</toolbar>
 	</toolbox>
-	
-	<toolbar id="nav-bar">
-		<toolbarbutton id="matrixtools-button" class="toolbarbutton-1 matrixtools-button-inactive" disabled="true" removable="true" type="menu-button" label="Matrix Tools" />
-	</toolbar>
 
 </overlay>
