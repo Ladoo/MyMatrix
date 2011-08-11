@@ -7,12 +7,14 @@ $(document).ready(function(){
 	var $dropContainer, $dropPreview;
 	
 	// Drag Enter (File Upload)
-	function showOverlay(){
-		$("#drop").css("opacity", 0.5).show();
+	function dragActive(){
+		$("#dropBox").addClass("active");
+		$("#dropBox").text("Drop your file(s) now.");
 	}
 	
-	function hideOverlay(e){
-		$("#drop").css("opacity", 0).hide();
+	function dragNotActive(e){
+		$("#dropBox").removeClass("active");
+		$("#dropBox").text("Drag your file(s) here.");
 	}
 	
 	// Not sure why I need to implement this
@@ -29,10 +31,9 @@ $(document).ready(function(){
 	
 	concierge.dragDrop.init = function(){
 		$("#sq-content").append("<div id='dropPreview'></div>");
-		$("#main_form").append("<div id='drop'><h1>Drop your file here</h1></div>");
-		var $inputRow = $("input[type=file]").parents("tr:first");
-		$("#drop").css("top", $inputRow.position().top).css("left", $inputRow.position().left).css("width", $inputRow.width());
-		
+		var $inputRow = $("input[type=file]").parents("tr:first");		
+		$("#bulk_file_import_table_container, div[id*=file_upload]").after("<div id='dropBox'></div>");
+		dragNotActive(); 
 		
 		$dropPreview = $("#dropPreview");
 		$dropContainer = $("#main_form");
@@ -40,13 +41,13 @@ $(document).ready(function(){
 			dragenter: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				showOverlay();
+				dragActive();
 			},
 			dragleave: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				if (notInDropZone($("#drop"), e)) {
-					hideOverlay(e);
+				if (notInDropZone($("#dropBox").parents("table:first"), e)) {
+					dragNotActive(e);
 				}
 			},
 			dragover: function(e){
@@ -57,7 +58,7 @@ $(document).ready(function(){
 		
 		$dropContainer[0].addEventListener("drop", function(e){
 			concierge.dragDrop.handleDrop(e);
-			hideOverlay(e);
+			dragNotActive(e);
 			e.preventDefault();
 		}, false);
 	};
@@ -69,6 +70,7 @@ $(document).ready(function(){
 	concierge.dragDrop.prepareUpload = function(file, index, bin, bulk){
 		if (!bulk) {
 			var $input = $("#main_form input[type=file]").hide();
+			$input.prevAll("input").remove();
 			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
 			
 			var data = new FormData();
@@ -76,25 +78,21 @@ $(document).ready(function(){
 			concierge.dragDrop.formData = data;			
 		} else {
 			local_file_table.addRow();
-			var $input = $(local_file_table.tbody).find("tr:last input");
-			$input.after("<input type='text' name='" + $input.attr("name") + " id='" + $input.attr("id") + "' ' />");
-			local_file_table.fileSelected($input.next(), local_file_table.id_count);
+			var $file = $(local_file_table.tbody).find("tr:last input"), $newInput;
+			$file.after("<input type='text' name='" + $file.attr("name") + "' id='" + $file.attr("id") + "' value='" + file.name + "' />");
+			$newInput = $file.next();
+			$file.remove();
+			
+			local_file_table.fileSelected($newInput[0], $newInput.attr("name").match(/\d.?/)[0]);
 			
 			if (concierge.dragDrop.formData) {
-				concierge.dragDrop.formData.append($input.attr("name"), file);
+				concierge.dragDrop.formData.append($file.attr("name"), file);
 			} else {
 				var data = new FormData();
-				data.append($input.attr("name"), file);
+				data.append($file.attr("name"), file);
 				concierge.dragDrop.formData = data;	
 			}
 		}
-		
-		concierge.dragDrop.oldSubmit = $("#sq_commit_button").attr("onclick");
-		$("#sq_commit_button").attr("onclick", "").bind("click", function(){
-			concierge.dragDrop.beginUpload();
-			$(this).attr("disabled", true);
-			return false;
-		});
 		
 		$("#drag-temp-browse").bind("click", function(){
 			// delete any dragged data
@@ -125,8 +123,13 @@ $(document).ready(function(){
 			processData: false,
 			contentType: false,
 			success: function(data){
-				var location = data.match(/action="(?:[^\\"]+|\\.)*"/)[0];
-				window.location.href = location;
+				if (typeof(local_file_table) === "undefined") {
+					var location = data.match(/action="(?:[^\\"]+|\\.)*"/)[0];
+					window.location.href = location;
+				} else {
+					document.forms[0]['changes'].value = '0';
+					window.location.reload();
+				}
 			}
 		});
 	};
@@ -138,6 +141,21 @@ $(document).ready(function(){
 		
 		event.stopPropagation();
 		event.preventDefault();
+		
+		var $commitButton = $("#sq_commit_button");
+		concierge.dragDrop.oldSubmit = $commitButton.attr("onclick");
+		$commitButton.attr("onclick", "").unbind("click").bind("click", function(){
+			var $rootNodeSelector = $("#sq_asset_finder_bulk_file_import_local_upload_root_asset_assetid");
+			$(this).attr("disabled", true);
+			if ($rootNodeSelector.length > 0 && $rootNodeSelector.val().length === 0) {
+				alert ("You need specify a Root Node before the upload can proceed.");
+				$(this).attr("disabled", false);
+			} else {		
+				concierge.dragDrop.beginUpload();
+				$(this).attr("disabled", true);
+			}
+			return false;
+		});		
 	
 		for (var i = 0; i < count; i++) {
 			var file = files[i],
@@ -151,13 +169,17 @@ $(document).ready(function(){
 				reader.addEventListener("loadend", function(e){
 					if (e.target.file.type.search(/image/) > -1) {
 						concierge.dragDrop.showPreview(e);
+					} else {
+						concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result, false);
 					}
 					e.preventDefault();
 				}, false);
 				reader.readAsDataURL(file);
+				
+				break;
 			} else {
 				reader.addEventListener("loadend", function(e){
-					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, evt.target.result, true);
+					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result, true);
 					e.preventDefault();
 				}, false);
 				reader.readAsBinaryString(file);			
@@ -171,7 +193,7 @@ $(document).ready(function(){
 			file = event.target.file,
 			getBinaryDataReader = new FileReader();
 
-		$dropPreview.append("<img id='item " + index + "' src='" + data + "' />");
+		$dropPreview.html("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
 			concierge.dragDrop.prepareUpload(file, index, evt.target.result, false);
 		}, false);

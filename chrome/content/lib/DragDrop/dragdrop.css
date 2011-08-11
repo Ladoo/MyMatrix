@@ -9,26 +9,20 @@
 	max-height: 200px;
 }
 
-/*
-	Drop Overlay
-	Used on:
-	- File upload
-*/
-#drop {
-	position: absolute;
-	left: 0;
-	top: 0;
-	opacity: 0;
-	background-color: black;
-	color: white;
+#dropBox {
+	margin: 0 0 10px 3px;
+	padding: 8px;
+	background-color: #C8BDCB;
+	color: black;
+	width: 220px;
+	font-weight: bold;
 	font-size: 1.3em;
-	width: 500px;
-	padding: 10px;
 	border-radius: 4px;
-	text-align: center;
-	display: none;
+	text-align: center;	
 }
 
-#drop p {
+.active {
+	background-color: #594165 !important;
 	color: white !important;
 }
+

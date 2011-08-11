@@ -4,17 +4,15 @@ var mdt = function(){
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 	
 	function isMatrix(){
-		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Matrix detected");
-		label.style.color = "#007b0e";
-		label.className = "active";
+		var button = document.getElementById("matrixtools-button");
+		button.className = "toolbarbutton-1 matrixtools-button-active";
+		button.setAttribute("disabled", false);
 	}
 	
 	function isNotMatrix(){
-		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Matrix not detected");
-		label.style.color = "#990000";
-		label.className = "";
+		var button = document.getElementById("matrixtools-button");
+		button.className = "toolbarbutton-1 matrixtools-button-inactive";
+		button.setAttribute("disabled", true);
 	}
 	
 	function toolbarDisabled() {

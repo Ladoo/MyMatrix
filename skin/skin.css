@@ -1,5 +1,7 @@
-#matrixdeveloper-running-matrix  {
-	background: url("chrome://matrixdevelopertoolbar/skin/squiz-matrix.ico") no-repeat left center;
-	padding-left: 25px;
-	height: 16px;
+.matrixtools-button-inactive {
+	list-style-image: url("chrome://matrixdevelopertoolbar/skin/button-inactive.png");
+}
+
+.matrixtools-button-active {
+	list-style-image: url("chrome://matrixdevelopertoolbar/skin/button-active.png");
 }

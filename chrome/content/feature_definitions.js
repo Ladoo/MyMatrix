@@ -66,19 +66,10 @@ mdt.featureDefinitions = {
 				return ((mdt.aboutTab.screenBrowsing.search(/(edit_file|parse_file|contents)/) > -1) && tExists) ? true : false;
 			},
 			init: function(){
-				var init = "(function(){\
-					$('textarea[id*=\"bodycopy\"], textarea[id*=\"file\"],').each(function(){\
-						var cm = CodeMirror.fromTextArea(this);\
-						cm.setOption('theme', 'neat');\
-						cm.setOption('tabMode', 'shift');\
-						cm.setOption('matchBrackets', 'true');\
-						cm.setOption('lineNumbers', 'true');\
-					});\
-				})();";
-				
 				var pathToFiles = mdt.settings.paths.lib + "SyntaxHighlighter/CodeMirror/";
 				
-				mdt.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js", init);
+				mdt.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js");
+				mdt.injectScript("codemirror-js-init", pathToFiles + "codemirror-init.js");
 				mdt.injectStyleSheet("codemirror-css", pathToFiles + "codemirror.css");
 				mdt.injectStyleSheet("codemirror-theme-default", pathToFiles + "default.css");
 				mdt.injectStyleSheet("codemirror-theme-elegant", pathToFiles + "elegant.css");
