@@ -7,13 +7,21 @@
 	<script src="matrix_toolbar.js"></script>
 	<script src="preferences.js"></script>
 	<script src="feature_definitions.js"></script>
-
-	<toolbox id="navigator-toolbox">
-		<toolbar id="matrixdevelopertoolbar">			
-			<button id="matrixdeveloper-preferences" label="Matrix Toolbar" onclick="mdt.preferences.setToolbarPreferences();" />
-			<toolbarspring />
-			<label id="matrixdeveloper-running-matrix" value="Matrix not detected" style="color: #990000" />
-		</toolbar>
-	</toolbox>
-
+	
+	<toolbar id="nav-bar">
+		<toolbarbutton id="matrixtools-button" class="toolbarbutton-1 matrixtools-button-inactive" disabled="false" removable="true" type="menu-button" label="Matrix Tools">
+			<menupopup id="matrixtools-button-popup">
+				<menuitem id="matrixdevelopertoolbar-enabled" label="Toolbar Enabled" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="enabled" />
+				<menuseparator/>
+				<menuitem id="matrixdevelopertoolbar-seamlesssaving" label="Seamless Saving" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="seamlesssaving" />
+				<menuitem id="matrixdevelopertoolbar-autocollapse" label="Auto Collapse" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="autocollapse" />
+				<menuitem id="matrixdevelopertoolbar-syntaxhighlighter" label="Syntax Highlighting" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="syntaxhighlighter" />
+				<menuitem id="matrixdevelopertoolbar-wysiwygreplace" label="Replace WYSIWYG" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="wysiwygreplace" />
+				<menuitem id="matrixdevelopertoolbar-dragdropfiles" label="Drag &amp; Drop Files" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="dragdropfiles" />
+				<menuitem id="matrixdevelopertoolbar-remapmanageruncheck" label="Remap Manager Mass Uncheck" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="remapmanageruncheck" />
+				<menuitem id="matrixdevelopertoolbar-lockshelper" label="Locks Helper" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="lockshelper" />
+			</menupopup>
+		</toolbarbutton>
+	</toolbar>
+	
 </overlay>
