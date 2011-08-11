@@ -11,30 +11,35 @@ mdt.preferences = {
 		return mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").value;
 	},
 	init: function(){
-		//add listener change event to toolbar enaabled switch
+		//add listener (on change) event to toolbar enabled switch
 		mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").events.addListener("change", function(aEvent){ mdt.preferences.toggleEnableToolbar(); });
-		//add listener change event for all features defined in feature_definitions.js
+		var enabledMenuItem = document.getElementById("matrixdevelopertoolbar-enabled");
+		enabledMenuItem.setAttribute("checked",mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").value);
 		mdt.featureDefinitions.features.forEach(function(feature){
 			try {
+					//add listener (on change) event for all features defined in feature_definitions.js
 					mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).events.addListener("change", function(aEvent){ mdt.determineFeatures(); });
+					//set up the button checkboxes
+					var preferenceMenuItem = document.getElementById("matrixdevelopertoolbar-"+feature.id);
+					preferenceMenuItem.setAttribute("checked",mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).value);
 			} 
 			catch (e) {
 				error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
 			}
 		});	
 	},
-	setToolbarPreferences: function() {
-		window.openDialog(
-			"chrome://matrixdevelopertoolbar/content/options.xul",
-			"matrix-toolbox-prefs",
-			"chrome,centerscreen");
-	},
 	toggleEnableToolbar: function() {
 		if(mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").value){
-			//window.alert("Toolbar enabled");
+			//switch on toolbar
 		}
 		else {
-			//window.alert("Toolbar disabled");
+			//switch off toolbar
 		}
-	}
+	},
+	onToggleOption: function(menuitem)
+    {
+        var option = menuitem.getAttribute("option");
+        var checked = menuitem.getAttribute("checked") == "true";
+		mdt.prefManager.prefs.setValue("extensions.matrixtoolbar."+ option,checked);
+    }
 }

@@ -1,26 +1,20 @@
 var mdt = function(){
 	// privates (stop looking)
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
-	
+		
 	function isMatrix(){
-		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Matrix detected");
-		label.style.color = "#007b0e";
-		label.className = "active";
+		var label = document.getElementById("matrixtools-button");
+		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-active");
 	}
 	
 	function isNotMatrix(){
-		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Matrix not detected");
-		label.style.color = "#990000";
-		label.className = "";
+		var label = document.getElementById("matrixtools-button");
+		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-inactive");
 	}
 	
 	function toolbarDisabled() {
-		var label = document.getElementById("matrixdeveloper-running-matrix");
-		label.setAttribute("value", "Toolbar Disabled");
-		label.style.color = "#990000";
-		label.className = "";
+		var label = document.getElementById("matrixtools-button");
+		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-inactive");
 	}
 	
 	return {

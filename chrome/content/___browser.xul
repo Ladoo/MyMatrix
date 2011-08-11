@@ -1,0 +1,20 @@
+<?xml version="1.0"?> 
+<?xml-stylesheet href="chrome://matrixdevelopertoolbar/skin/skin.css" type="text/css"?> 
+<!DOCTYPE sample SYSTEM "chrome://matrixdevelopertoolbar/locale/translations.dtd">
+
+<overlay id="matrixdevelopertoolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<script src="matrix_toolbar.js"></script>
+	<script src="preferences.js"></script>
+	<script src="feature_definitions.js"></script>
+
+	<toolbox id="navigator-toolbox">
+		<toolbar id="matrixdevelopertoolbar">			
+			<button id="matrixdeveloper-preferences" label="Matrix Toolbar" onclick="mdt.preferences.setToolbarPreferences();" />
+			<toolbarspring />
+			<label id="matrixdeveloper-running-matrix" value="Matrix not detected" style="color: #990000" />
+		</toolbar>
+	</toolbox>
+	
+
+</overlay>
