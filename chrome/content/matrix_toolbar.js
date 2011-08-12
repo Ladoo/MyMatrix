@@ -170,7 +170,7 @@ var mdt = function(){
 							}
 						}
 					} catch (e) {
-						error("Feature detection failed (" + feature.id + "): " + e.message);
+						mdt.error("Feature detection failed (" + feature.id + "): " + e.message);
 					}
 				});	
 			} catch (e) {
