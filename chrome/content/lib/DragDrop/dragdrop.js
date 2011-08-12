@@ -4,15 +4,26 @@
 
 $(document).ready(function(){
 	concierge.dragDrop = {};
-	var $dropContainer, $dropPreview;
 	
 	// Drag Enter (File Upload)
-	function showOverlay(){
-		$("#drop").css("opacity", 0.5).show();
+	function dragActive(){
+		var $dropBox = $("#dropBox");
+		$dropBox.addClass("active").removeClass("inactive");
+		if (concierge.dragDrop.isBulkFileTool()) { 
+			$dropBox.text("Drop files to import here.");
+		} else {
+			$dropBox.text("Drop file to upload here.");
+		}
 	}
 	
-	function hideOverlay(e){
-		$("#drop").css("opacity", 0).hide();
+	function dragNotActive(e){
+		var $dropBox = $("#dropBox");
+		$dropBox.removeClass("active").addClass("inactive");
+		if (concierge.dragDrop.isBulkFileTool()) { 
+			$dropBox.text("Drag files to import here.");
+		} else {
+			$dropBox.text("Drag file to upload here.");
+		}
 	}
 	
 	// Not sure why I need to implement this
@@ -29,24 +40,27 @@ $(document).ready(function(){
 	
 	concierge.dragDrop.init = function(){
 		$("#sq-content").append("<div id='dropPreview'></div>");
-		$("#main_form").append("<div id='drop'><h1>Drop your file here</h1></div>");
 		var $inputRow = $("input[type=file]").parents("tr:first");
-		$("#drop").css("top", $inputRow.position().top).css("left", $inputRow.position().left).css("width", $inputRow.width());
+		var dropBoxHTML = "<div id='dropBox' class='inactive'></div>";
+		if (concierge.dragDrop.isBulkFileTool()) {
+			$("#bulk_file_import_table_container").before(dropBoxHTML);
+		} else {
+			$("div[id*=file_upload]").after(dropBoxHTML);
+		}
+		dragNotActive(); 
 		
-		
-		$dropPreview = $("#dropPreview");
 		$dropContainer = $("#main_form");
 		$dropContainer.bind({
 			dragenter: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				showOverlay();
+				dragActive();
 			},
 			dragleave: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				if (notInDropZone($("#drop"), e)) {
-					hideOverlay(e);
+				if (notInDropZone($("#dropBox").parents("table:first"), e)) {
+					dragNotActive(e);
 				}
 			},
 			dragover: function(e){
@@ -57,25 +71,47 @@ $(document).ready(function(){
 		
 		$dropContainer[0].addEventListener("drop", function(e){
 			concierge.dragDrop.handleDrop(e);
-			hideOverlay(e);
+			dragNotActive(e);
 			e.preventDefault();
 		}, false);
 	};
 	
-	concierge.dragDrop.uploadError = function(error){
-		console.log("error: " + error.code);
-	};
-	
 	concierge.dragDrop.prepareUpload = function(file, index, bin){
-		var $fileInput = $("#main_form input[type=file]").hide();
-		$fileInput.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' class='sq-form-field drag-temp' value='Browse…' />");
-		var data = new FormData();
-		data.append("image_0", file);
-		concierge.dragDrop.formData = data;
+		if (!concierge.dragDrop.isBulkFileTool()) {
+			var $input = $("#main_form input[type=file]").hide();
+			$input.prevAll("input").remove();
+			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
+			
+			var data = new FormData();
+			data.append($input.attr("name"), file);
+			concierge.dragDrop.formData = data;			
+		} else {
+			local_file_table.addRow();
+			var $file = $(local_file_table.tbody).find("tr:last input"), $newInput;
+			$file.after("<input type='text' name='" + $file.attr("name") + "' id='" + $file.attr("id") + "' value='" + file.name + "' />");
+			$newInput = $file.next();
+			$file.remove();
+			
+			local_file_table.fileSelected($newInput[0], $newInput.attr("name").match(/\d.?/)[0]);
+			
+			if (concierge.dragDrop.formData) {
+				concierge.dragDrop.formData.append($file.attr("name"), file);
+			} else {
+				var data = new FormData();
+				data.append($file.attr("name"), file);
+				concierge.dragDrop.formData = data;	
+			}
+		}
 		
-		$("#sq_commit_button").attr("onclick", "").bind("click", function(){
-			concierge.dragDrop.beginUpload();
-			$(this).attr("disabled", "disabled");
+		$("#drag-temp-browse").bind("click", function(){
+			// delete any dragged data
+			$(".drag-temp").remove();
+			concierge.dragDrop.formData = null;
+			$("#dropPreview").empty();
+			
+			// completely restore previous state
+			$("#sq_commit_button").unbind("click").attr("onclick", concierge.dragDrop.oldSubmit);
+			$("#main_form input[type=file]").show().trigger("click");
 			return false;
 		});
 	};
@@ -96,8 +132,13 @@ $(document).ready(function(){
 			processData: false,
 			contentType: false,
 			success: function(data){
-				var location = data.match(/action="(?:[^\\"]+|\\.)*"/)[0];
-				window.location.href = location;
+				if (typeof(local_file_table) === "undefined") {
+					var location = data.match(/action="(?:[^\\"]+|\\.)*"/)[0];
+					window.location.href = location;
+				} else {
+					document.forms[0]['changes'].value = '0';
+					window.location.reload();
+				}
 			}
 		});
 	};
@@ -109,6 +150,21 @@ $(document).ready(function(){
 		
 		event.stopPropagation();
 		event.preventDefault();
+		
+		var $commitButton = $("#sq_commit_button");
+		concierge.dragDrop.oldSubmit = $commitButton.attr("onclick");
+		$commitButton.attr("onclick", "").unbind("click").bind("click", function(){
+			var $rootNodeSelector = $("#sq_asset_finder_bulk_file_import_local_upload_root_asset_assetid");
+			$(this).attr("disabled", true);
+			if ($rootNodeSelector.length > 0 && $rootNodeSelector.val().length === 0) {
+				alert ("You need specify a Root Node before the upload can proceed.");
+				$(this).attr("disabled", false);
+			} else {		
+				concierge.dragDrop.beginUpload();
+				$(this).attr("disabled", true);
+			}
+			return false;
+		});		
 	
 		for (var i = 0; i < count; i++) {
 			var file = files[i],
@@ -117,25 +173,44 @@ $(document).ready(function(){
 			reader = new FileReader();
 			reader.index = i;
 			reader.file = file;	
-			reader.addEventListener("loadend", function(e){ 
-				concierge.dragDrop.buildImageListItem(e);
-				e.preventDefault();
-			}, false);
-			reader.readAsDataURL(file);
+			// file previews are only available in single drag/drop operations
+			if (!concierge.dragDrop.isBulkFileTool()) {
+				reader.addEventListener("loadend", function(e){
+					if (e.target.file.type.search(/image/) > -1) {
+						concierge.dragDrop.showPreview(e);
+					} else {
+						concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
+					}
+					e.preventDefault();
+				}, false);
+				reader.readAsDataURL(file);
+				
+				break;
+			} else {
+				reader.addEventListener("loadend", function(e){
+					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
+					e.preventDefault();
+				}, false);
+				reader.readAsBinaryString(file);			
+			}
 		}
 	};
 	
-	concierge.dragDrop.buildImageListItem = function(event){
+	concierge.dragDrop.showPreview = function(event){
 		var data = event.target.result,
 			index = event.target.index,
 			file = event.target.file,
 			getBinaryDataReader = new FileReader();
 
-		$dropPreview.append("<img id='item " + index + "' src='" + data + "' />");
+		$("#dropPreview").html("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
-			concierge.dragDrop.prepareUpload(file, index, evt.target.result);
+			concierge.dragDrop.prepareUpload(file, index, evt.target.result, false);
 		}, false);
 		getBinaryDataReader.readAsBinaryString(file);
+	};
+	
+	concierge.dragDrop.isBulkFileTool = function(){
+		return (typeof(local_file_table) === "undefined" ? false : true);
 	};
 
 	

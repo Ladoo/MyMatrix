@@ -3,13 +3,15 @@ var mdt = function(){
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 		
 	function isMatrix(){
-		var label = document.getElementById("matrixtools-button");
-		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-active");
+		var button = document.getElementById("matrixtools-button");
+		button.className = "toolbarbutton-1 matrixtools-button-active";
+		button.setAttribute("disabled", false);
 	}
 	
 	function isNotMatrix(){
-		var label = document.getElementById("matrixtools-button");
-		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-inactive");
+		var button = document.getElementById("matrixtools-button");
+		button.className = "toolbarbutton-1 matrixtools-button-inactive";
+		button.setAttribute("disabled", true);
 	}
 	
 	function toolbarDisabled() {
