@@ -17,15 +17,11 @@ mdt.preferences = {
 		enabledMenuItem.setAttribute("checked",mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").value);
 		mdt.featureDefinitions.features.forEach(function(feature){
 			try {
-<<<<<<< HEAD
+				//add listener (on change) event for all features defined in feature_definitions.js
 				mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).events.addListener("change", function(aEvent){ mdt.determineFeatures(); });
-=======
-					//add listener (on change) event for all features defined in feature_definitions.js
-					mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).events.addListener("change", function(aEvent){ mdt.determineFeatures(); });
-					//set up the button checkboxes
-					var preferenceMenuItem = document.getElementById("matrixdevelopertoolbar-"+feature.id);
-					preferenceMenuItem.setAttribute("checked",mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).value);
->>>>>>> upstream/master
+				//set up the button checkboxes
+				var preferenceMenuItem = document.getElementById("matrixdevelopertoolbar-"+feature.id);
+				preferenceMenuItem.setAttribute("checked",mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).value);
 			} 
 			catch (e) {
 				mdt.error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
