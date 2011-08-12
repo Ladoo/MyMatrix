@@ -194,8 +194,17 @@ mdt.featureDefinitions = {
 			"description": "AJAX saving of form data",
 			"layout_type": "checkbox",
 			"experimental": false,
-			detect: function(){	
-				return (mdt.aboutTab.assetType === 'bodycopy') ? true : false;
+			detect: function(){
+				var tab = mdt.aboutTab; 
+				main = tab.mainFrame;
+				headerElement = main.document.getElementsByClassName("sq-backend-main-heading");
+				headerText = headerElement[0].innerHTML;
+				if( headerText.search(/Currently editing "Standard Page"/) > -1 ) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			},
 			init: function(){
 				var tab = mdt.aboutTab; 
@@ -216,11 +225,13 @@ mdt.featureDefinitions = {
 			"layout_type": "checkbox",
 			"experimental": false,
 			detect: function(){
-				//var main = mdt.aboutTab.main;
-				//return (
-					//(main.document.getElementById("sq_lock_acquire").length > 0) || (main.document.getElementById("sq_lock_release").length > 0)
-				//) ? true : false;
-				return true;
+				var tab = mdt.aboutTab; 
+				main = tab.mainFrame;
+				if ( main.document.getElementById("sq_lock_release_manual") ) {
+					return true
+				} else {
+					return false
+				}
 			},
 			init: function(){
 				var pathToFiles = mdt.settings.paths.lib + "LocksHelper/";

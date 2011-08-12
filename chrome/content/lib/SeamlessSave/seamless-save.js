@@ -13,6 +13,8 @@ $(document).ready(function(){
  
 	//add ajax click event
    $('#sq_commit_button').click(function() {
+		$('#matrixdevelopertoolbar-seamless-save-message').html("Saving...");
+		$('#matrixdevelopertoolbar-seamless-save-message').html("Saving...");
 		$('#main_form').ajaxSubmit(options); 
 		// return false to prevent normal browser submit and page navigation 
 		return false; 
@@ -25,11 +27,13 @@ function showMessage() {
 	$('#sq_commit_button').attr('disabled',true);
 	$('#matrixdevelopertoolbar-seamless-save-message').fadeIn('slow');
 }
-function hideMessage(data) {
-	//if(sq_lock_release_manual) does not exist
-		//inform user we have lost lock, no save
-	//else
-		//save success
-		$('#sq_commit_button').attr('disabled',false);
-		$('#matrixdevelopertoolbar-seamless-save-message').html("Saved!...").delay(3000).fadeOut('slow');
+function hideMessage(data, status, xhr) {
+	$.get(window.location.href, function(data){
+		if (data.search(/sq_lock_release_manual/) > -1) {
+			$('#matrixdevelopertoolbar-seamless-save-message').html("Saved!...").delay(3000).fadeOut('slow');
+		} else {
+			$('#matrixdevelopertoolbar-seamless-save-message').html("Error!...").delay(3000).fadeOut('slow');
+		}
+	});
+	$('#sq_commit_button').attr('disabled',false);	
 }
