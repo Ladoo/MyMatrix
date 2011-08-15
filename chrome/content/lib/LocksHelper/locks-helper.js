@@ -1,56 +1,62 @@
 $(document).ready(function(){
 	
-	//check the lock status for the page - BETTER WAY TO CHECK THIS?
-	var lockStatusHelper = $('.sq-backend-button-fake').html();
+	// inject timer and icon	
+	$('#sq_lock_release_manual').before('<div id="matrixdevelopertoolbar-lock-countdown" style="position: relative; top: 23px; left: 152px;"></div>');
+	$('#sq_lock_release_manual').before('<img id="matrixdevelopertoolbar-lockstatus" src="chrome://matrixdevelopertoolbar/content/lib/LocksHelper/lock-helper-green.png" style="position:relative;top:6px;left:130px" />');		
 	
-	//enable/disable the button based on lock status
-	if(lockStatusHelper === 'Release Lock(s)') {
-	
-		$('#sq_commit_button').before('<div id="matrixdevelopertoolbar-lock-countdown" style="float:left;"></div>');
-		$('#sq_commit_button').before('<img id="matrixdevelopertoolbar-lockstatus" src="chrome://matrixdevelopertoolbar/content/lib/LocksHelper/lock-helper-green.png" style="position:absolute;bottom:5px;left:170px" />');		
-		lockTime = $.trim( $(".sq-backend-table-cell:contains('The lock is due to expire in')").html() );
+	// scrape the lock time from the page - need to checks due to different page types
+	if( $('#sq_lock_info').length ) {
+		lockTime = $('#sq_lock_info').html();
+	} else {
+		lockTime = $('.sq-lock-message').html();
+	}
 
-		var pattHours=/[0-9] hour/i;
-		lockTimeHours = lockTime.match(pattHours);
-		if( lockTimeHours === null ) {
-			lockTimeHours = '0h';
-		} else {
-			lockTimeHours = String(lockTimeHours).replace(" hour", "h");
-		}
-		
-		var pattMinutes=/[0-5] minute|[0-5][0-9] minute/i;
-		lockTimeMinutes = lockTime.match(pattMinutes);
-		if( lockTimeMinutes === null ) {
-			lockTimeMinutes = '0m';
-		} else {
-			lockTimeMinutes = String(lockTimeMinutes).replace(" minute", "m");
-		}
-		
-		var pattSeconds=/[0-5] second|[0-5][0-9] second/i;
-		lockTimeSeconds = lockTime.match(pattSeconds);
-		if( lockTimeSeconds === null ) {
-			lockTimeSeconds = '0s';
-		} else {
-			lockTimeSeconds = String(lockTimeSeconds).replace(" second", "s");
-		}
-		
-		var countDownStart = '+' + lockTimeHours + ' +' + lockTimeMinutes + ' +' + lockTimeSeconds;
-		
-		$('#matrixdevelopertoolbar-lock-countdown').countdown({ until: countDownStart, compact: true, description: '', format: 'HMS', onExpiry: lockExpired, onTick: watchCountdown });
-		
+	//hours
+	var pattHours=/[0-9] hour/i;
+	lockTimeHours = lockTime.match(pattHours);
+	if( lockTimeHours === null ) {
+		lockTimeHours = '0h';
+	} else {
+		lockTimeHours = String(lockTimeHours).replace(" hour", "h");
 	}
 	
+	// minutes
+	var pattMinutes=/[0-5] minute|[0-5][0-9] minute/i;
+	lockTimeMinutes = lockTime.match(pattMinutes);
+	if( lockTimeMinutes === null ) {
+		lockTimeMinutes = '0m';
+	} else {
+		lockTimeMinutes = String(lockTimeMinutes).replace(" minute", "m");
+	}
+	
+	//seconds
+	var pattSeconds=/[0-5] second|[0-5][0-9] second/i;
+	lockTimeSeconds = lockTime.match(pattSeconds);
+	if( lockTimeSeconds === null ) {
+		lockTimeSeconds = '0s';
+	} else {
+		lockTimeSeconds = String(lockTimeSeconds).replace(" second", "s");
+	}
+	
+	var countDownStart = '+' + lockTimeHours + ' +' + lockTimeMinutes + ' +' + lockTimeSeconds;
+	
+	$('#matrixdevelopertoolbar-lock-countdown').countdown({ until: countDownStart, compact: false, layout: '{h<} {hn} {hl} {h>} {m<} {mn} {ml} {m>} {s<} {sn} {sl} {s>} until locks expire', 
+		significant: 1, onExpiry: lockExpired, onTick: watchCountdown, labels: ['years','months','weeks','days','hours','minutes','seconds'], 
+		labels1: ['year','month','week','day','hour','minute','second'], 
+		expiryText: 'Locks have expired' });
+	
+	// lock expired, 
 	function lockExpired() {
 		$('#matrixdevelopertoolbar-lockstatus').attr('src','chrome://matrixdevelopertoolbar/content/lib/LocksHelper/lock-helper-red.png');
-		$('#sq_commit_button').after('<div id="matrixdevelopertoolbar-lock-expire-message" style="background:rgba(0,0,0,0.8);color:#fff;display:none;position:fixed;top:50%;right:50%;padding:5px 30px;text-align:center;"><h3>Warning! The locks for this page have expired!</h3></div>');	
-		$('#matrixdevelopertoolbar-lock-expire-message').fadeIn('slow').delay(7000).fadeOut('slow');
+		$('#matrixdevelopertoolbar-lock-countdown').removeClass('warning');
+		$('#matrixdevelopertoolbar-lock-countdown').addClass('expired');
 	}
 
+	// lock expiry warning (in seconds)
 	function watchCountdown(periods) {
 		if( $.countdown.periodsToSeconds(periods) === 30 ) {
 			$('#matrixdevelopertoolbar-lockstatus').attr('src','chrome://matrixdevelopertoolbar/content/lib/LocksHelper/lock-helper-yellow.png');
-			$('#sq_commit_button').after('<div id="matrixdevelopertoolbar-lock-expire-message" style="background:rgba(0,0,0,0.8);color:#fff;display:none;position:fixed;top:50%;right:50%;padding:5px 30px;text-align:center;"><h3>Warning! The locks for this page will expire in 30 seconds!</h3></div>');	
-			$('#matrixdevelopertoolbar-lock-expire-message').fadeIn('slow').delay(7000).fadeOut('slow');
+			$('#matrixdevelopertoolbar-lock-countdown').addClass('warning');
 		}
 	}
 	
