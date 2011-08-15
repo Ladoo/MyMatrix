@@ -195,16 +195,7 @@ mdt.featureDefinitions = {
 			"layout_type": "checkbox",
 			"experimental": false,
 			detect: function(){
-				var tab = mdt.aboutTab; 
-				main = tab.mainFrame;
-				headerElement = main.document.getElementsByClassName("sq-backend-main-heading");
-				headerText = headerElement[0].innerHTML;
-				if( headerText.search(/Currently editing "Standard Page"/) > -1 ) {
-					return true;
-				}
-				else {
-					return false;
-				}
+				return (mdt.aboutTab.assetType === 'bodycopy') ? true : false;
 			},
 			init: function(){
 				var tab = mdt.aboutTab; 
