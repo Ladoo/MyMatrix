@@ -197,7 +197,7 @@ var mdt = function(){
 		},
 		
 		isMatrixBackend: function(){
-			mdt.aboutTab.isMatrixBackend = content.document.title.match(/(Squiz|MySource)\sMatrix.*Administration Interface/) ? true : false;
+			mdt.aboutTab.isMatrixBackend = content.document.title.match(/(Squiz|MySource).*Administration Interface/) ? true : false;
 			return mdt.aboutTab.isMatrixBackend;
 		},
 		

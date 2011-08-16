@@ -20,6 +20,7 @@
 					<menuitem id="matrixdevelopertoolbar-dragdropfiles" label="Drag &amp; Drop Files" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="dragdropfiles" />
 					<menuitem id="matrixdevelopertoolbar-remapmanageruncheck" label="Remap Manager Mass Uncheck" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="remapmanageruncheck" />
 					<menuitem id="matrixdevelopertoolbar-lockshelper" label="Locks Helper" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="lockshelper" />
+					<menuitem id="matrixdevelopertoolbar-keyboardShortcuts" label="Keyboard Shortcuts Guide" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="keyboardShortcuts" />
 				</groupbox>
 				<groupbox>
 					<caption label="Experimental Plugins" />

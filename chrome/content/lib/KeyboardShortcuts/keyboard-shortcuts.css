@@ -1,0 +1,60 @@
+#matrixtoolbar-help-menu {
+	background-color: black;
+	opacity: 0.8;
+	padding: 8px;
+	width: 350px;
+	position: fixed;
+	top: 40px;
+	right: 5px;
+	font-size: 1.2em;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	border-radius: 4px;
+}
+
+#matrixtoolbar-help-menu h1 {
+	color: #fffdd1;
+	font-size: 1.4em;
+	margin: 0;
+	padding: 10px 0 5px;
+	clear: both;
+}
+
+#matrixtoolbar-help-menu h1:first-of-type {
+	padding-top: 0;
+}
+
+#matrixtoolbar-help-menu p {
+	float: right;
+	color: white;
+	margin-bottom: -15px;
+	cursor: pointer;
+}
+
+#matrixtoolbar-help-menu p:hover {
+	font-weight: bold;
+}
+
+#matrixtoolbar-help-menu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#matrixtoolbar-help-menu li {
+	display: block;
+	clear: both;
+	padding: 8px 0;
+}
+
+#matrixtoolbar-help-menu div {
+	color: white;
+}
+
+#matrixtoolbar-help-menu .key {
+	float: left;
+	width: 16%;
+}
+
+#matrixtoolbar-help-menu .action {
+	float: left;
+}
