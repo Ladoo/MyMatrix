@@ -65,7 +65,8 @@ mdt.featureDefinitions = {
 				for (var counter in tables) {
 					var t = tables[counter];
 					if (typeof(t.getAttribute) !== "undefined") {
-						if (t.getAttribute("content_type") === "content_type_wysiwyg") {
+						var content_type = t.getAttribute("content_type"), layout_type = t.getAttribute("layout_type");
+						if (content_type === "content_type_wysiwyg" || ( (layout_type === "div" || layout_type === "span") && t.innerHTML.search(/content_type_wysiwyg/) > -1 ) ) {
 							wysiwygExists = true;
 							break;
 						}
@@ -76,19 +77,8 @@ mdt.featureDefinitions = {
 			},
 			init: function(){
 				var pathToFiles = mdt.settings.paths.lib + "WYSIWYG/CKEditor/";
-				var init = "(function(){\
-					$(document).ready(function(){\
-						$('table[content_type] textarea').each(function(){\
-							if ($(this).attr('id').search(/wysiwyg/) !== -1) {\
-								var $table = $(this).parents('table[content_type]');\
-								$(this).appendTo($table.parent());\
-								$table.children().hide();\
-								CKEDITOR.replace($(this).attr('id'), { toolbar: 'Coder' });\
-							}\
-						});\
-					});\
-				})();";
-				mdt.injectScript("ckeditor-main-js", pathToFiles + "ckeditor.js", init);	
+				mdt.injectScript("ckeditor-main-js", pathToFiles + "ckeditor.js");
+				mdt.injectScript("ckeditor-init-js", pathToFiles + "ckeditor-init.js");	
 			},
 			destroy: function(){
 			}
@@ -232,7 +222,64 @@ mdt.featureDefinitions = {
 			},
 			destroy: function(){
 			}
-		}
+		},
+		{
+			"id": "keyboardShortcuts",
+			"name": "Keyboard Shortcut Guide",
+			"description": "Keyboard shortcut reference guide.",
+			"experimental": false,
+			detect: function(){
+				return mdt.aboutTab.isMatrixBackend;
+			},
+			init: function(){
+				var self = this;
+				mdt.injectStyleSheet("keyboard-shortcuts-css", mdt.settings.paths.lib + "KeyboardShortcuts/keyboard-shortcuts.css");
+				window.addEventListener("keypress", function(e){
+					var main = mdt.aboutTab.mainFrame.document;
+					if (e.shiftKey && e.which === 63) {
+						if (!main.getElementById("matrixtoolbar-help-menu")) {
+							var helpMenu = main.createElement("div"), close = main.createElement("p"), shortCutKeys;
+							helpMenu.setAttribute("id", "matrixtoolbar-help-menu");
+							close.textContent = "Close";
+							close.addEventListener("click", function(){
+								var main = mdt.aboutTab.mainFrame.document;
+								main.body.removeChild(main.getElementById("matrixtoolbar-help-menu"));
+							}, false);
+							main.body.appendChild(helpMenu)
+							helpMenu.appendChild(close);
+							self.keyboardShortcuts.forEach(function(v){
+								if (typeof(v.section) === "undefined") {
+									var shortCutKey = main.createElement("li");
+									if (window.navigator.platform.search(/mac/i) > -1) {
+										shortCutKey.innerHTML = "<div class='key'>" + v.mac + ":</div><div class='action'>" + v.action + "</div>";
+									} else {
+										shortCutKey.innerHTML = "<div class='key'>" + v.win + ":</div><div class='action'>" + v.action + "</div>";
+									}
+									shortCutKeys.appendChild(shortCutKey);
+								} else {
+									var heading = main.createElement("h1");
+									shortCutKeys = main.createElement("ul");
+									heading.textContent = v.section;
+									helpMenu.appendChild(heading);
+									helpMenu.appendChild(shortCutKeys);
+								}
+							});
+						}
+					}
+					if (e.keyCode === 27) {
+						main.body.removeChild(main.getElementById("matrixtoolbar-help-menu"));
+					}					
+				}, false);
+			},
+			destroy: function(){},
+			keyboardShortcuts: [
+				{ "section": "Squiz Matrix Interface" },
+				{ "action": "Acquire Lock", "win": "Alt + A", "mac": "Ctrl + A" },
+				{ "action": "Release Lock", "win": "Alt + R", "mac": "Ctrl + R" },
+				{ "action": "Save", "win": "Alt + S (IE) or ALT + Shift + S (Firefox)", "mac": "Ctrl + S"  },
+				{ "action": "HIPO - Next", "win": "Alt + N", "mac": "Ctrl + N" }
+			]	
+		}		
 	]
 }
 
