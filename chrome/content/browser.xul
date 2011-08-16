@@ -13,13 +13,19 @@
 			<menupopup id="matrixtools-button-popup">
 				<menuitem id="matrixdevelopertoolbar-enabled" label="Toolbar Enabled" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="enabled" />
 				<menuseparator/>
-				<menuitem id="matrixdevelopertoolbar-seamlesssaving" label="Seamless Saving" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="seamlesssaving" />
-				<menuitem id="matrixdevelopertoolbar-autocollapse" label="Auto Collapse" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="autocollapse" />
-				<menuitem id="matrixdevelopertoolbar-syntaxhighlighter" label="Syntax Highlighting" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="syntaxhighlighter" />
-				<menuitem id="matrixdevelopertoolbar-wysiwygreplace" label="Replace WYSIWYG" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="wysiwygreplace" />
-				<menuitem id="matrixdevelopertoolbar-dragdropfiles" label="Drag &amp; Drop Files" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="dragdropfiles" />
-				<menuitem id="matrixdevelopertoolbar-remapmanageruncheck" label="Remap Manager Mass Uncheck" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="remapmanageruncheck" />
-				<menuitem id="matrixdevelopertoolbar-lockshelper" label="Locks Helper" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="lockshelper" />
+				<groupbox>
+					<caption label="Plugins" />
+					<menuitem id="matrixdevelopertoolbar-seamlesssaving" label="Seamless Saving" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="seamlesssaving" />
+					<menuitem id="matrixdevelopertoolbar-syntaxhighlighter" label="Syntax Highlighting" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="syntaxhighlighter" />
+					<menuitem id="matrixdevelopertoolbar-dragdropfiles" label="Drag &amp; Drop Files" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="dragdropfiles" />
+					<menuitem id="matrixdevelopertoolbar-remapmanageruncheck" label="Remap Manager Mass Uncheck" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="remapmanageruncheck" />
+					<menuitem id="matrixdevelopertoolbar-lockshelper" label="Locks Helper" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="lockshelper" />
+				</groupbox>
+				<groupbox>
+					<caption label="Experimental Plugins" />
+					<menuitem id="matrixdevelopertoolbar-wysiwygreplace" label="Replace WYSIWYG" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="wysiwygreplace" />
+					<menuitem id="matrixdevelopertoolbar-autocollapse" label="Auto Collapse" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="autocollapse" />
+				</groupbox>
 			</menupopup>
 		</toolbarbutton>
 	</toolbar>
