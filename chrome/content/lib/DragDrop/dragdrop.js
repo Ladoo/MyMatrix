@@ -36,17 +36,18 @@ $(document).ready(function(){
 	
 	matrixTools.dragDrop.init = function(){
 		$("#sq-content").append("<div id='dropPreview'></div>");
-		var $associatedFiles = $("input[type=file][name*='assoc_file_']"), $inputRow;
-		if ($associatedFiles.length === 0) {
+		var $inputRow;
+		if (!matrixTools.dragDrop.isParseFile()) {
 			$inputRow = $("input[type=file]").parents("tr:first");
 		} else {
 			$inputRow = $("input[type=file][name*='assoc_file_']:first").parents("tr:first");
 		}
 		var dropBoxHTML = "<div id='dropBox' class='inactive'></div>";
+		var $dropZone = $inputRow.find("td.sq-backend-data");
 		if (matrixTools.dragDrop.isBulkFileTool()) {
 			$("#bulk_file_import_table_container").before(dropBoxHTML);
 		} else {
-			$("div[id*=file_upload]").after(dropBoxHTML);
+			$dropZone.append(dropBoxHTML);
 		}
 		dragNotActive(); 
 		
@@ -78,7 +79,7 @@ $(document).ready(function(){
 	};
 	
 	matrixTools.dragDrop.prepareUpload = function(file, index, bin){
-		if (!matrixTools.dragDrop.isBulkFileTool()) {
+		if (!matrixTools.dragDrop.isBulkFileTool() && !matrixTools.dragDrop.isParseFile()) {
 			var $input = $("#main_form input[type=file]").hide();
 			$input.prevAll("input").remove();
 			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
@@ -86,7 +87,9 @@ $(document).ready(function(){
 			var data = new FormData();
 			data.append($input.attr("name"), file);
 			matrixTools.dragDrop.formData = data;			
-		} else {
+		} 
+		
+		if (matrixTools.dragDrop.isBulkFileTool()) {
 			local_file_table.addRow();
 			var $file = $(local_file_table.tbody).find("tr:last input"), $newInput;
 			$file.after("<input type='text' name='" + $file.attr("name") + "' id='" + $file.attr("id") + "' value='" + file.name + "' />");
@@ -102,6 +105,21 @@ $(document).ready(function(){
 				data.append($file.attr("name"), file);
 				matrixTools.dragDrop.formData = data;	
 			}
+		}
+		
+		if (matrixTools.dragDrop.isParseFile()) {
+			// var $input = $("input[type=file][name*='assoc_file_']").hide();
+			// $input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");			
+			
+			// var name = $input.find(":last").attr("name");
+			// name = name.substr(0, name.length - 1) + (parseInt(name.substr(name.length - 1)) + 1);
+			// if (matrixTools.dragDrop.formData) {
+				// matrixTools.dragDrop.formData.append(name, file);
+			// } else {
+				// var data = new FormData();
+				// data.append($, file);
+				// matrixTools.dragDrop.formData = data;	
+			// }
 		}
 		
 		$("#drag-temp-browse").bind("click", function(){
@@ -173,7 +191,7 @@ $(document).ready(function(){
 		
 			reader = new FileReader();
 			reader.index = i;
-			reader.file = file;	
+			reader.file = file;
 			// file previews are only available in single drag/drop operations
 			if (!matrixTools.dragDrop.isBulkFileTool()) {
 				reader.addEventListener("loadend", function(e){
@@ -213,7 +231,10 @@ $(document).ready(function(){
 	matrixTools.dragDrop.isBulkFileTool = function(){
 		return (typeof(local_file_table) === "undefined" ? false : true);
 	};
-
+	
+	matrixTools.dragDrop.isParseFile = function(){
+		return $("input[type=file][name*='assoc_file_']").length === 0 ? false : true;
+	};
 	
 	matrixTools.dragDrop.init();
 });

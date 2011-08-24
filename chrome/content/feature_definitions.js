@@ -276,7 +276,7 @@ mdt.featureDefinitions = {
 				{ "section": "Squiz Matrix Interface" },
 				{ "action": "Acquire Lock", "win": "Alt + A", "mac": "Ctrl + A" },
 				{ "action": "Release Lock", "win": "Alt + R", "mac": "Ctrl + R" },
-				{ "action": "Save", "win": "Alt + S (IE) or ALT + Shift + S (Firefox)", "mac": "Ctrl + S"  },
+				{ "action": "Save", "win": "Alt + Shift + S", "mac": "Ctrl + S"  },
 				{ "action": "HIPO - Next", "win": "Alt + N", "mac": "Ctrl + N" }
 			]	
 		}		

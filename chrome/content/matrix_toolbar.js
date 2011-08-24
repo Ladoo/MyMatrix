@@ -41,16 +41,15 @@ var mdt = function(){
 		
 		init: function(){
 			mdt.preferences.init();
-			if (mdt.preferences.isEnabled() ) {
+			if (mdt.preferences.isEnabled()) {
 				gBrowser.addEventListener("load", function(){
 					gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
 					gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
 				}, true);
-			} 
+			}
 			else {
 				toolbarDisabled();
-				//TODO code here to destroy all activated toolbar features
-			}	
+			}
 		},
 		
 		bootstrap: function(){

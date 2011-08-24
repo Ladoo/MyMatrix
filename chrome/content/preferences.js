@@ -49,5 +49,7 @@ mdt.preferences = {
 		} catch (e) {
 			mdt.error(e.message);
 		}
+	},
+	observe: function(){
 	}
 }
