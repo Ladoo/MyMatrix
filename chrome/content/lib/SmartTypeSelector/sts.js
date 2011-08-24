@@ -1,7 +1,7 @@
 // Todo: Refactoring love
 $(document).ready(function(){
 	// globals
-	concierge.sts = {};
+	matrixTools.sts = {};
 	
 	// privates
 	// not supported (yet) select[id*='add_layouts[]'],select[id*='new_type']']
@@ -64,7 +64,7 @@ $(document).ready(function(){
 				$checkbox.nextAll("span").addClass("toggle-on");
 			}
 			$inherit.appendTo($checkbox.parent());
-			concierge.sts.inheritName = $inherit.attr("name"); 
+			matrixTools.sts.inheritName = $inherit.attr("name"); 
 		});
 		
 		determineSelectedItems($to.parent());
@@ -120,7 +120,7 @@ $(document).ready(function(){
 				$input.attr("checked", false).nextAll("input[type=hidden]").remove();
 				
 			} else {
-				$input.attr("checked", true).parent().append("<input type='hidden' class='sst-control' name='" + concierge.sts.inheritName + "' value='" + inherit + "' />");
+				$input.attr("checked", true).parent().append("<input type='hidden' class='sst-control' name='" + matrixTools.sts.inheritName + "' value='" + inherit + "' />");
 			}
 			determineSelectedItems($container);
 			return false;

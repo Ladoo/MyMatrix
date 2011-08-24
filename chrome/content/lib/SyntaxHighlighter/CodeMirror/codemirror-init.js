@@ -1,4 +1,4 @@
-concierge.codeMirror = {
+matrixTools.codeMirror = {
 	editors: []
 };
 

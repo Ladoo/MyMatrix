@@ -1,15 +1,11 @@
-// Original credit goes to Ryan Seddon (@ryanseddon)
-// Code was slightly modified (to play nice with jQuery and follow conventions) for this implementation, however the core has remained
-// http://www.thecssninja.com/javascript/fileapi
-
 $(document).ready(function(){
-	concierge.dragDrop = {};
+	matrixTools.dragDrop = {};
 	
 	// Drag Enter (File Upload)
 	function dragActive(){
 		var $dropBox = $("#dropBox");
 		$dropBox.addClass("active").removeClass("inactive");
-		if (concierge.dragDrop.isBulkFileTool()) { 
+		if (matrixTools.dragDrop.isBulkFileTool()) { 
 			$dropBox.text("Drop files to import here.");
 		} else {
 			$dropBox.text("Drop file to upload here.");
@@ -19,7 +15,7 @@ $(document).ready(function(){
 	function dragNotActive(e){
 		var $dropBox = $("#dropBox");
 		$dropBox.removeClass("active").addClass("inactive");
-		if (concierge.dragDrop.isBulkFileTool()) { 
+		if (matrixTools.dragDrop.isBulkFileTool()) { 
 			$dropBox.text("Drag files to import here.");
 		} else {
 			$dropBox.text("Drag file to upload here.");
@@ -38,11 +34,16 @@ $(document).ready(function(){
 		) ? true : false;
 	}
 	
-	concierge.dragDrop.init = function(){
+	matrixTools.dragDrop.init = function(){
 		$("#sq-content").append("<div id='dropPreview'></div>");
-		var $inputRow = $("input[type=file]").parents("tr:first");
+		var $associatedFiles = $("input[type=file][name*='assoc_file_']"), $inputRow;
+		if ($associatedFiles.length === 0) {
+			$inputRow = $("input[type=file]").parents("tr:first");
+		} else {
+			$inputRow = $("input[type=file][name*='assoc_file_']:first").parents("tr:first");
+		}
 		var dropBoxHTML = "<div id='dropBox' class='inactive'></div>";
-		if (concierge.dragDrop.isBulkFileTool()) {
+		if (matrixTools.dragDrop.isBulkFileTool()) {
 			$("#bulk_file_import_table_container").before(dropBoxHTML);
 		} else {
 			$("div[id*=file_upload]").after(dropBoxHTML);
@@ -70,21 +71,21 @@ $(document).ready(function(){
 		});
 		
 		$dropContainer[0].addEventListener("drop", function(e){
-			concierge.dragDrop.handleDrop(e);
+			matrixTools.dragDrop.handleDrop(e);
 			dragNotActive(e);
 			e.preventDefault();
 		}, false);
 	};
 	
-	concierge.dragDrop.prepareUpload = function(file, index, bin){
-		if (!concierge.dragDrop.isBulkFileTool()) {
+	matrixTools.dragDrop.prepareUpload = function(file, index, bin){
+		if (!matrixTools.dragDrop.isBulkFileTool()) {
 			var $input = $("#main_form input[type=file]").hide();
 			$input.prevAll("input").remove();
 			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
 			
 			var data = new FormData();
 			data.append($input.attr("name"), file);
-			concierge.dragDrop.formData = data;			
+			matrixTools.dragDrop.formData = data;			
 		} else {
 			local_file_table.addRow();
 			var $file = $(local_file_table.tbody).find("tr:last input"), $newInput;
@@ -94,30 +95,30 @@ $(document).ready(function(){
 			
 			local_file_table.fileSelected($newInput[0], $newInput.attr("name").match(/\d.?/)[0]);
 			
-			if (concierge.dragDrop.formData) {
-				concierge.dragDrop.formData.append($file.attr("name"), file);
+			if (matrixTools.dragDrop.formData) {
+				matrixTools.dragDrop.formData.append($file.attr("name"), file);
 			} else {
 				var data = new FormData();
 				data.append($file.attr("name"), file);
-				concierge.dragDrop.formData = data;	
+				matrixTools.dragDrop.formData = data;	
 			}
 		}
 		
 		$("#drag-temp-browse").bind("click", function(){
 			// delete any dragged data
 			$(".drag-temp").remove();
-			concierge.dragDrop.formData = null;
+			matrixTools.dragDrop.formData = null;
 			$("#dropPreview").empty();
 			
 			// completely restore previous state
-			$("#sq_commit_button").unbind("click").attr("onclick", concierge.dragDrop.oldSubmit);
+			$("#sq_commit_button").unbind("click").attr("onclick", matrixTools.dragDrop.oldSubmit);
 			$("#main_form input[type=file]").show().trigger("click");
 			return false;
 		});
 	};
 	
-	concierge.dragDrop.beginUpload = function(){
-		var d = concierge.dragDrop.formData;
+	matrixTools.dragDrop.beginUpload = function(){
+		var d = matrixTools.dragDrop.formData;
 		$("#main_form").find("input,select,textarea").each(function(){
 			var $this = $(this);
 			if (typeof($this.attr("name")) !== "undefined" && $this.attr("type") !== "file") {
@@ -143,7 +144,7 @@ $(document).ready(function(){
 		});
 	};
 
-	concierge.dragDrop.handleDrop = function(event){
+	matrixTools.dragDrop.handleDrop = function(event){
 		var dt = event.dataTransfer,
 			files = dt.files,
 			count = files.length;
@@ -152,7 +153,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		
 		var $commitButton = $("#sq_commit_button");
-		concierge.dragDrop.oldSubmit = $commitButton.attr("onclick");
+		matrixTools.dragDrop.oldSubmit = $commitButton.attr("onclick");
 		$commitButton.attr("onclick", "").unbind("click").bind("click", function(){
 			var $rootNodeSelector = $("#sq_asset_finder_bulk_file_import_local_upload_root_asset_assetid");
 			$(this).attr("disabled", true);
@@ -160,7 +161,7 @@ $(document).ready(function(){
 				alert ("You need specify a Root Node before the upload can proceed.");
 				$(this).attr("disabled", false);
 			} else {		
-				concierge.dragDrop.beginUpload();
+				matrixTools.dragDrop.beginUpload();
 				$(this).attr("disabled", true);
 			}
 			return false;
@@ -174,12 +175,12 @@ $(document).ready(function(){
 			reader.index = i;
 			reader.file = file;	
 			// file previews are only available in single drag/drop operations
-			if (!concierge.dragDrop.isBulkFileTool()) {
+			if (!matrixTools.dragDrop.isBulkFileTool()) {
 				reader.addEventListener("loadend", function(e){
 					if (e.target.file.type.search(/image/) > -1) {
-						concierge.dragDrop.showPreview(e);
+						matrixTools.dragDrop.showPreview(e);
 					} else {
-						concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
+						matrixTools.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
 					}
 					e.preventDefault();
 				}, false);
@@ -188,7 +189,7 @@ $(document).ready(function(){
 				break;
 			} else {
 				reader.addEventListener("loadend", function(e){
-					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
+					matrixTools.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
 					e.preventDefault();
 				}, false);
 				reader.readAsBinaryString(file);			
@@ -196,7 +197,7 @@ $(document).ready(function(){
 		}
 	};
 	
-	concierge.dragDrop.showPreview = function(event){
+	matrixTools.dragDrop.showPreview = function(event){
 		var data = event.target.result,
 			index = event.target.index,
 			file = event.target.file,
@@ -204,15 +205,15 @@ $(document).ready(function(){
 
 		$("#dropPreview").html("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
-			concierge.dragDrop.prepareUpload(file, index, evt.target.result, false);
+			matrixTools.dragDrop.prepareUpload(file, index, evt.target.result, false);
 		}, false);
 		getBinaryDataReader.readAsBinaryString(file);
 	};
 	
-	concierge.dragDrop.isBulkFileTool = function(){
+	matrixTools.dragDrop.isBulkFileTool = function(){
 		return (typeof(local_file_table) === "undefined" ? false : true);
 	};
 
 	
-	concierge.dragDrop.init();
+	matrixTools.dragDrop.init();
 });

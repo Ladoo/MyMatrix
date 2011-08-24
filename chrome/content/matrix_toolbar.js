@@ -3,20 +3,20 @@ var mdt = function(){
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 		
 	function isMatrix(){
-		var button = document.getElementById("matrixtools-button");
-		button.className = "toolbarbutton-1 matrixtools-button-active";
+		var button = document.getElementById("matrixTools-button");
+		button.className = "toolbarbutton-1 matrixTools-button-active";
 		button.setAttribute("disabled", false);
 	}
 	
 	function isNotMatrix(){
-		var button = document.getElementById("matrixtools-button");
-		button.className = "toolbarbutton-1 matrixtools-button-inactive";
+		var button = document.getElementById("matrixTools-button");
+		button.className = "toolbarbutton-1 matrixTools-button-inactive";
 		button.setAttribute("disabled", true);
 	}
 	
 	function toolbarDisabled() {
-		var label = document.getElementById("matrixtools-button");
-		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-inactive");
+		var label = document.getElementById("matrixTools-button");
+		label.setAttribute("class", "toolbarbutton-1 matrixTools-button-inactive");
 	}
 	
 	return {
@@ -40,10 +40,8 @@ var mdt = function(){
 		},
 		
 		init: function(){
-			//check if toolbar is enabled
-			mdt.prefManager = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
 			mdt.preferences.init();
-			if( mdt.preferences.isEnabled() ) {
+			if (mdt.preferences.isEnabled() ) {
 				gBrowser.addEventListener("load", function(){
 					gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
 					gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
@@ -128,7 +126,7 @@ var mdt = function(){
 		
 		insertPageHelpers: function(){
 			mdt.injectScript("jquery", "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js");
-			mdt.injectScript("concierge", "chrome://matrixdevelopertoolbar/content/lib/concierge.js");
+			mdt.injectScript("matrixTools", "chrome://matrixdevelopertoolbar/content/lib/matrixTools.js");
 		},
 
 		determineAssetType: function(){
@@ -163,7 +161,7 @@ var mdt = function(){
 					try {
 						if (feature.detect()){
 							mdt.aboutTab.featuresAvailable.push(feature.id);
-							if (mdt.featureIsEnabled(feature.id)) {
+							if (mdt.prefManager.getBoolPref(feature.id)) {
 								feature.init();
 							} else {
 								feature.destroy();
@@ -189,11 +187,6 @@ var mdt = function(){
 					mdt.objectHasLoaded(obj, where, callback);
 				}, 30);
 			}
-		},
-		
-		featureIsEnabled: function(feature_id){
-			thePref = mdt.prefManager.prefs.get("extensions.matrixtoolbar." + feature_id);
-			return thePref.value;
 		},
 		
 		isMatrixBackend: function(){

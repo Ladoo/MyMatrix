@@ -8,38 +8,46 @@
 
 mdt.preferences = {
 	isEnabled: function() {
-		return mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").value;
+		return mdt.prefManager.getBoolPref("enabled");
 	},
 	init: function(){
-		//add listener (on change) event to toolbar enabled switch
-		mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").events.addListener("change", function(aEvent){ mdt.preferences.toggleEnableToolbar(); });
-		var enabledMenuItem = document.getElementById("matrixdevelopertoolbar-enabled");
-		enabledMenuItem.setAttribute("checked",mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").value);
+		mdt.prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("matrixtoolbar.");
+		mdt.prefManager.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		document.getElementById("matrixTools-enabled").setAttribute("checked", mdt.prefManager.getBoolPref("enabled"));
+		mdt.prefManager.addObserver("", this, false);
 		mdt.featureDefinitions.features.forEach(function(feature){
 			try {
-				//add listener (on change) event for all features defined in feature_definitions.js
-				mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).events.addListener("change", function(aEvent){ mdt.determineFeatures(); });
-				//set up the button checkboxes
-				var preferenceMenuItem = document.getElementById("matrixdevelopertoolbar-"+feature.id);
-				preferenceMenuItem.setAttribute("checked",mdt.prefManager.prefs.get("extensions.matrixtoolbar."+feature.id).value);
+			 	document.getElementById("matrixTools-" + feature.id).setAttribute("checked", mdt.prefManager.getBoolPref(feature.id));
 			} 
 			catch (e) {
 				mdt.error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
 			}
 		});	
 	},
-	toggleEnableToolbar: function() {
-		if(mdt.prefManager.prefs.get("extensions.matrixtoolbar.enabled").value){
-			//switch on toolbar
+	toggleButton: function(){
+		if (!mdt.isMatrixSite() && !mdt.isMatrixBackend()) {
+			return;
 		}
-		else {
-			//switch off toolbar
+		
+		var label = document.getElementById("matrixTools-button"), state = false, cs;
+		if (mdt.prefManager.getBoolPref("enabled")) {
+			state = false;
+			cs = "matrixTools-button-inactive";
+		} else {
+			state = true;
+			cs = "matrixTools-button-active";
 		}
+		mdt.prefManager.setBoolPref("enabled", state);
+		label.setAttribute("class", "toolbarbutton-1 " + cs);
+		document.getElementById("matrixTools-enabled").setAttribute("checked", state);	
 	},
-	onToggleOption: function(menuitem)
-    {
-        var option = menuitem.getAttribute("option");
-        var checked = menuitem.getAttribute("checked") == "true";
-		mdt.prefManager.prefs.setValue("extensions.matrixtoolbar."+ option,checked);
-    }
+	toggleOption: function(menuitem) {
+		try {
+			var checkS = menuitem.getAttribute("checked").length === 0 ? false : true;
+			mdt.prefManager.setBoolPref(menuitem.getAttribute("option"), checkS);
+			mdt.determineFeatures();
+		} catch (e) {
+			mdt.error(e.message);
+		}
+	}
 }
