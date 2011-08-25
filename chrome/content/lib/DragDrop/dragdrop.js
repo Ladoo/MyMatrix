@@ -203,7 +203,6 @@ $(document).ready(function(){
 					e.preventDefault();
 				}, false);
 				reader.readAsDataURL(file);
-				
 				break;
 			} else {
 				reader.addEventListener("loadend", function(e){

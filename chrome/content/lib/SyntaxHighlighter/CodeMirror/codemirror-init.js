@@ -18,6 +18,13 @@ $(document).ready(function(){
 		cm.setOption('matchBrackets', 'true');
 		cm.setOption('lineNumbers', 'true');
 		cm.setOption('mode', mode);
-		editors.push(cm);
+		matrixTools.codeMirror.editors.push(cm);
+		
+		// fix selector dropdown
+		var $selector = $(this).prevAll("select");
+		$selector.attr("onchange", "").bind("change", function(){
+			matrixTools.codeMirror.editors[ parseInt($selector.attr("id").match(/\d.?/)[0]) - 1 ].replaceSelection($(this).val());
+			$selector.find("option:first").attr("selected", true);
+		});
 	});
 });
