@@ -1,7 +1,9 @@
 // Todo: Refactoring love
 $(document).ready(function(){
 	// globals
-	concierge.sts = {};
+	matrixTools.sts = {
+		selectors: [] // array of selector names and their inherit control names (important for submission of data)
+	};
 	
 	// privates
 	// not supported (yet) select[id*='add_layouts[]'],select[id*='new_type']']
@@ -18,7 +20,13 @@ $(document).ready(function(){
 	function init(){
 		$selectors.each(function(){
 			var $selector = $(this);
+			matrixTools.sts.selectors.push({
+				selectName: $selector.attr("name"),
+				inheritName: findInheritControl($selector).attr("name")
+			});
+			
 			if ($.inArray($selector.attr("id"), idsInserted) === -1) {
+				addEmptyFormat($selector);
 				idsInserted.push($selector.attr("id"));
 				$selector.parent().children("input,select,label").hide();
 				
@@ -54,17 +62,33 @@ $(document).ready(function(){
 		});	
 	}
 	
+	function findInheritControl($selector) {
+		return $selector.nextAll("input[type=hidden]:first");
+	}
+	
+	// Finds a given selector obj based on its name
+	// Only useful for when a user presses the "inherit" button
+	function findSelectorInHistory(name) {
+		for (var counter = 0; counter < matrixTools.sts.selectors.length; counter++) {
+			var sel = matrixTools.sts.selectors[counter];
+			if (sel.selectName === name) {
+				return sel;
+			}
+		}
+		
+		return null;
+	}
+	
 	function selectAssets($from, $to){
 		// find all options in the container based on the "value"
 		var $selected = $from.find("option:selected:not(:empty)");
 		$selected.each(function(){
 			var $checkbox = $to.find("input[value=" + $(this).val() + "]").attr("checked", "checked");
-			var $inherit = $(this).parent().nextAll("input[type=hidden]:first");
+			var $inherit = findInheritControl($(this).parent());
 			if (parseInt($inherit.val()) === 1) {
 				$checkbox.nextAll("span").addClass("toggle-on");
 			}
 			$inherit.appendTo($checkbox.parent());
-			concierge.sts.inheritName = $inherit.attr("name"); 
 		});
 		
 		determineSelectedItems($to.parent());
@@ -115,18 +139,26 @@ $(document).ready(function(){
 		$container.find("label").bind("click", function(e){
 			var $input = $(this).prev();
 			var inherit = $input.nextAll(".toggle").hasClass("toggle-on") ? 1 : 0;
+			var inheritName = findSelectorInHistory($input.attr("name")).inheritName;
 			
 			if ($input.attr("checked")) {
 				$input.attr("checked", false).nextAll("input[type=hidden]").remove();
 				
 			} else {
-				$input.attr("checked", true).parent().append("<input type='hidden' class='sst-control' name='" + concierge.sts.inheritName + "' value='" + inherit + "' />");
+				$input.attr("checked", true).parent().append("<input type='hidden' class='sst-control' name='" + inheritName + "' value='" + inherit + "' />");
 			}
 			determineSelectedItems($container);
 			return false;
 		});
 	}
 	
+	// Adds an empty hidden input field
+	// Ensures that if a user has de-selected all type formats that it gets registered
+	function addEmptyFormat($selector){
+		var selName = $selector.attr("name");
+		$selector.parent().append("<input type='hidden' class='sst-control' name='" + selName + "' value='' />");
+		$selector.parent().append("<input type='hidden' class='sst-control' name='" + findSelectorInHistory(selName).inheritName + "' value='' />");
+	}
 	
 	// init
 	init();

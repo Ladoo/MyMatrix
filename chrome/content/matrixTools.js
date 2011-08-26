@@ -1,22 +1,22 @@
-var mdt = function(){
+var matrixTools = function(){
 	// privates (stop looking)
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 		
 	function isMatrix(){
-		var button = document.getElementById("matrixtools-button");
-		button.className = "toolbarbutton-1 matrixtools-button-active";
+		var button = document.getElementById("matrixTools-button");
+		button.className = "toolbarbutton-1 matrixTools-button-active";
 		button.setAttribute("disabled", false);
 	}
 	
 	function isNotMatrix(){
-		var button = document.getElementById("matrixtools-button");
-		button.className = "toolbarbutton-1 matrixtools-button-inactive";
+		var button = document.getElementById("matrixTools-button");
+		button.className = "toolbarbutton-1 matrixTools-button-inactive";
 		button.setAttribute("disabled", true);
 	}
 	
 	function toolbarDisabled() {
-		var label = document.getElementById("matrixtools-button");
-		label.setAttribute("class", "toolbarbutton-1 matrixtools-button-inactive");
+		var label = document.getElementById("matrixTools-button");
+		label.setAttribute("class", "toolbarbutton-1 matrixTools-button-inactive");
 	}
 	
 	return {
@@ -24,8 +24,8 @@ var mdt = function(){
 		settings: {
 			debug: true,
 			paths: {
-				content: "chrome://matrixdevelopertoolbar/content/",
-				lib: "chrome://matrixdevelopertoolbar/content/lib/"
+				content: "chrome://matrixTools/content/",
+				lib: "chrome://matrixTools/content/lib/"
 			}
 		},
 		
@@ -40,32 +40,29 @@ var mdt = function(){
 		},
 		
 		init: function(){
-			//check if toolbar is enabled
-			mdt.prefManager = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
-			mdt.preferences.init();
-			if( mdt.preferences.isEnabled() ) {
+			matrixTools.preferences.init();
+			if (matrixTools.preferences.isEnabled()) {
 				gBrowser.addEventListener("load", function(){
-					gBrowser.addEventListener("DOMContentLoaded", mdt.bootstrap, false);
-					gBrowser.tabContainer.addEventListener("TabSelect", mdt.bootstrap, false);
+					gBrowser.addEventListener("DOMContentLoaded", matrixTools.bootstrap, false);
+					gBrowser.tabContainer.addEventListener("TabSelect", matrixTools.bootstrap, false);
 				}, true);
-			} 
+			}
 			else {
 				toolbarDisabled();
-				//TODO code here to destroy all activated toolbar features
-			}	
+			}
 		},
 		
 		bootstrap: function(){
-			if (mdt.isMatrixBackend()) {
-				mdt.aboutTab.mainFrame = content.frames[3];
-				mdt.insertPageHelpers();
-				mdt.determineAssetType();
-				mdt.determineAssetScreen();
+			if (matrixTools.isMatrixBackend()) {
+				matrixTools.aboutTab.mainFrame = content.frames[3];
+				matrixTools.insertPageHelpers();
+				matrixTools.determineAssetType();
+				matrixTools.determineAssetScreen();
 				isMatrix();
-				mdt.determineFeatures();
-				mdt.dump(mdt.aboutTab);
+				matrixTools.determineFeatures();
+				matrixTools.dump(matrixTools.aboutTab);
 			}
-			else if (mdt.isMatrixSite()) {
+			else if (matrixTools.isMatrixSite()) {
 				isMatrix();
 			}
 			else {
@@ -75,11 +72,11 @@ var mdt = function(){
 				
 		// main public methods
 		error: function(message) {
-			if (mdt.settings.debug) Components.utils.reportError(message);
+			if (matrixTools.settings.debug) Components.utils.reportError(message);
 		},
 		
 		dump: function(obj) {
-			if (mdt.settings.debug) {
+			if (matrixTools.settings.debug) {
 				var out = '';
 				for (var i in obj) {
 					out += i + ": " + obj[i] + "\n";
@@ -89,9 +86,9 @@ var mdt = function(){
 		},
 		
 		injectScript: function(id, src, callback){
-			var main = mdt.aboutTab.mainFrame.document;
+			var main = matrixTools.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
-			id = "matrixdevelopertoolbar-" + id;
+			id = "matrixTools-" + id;
 			if (!main.getElementById(id)) {
 				var script = main.createElement("script");
 				script.setAttribute("type", "text/javascript");
@@ -109,9 +106,9 @@ var mdt = function(){
 		},
 		
 		injectStyleSheet: function(id, href){
-			var main = mdt.aboutTab.mainFrame.document;
+			var main = matrixTools.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
-			id = "matrixdevelopertoolbar-" + id;
+			id = "matrixTools-" + id;
 			if (!main.getElementById(id)) {
 				var css = main.createElement("link");
 				css.setAttribute("type", "text/css");
@@ -127,54 +124,54 @@ var mdt = function(){
 		},
 		
 		insertPageHelpers: function(){
-			mdt.injectScript("jquery", "chrome://matrixdevelopertoolbar/content/lib/jquery-1.6.2.min.js");
-			mdt.injectScript("concierge", "chrome://matrixdevelopertoolbar/content/lib/concierge.js");
+			matrixTools.injectScript("jquery", "chrome://matrixTools/content/lib/jquery-1.6.2.min.js");
+			matrixTools.injectScript("matrixTools", "chrome://matrixTools/content/lib/matrixTools.js");
 		},
 
 		determineAssetType: function(){
 			// wrap it in a try catch clause so that the toolbar still functions even if we can't detect the asset type
 			try {
-				var assetType = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
+				var assetType = matrixTools.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
 				if (typeof(assetType) !== "undefined") {
-					mdt.aboutTab.assetType = assetType;
+					matrixTools.aboutTab.assetType = assetType;
 				}
 			} catch (e) {
-				mdt.error("Cannot determine asset type: " + e.message);
+				matrixTools.error("Cannot determine asset type: " + e.message);
 			}
 		},
 		
 		determineAssetScreen: function(){
 			try {
-				var screenMenu = mdt.aboutTab.mainFrame.document.getElementById("screen_menu");
+				var screenMenu = matrixTools.aboutTab.mainFrame.document.getElementById("screen_menu");
 				if (screenMenu) {
-					mdt.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
+					matrixTools.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
 				} else {
-					mdt.aboutTab.screenBrowsing = mdt.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-main-heading")[0].textContent.replace(/\t/g, '').replace(/\s/, '');
+					matrixTools.aboutTab.screenBrowsing = matrixTools.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-main-heading")[0].textContent.replace(/\t/g, '').replace(/\s/, '');
 				} 
 			} catch (e) {
-				mdt.error("Cannot determine asset screen: " + e.message);
+				matrixTools.error("Cannot determine asset screen: " + e.message);
 			}
 		},
 		
 		determineFeatures: function(){
 			try {
-				mdt.aboutTab.featuresAvailable = [];
-				mdt.featureDefinitions.features.forEach(function(feature){
+				matrixTools.aboutTab.featuresAvailable = [];
+				matrixTools.plugins.forEach(function(feature){
 					try {
 						if (feature.detect()){
-							mdt.aboutTab.featuresAvailable.push(feature.id);
-							if (mdt.featureIsEnabled(feature.id)) {
+							matrixTools.aboutTab.featuresAvailable.push(feature.id);
+							if (matrixTools.prefManager.getBoolPref(feature.id)) {
 								feature.init();
 							} else {
 								feature.destroy();
 							}
 						}
 					} catch (e) {
-						mdt.error("Feature detection failed (" + feature.id + "): " + e.message);
+						matrixTools.error("Feature detection failed (" + feature.id + "): " + e.message);
 					}
 				});	
 			} catch (e) {
-				mdt.error("Cannot detect features: " + e.message);		
+				matrixTools.error("Cannot detect features: " + e.message);		
 			}
 		},
 		
@@ -186,19 +183,14 @@ var mdt = function(){
 				callback();
 			} else {
 				setTimeout(function(){
-					mdt.objectHasLoaded(obj, where, callback);
+					matrixTools.objectHasLoaded(obj, where, callback);
 				}, 30);
 			}
 		},
 		
-		featureIsEnabled: function(feature_id){
-			thePref = mdt.prefManager.prefs.get("extensions.matrixtoolbar." + feature_id);
-			return thePref.value;
-		},
-		
 		isMatrixBackend: function(){
-			mdt.aboutTab.isMatrixBackend = content.document.title.match(/(Squiz|MySource).*Administration Interface/) ? true : false;
-			return mdt.aboutTab.isMatrixBackend;
+			matrixTools.aboutTab.isMatrixBackend = content.document.title.match(/(Squiz|MySource).*Administration Interface/) ? true : false;
+			return matrixTools.aboutTab.isMatrixBackend;
 		},
 		
 		isMatrixSite: function(){
@@ -208,7 +200,7 @@ var mdt = function(){
 			var headComments = content.document.head.innerHTML.search(/Running MySource Matrix/);
 			var webPaths = content.document.body.innerHTML.search(/__data/);
 			if (headComments > 0 || webPaths > 0) {
-				mdt.aboutTab.isMatrixSite = true;
+				matrixTools.aboutTab.isMatrixSite = true;
 				return true;
 			} else {
 				return false;
@@ -217,4 +209,4 @@ var mdt = function(){
 	};
 }();
 
-window.addEventListener("load", mdt.init, false);
+window.addEventListener("load", matrixTools.init, false);

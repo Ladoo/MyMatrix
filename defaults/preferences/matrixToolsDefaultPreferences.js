@@ -1,0 +1,9 @@
+pref("matrixTools.enabled", true);
+pref("matrixTools.seamlessSaving", true);
+pref("matrixTools.syntaxHighlighter", true);
+pref("matrixTools.dragDropFiles", true);
+pref("matrixTools.remapManagerUncheck", true);
+pref("matrixTools.smartTypeSelector", true);
+pref("matrixTools.locksHelper", true);
+pref("matrixTools.keyboardShortcuts", true);
+pref("matrixTools.wysiwygReplace", false);

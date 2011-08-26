@@ -1,15 +1,13 @@
-// Original credit goes to Ryan Seddon (@ryanseddon)
-// Code was slightly modified (to play nice with jQuery and follow conventions) for this implementation, however the core has remained
-// http://www.thecssninja.com/javascript/fileapi
-
 $(document).ready(function(){
-	concierge.dragDrop = {};
+	matrixTools.dragDrop = {
+		files: [] // array of hashes that represent filenames + filedata
+	};
 	
 	// Drag Enter (File Upload)
 	function dragActive(){
 		var $dropBox = $("#dropBox");
 		$dropBox.addClass("active").removeClass("inactive");
-		if (concierge.dragDrop.isBulkFileTool()) { 
+		if (matrixTools.dragDrop.isBulkFileTool()) { 
 			$dropBox.text("Drop files to import here.");
 		} else {
 			$dropBox.text("Drop file to upload here.");
@@ -19,10 +17,43 @@ $(document).ready(function(){
 	function dragNotActive(e){
 		var $dropBox = $("#dropBox");
 		$dropBox.removeClass("active").addClass("inactive");
-		if (concierge.dragDrop.isBulkFileTool()) { 
+		if (matrixTools.dragDrop.isBulkFileTool()) { 
 			$dropBox.text("Drag files to import here.");
 		} else {
 			$dropBox.text("Drag file to upload here.");
+		}
+	}
+	
+	function changeCommitAction(){
+		var $commitButton = $("#sq_commit_button");
+		matrixTools.dragDrop.oldSubmit = $commitButton.attr("onclick");
+		$commitButton.attr("onclick", "").unbind("click").bind("click", function(){
+			var $rootNodeSelector = $("#sq_asset_finder_bulk_file_import_local_upload_root_asset_assetid");
+			$(this).attr("disabled", true);
+			if ($rootNodeSelector.length > 0 && $rootNodeSelector.val().length === 0) {
+				alert ("You need specify a Root Node before the upload can proceed.");
+				$(this).attr("disabled", false);
+			} else {
+				updateFilesList();
+				matrixTools.dragDrop.beginUpload();
+				$(this).attr("disabled", true);
+			}
+			return false;
+		});		
+	}
+	
+	// Checks if a person has removed any files from the upload list (e.g. in the Bulk File Upload Tool)
+	// Updates the file object list
+	function updateFilesList(){
+		var files = [];
+		if (matrixTools.dragDrop.isBulkFileTool()) {
+			for (var counter = 0; counter < matrixTools.dragDrop.files.length; counter++) {
+				var file = matrixTools.dragDrop.files[counter];
+				if ($("#bulk_file_import_table_container span[id*=bulk_file_upload_file_chooser_]:contains('" + file.data.name + "')").length !== 0) {
+					files.push(file);
+				}
+			}
+			matrixTools.dragDrop.files = files;
 		}
 	}
 	
@@ -38,14 +69,20 @@ $(document).ready(function(){
 		) ? true : false;
 	}
 	
-	concierge.dragDrop.init = function(){
-		$("#sq-content").append("<div id='dropPreview'></div>");
-		var $inputRow = $("input[type=file]").parents("tr:first");
+	matrixTools.dragDrop.init = function(){
+		var $inputRow;
+		if (!matrixTools.dragDrop.isParseFile()) {
+			$inputRow = $("input[type=file]").parents("tr:first");
+		} else {
+			$inputRow = $("input[type=file][name*='assoc_file_']:first").parents("tr:first");
+		}
 		var dropBoxHTML = "<div id='dropBox' class='inactive'></div>";
-		if (concierge.dragDrop.isBulkFileTool()) {
+		var $dropZone = $inputRow.find("td.sq-backend-data");
+		if (matrixTools.dragDrop.isBulkFileTool()) {
 			$("#bulk_file_import_table_container").before(dropBoxHTML);
 		} else {
-			$("div[id*=file_upload]").after(dropBoxHTML);
+			$dropZone.parents("table:first").find("td.sq-backend-data:first").append("<div id='dropPreview'></div>");
+			$dropZone.append(dropBoxHTML);
 		}
 		dragNotActive(); 
 		
@@ -70,22 +107,22 @@ $(document).ready(function(){
 		});
 		
 		$dropContainer[0].addEventListener("drop", function(e){
-			concierge.dragDrop.handleDrop(e);
+			matrixTools.dragDrop.handleDrop(e);
 			dragNotActive(e);
 			e.preventDefault();
 		}, false);
 	};
 	
-	concierge.dragDrop.prepareUpload = function(file, index, bin){
-		if (!concierge.dragDrop.isBulkFileTool()) {
-			var $input = $("#main_form input[type=file]").hide();
-			$input.prevAll("input").remove();
-			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
-			
-			var data = new FormData();
-			data.append($input.attr("name"), file);
-			concierge.dragDrop.formData = data;			
-		} else {
+	matrixTools.dragDrop.prepareUpload = function(file, index, bin){
+		changeCommitAction();
+		if (!matrixTools.dragDrop.isBulkFileTool() && !matrixTools.dragDrop.isParseFile()) {
+			var $file = $("#main_form input[type=file]").hide();
+			$file.prevAll("input").remove();
+			$file.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
+			$("#main_form input[name*=_filename]").parents("tr:first").hide();		
+		} 
+		
+		if (matrixTools.dragDrop.isBulkFileTool()) {
 			local_file_table.addRow();
 			var $file = $(local_file_table.tbody).find("tr:last input"), $newInput;
 			$file.after("<input type='text' name='" + $file.attr("name") + "' id='" + $file.attr("id") + "' value='" + file.name + "' />");
@@ -93,31 +130,50 @@ $(document).ready(function(){
 			$file.remove();
 			
 			local_file_table.fileSelected($newInput[0], $newInput.attr("name").match(/\d.?/)[0]);
+		}
+		
+		matrixTools.dragDrop.files.push({
+			name: $file.attr("name"),
+			data: file
+		});
+		
+		if (matrixTools.dragDrop.isParseFile()) {
+			// var $input = $("input[type=file][name*='assoc_file_']").hide();
+			// $input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");			
 			
-			if (concierge.dragDrop.formData) {
-				concierge.dragDrop.formData.append($file.attr("name"), file);
-			} else {
-				var data = new FormData();
-				data.append($file.attr("name"), file);
-				concierge.dragDrop.formData = data;	
-			}
+			// var name = $input.find(":last").attr("name");
+			// name = name.substr(0, name.length - 1) + (parseInt(name.substr(name.length - 1)) + 1);
+			// if (matrixTools.dragDrop.formData) {
+				// matrixTools.dragDrop.formData.append(name, file);
+			// } else {
+				// var data = new FormData();
+				// data.append($, file);
+				// matrixTools.dragDrop.formData = data;	
+			// }
 		}
 		
 		$("#drag-temp-browse").bind("click", function(){
 			// delete any dragged data
 			$(".drag-temp").remove();
-			concierge.dragDrop.formData = null;
+			matrixTools.dragDrop.formData = null;
 			$("#dropPreview").empty();
 			
 			// completely restore previous state
-			$("#sq_commit_button").unbind("click").attr("onclick", concierge.dragDrop.oldSubmit);
+			$("#sq_commit_button").unbind("click").attr("onclick", matrixTools.dragDrop.oldSubmit);
 			$("#main_form input[type=file]").show().trigger("click");
+			$("#main_form input[name*=_filename]").parents("tr:first").show();
+			
 			return false;
 		});
 	};
 	
-	concierge.dragDrop.beginUpload = function(){
-		var d = concierge.dragDrop.formData;
+	matrixTools.dragDrop.beginUpload = function(){
+		var d = new FormData();
+		for (var counter = 0; counter < matrixTools.dragDrop.files.length; counter++) {
+			var file = matrixTools.dragDrop.files[counter];
+			d.append(file.name, file.data);
+		}
+		
 		$("#main_form").find("input,select,textarea").each(function(){
 			var $this = $(this);
 			if (typeof($this.attr("name")) !== "undefined" && $this.attr("type") !== "file") {
@@ -132,39 +188,24 @@ $(document).ready(function(){
 			processData: false,
 			contentType: false,
 			success: function(data){
+				document.forms[0]['changes'].value = 0;
 				if (typeof(local_file_table) === "undefined") {
 					var location = data.match(/action="(?:[^\\"]+|\\.)*"/)[0];
 					window.location.href = location;
 				} else {
-					document.forms[0]['changes'].value = '0';
 					window.location.reload();
 				}
 			}
 		});
 	};
 
-	concierge.dragDrop.handleDrop = function(event){
+	matrixTools.dragDrop.handleDrop = function(event){
 		var dt = event.dataTransfer,
 			files = dt.files,
 			count = files.length;
 		
 		event.stopPropagation();
 		event.preventDefault();
-		
-		var $commitButton = $("#sq_commit_button");
-		concierge.dragDrop.oldSubmit = $commitButton.attr("onclick");
-		$commitButton.attr("onclick", "").unbind("click").bind("click", function(){
-			var $rootNodeSelector = $("#sq_asset_finder_bulk_file_import_local_upload_root_asset_assetid");
-			$(this).attr("disabled", true);
-			if ($rootNodeSelector.length > 0 && $rootNodeSelector.val().length === 0) {
-				alert ("You need specify a Root Node before the upload can proceed.");
-				$(this).attr("disabled", false);
-			} else {		
-				concierge.dragDrop.beginUpload();
-				$(this).attr("disabled", true);
-			}
-			return false;
-		});		
 	
 		for (var i = 0; i < count; i++) {
 			var file = files[i],
@@ -172,23 +213,22 @@ $(document).ready(function(){
 		
 			reader = new FileReader();
 			reader.index = i;
-			reader.file = file;	
+			reader.file = file;
 			// file previews are only available in single drag/drop operations
-			if (!concierge.dragDrop.isBulkFileTool()) {
+			if (!matrixTools.dragDrop.isBulkFileTool()) {
 				reader.addEventListener("loadend", function(e){
 					if (e.target.file.type.search(/image/) > -1) {
-						concierge.dragDrop.showPreview(e);
+						matrixTools.dragDrop.showPreview(e);
 					} else {
-						concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
+						matrixTools.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
 					}
 					e.preventDefault();
 				}, false);
 				reader.readAsDataURL(file);
-				
 				break;
 			} else {
 				reader.addEventListener("loadend", function(e){
-					concierge.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
+					matrixTools.dragDrop.prepareUpload(e.target.file, e.target.index, e.target.result);
 					e.preventDefault();
 				}, false);
 				reader.readAsBinaryString(file);			
@@ -196,23 +236,26 @@ $(document).ready(function(){
 		}
 	};
 	
-	concierge.dragDrop.showPreview = function(event){
+	matrixTools.dragDrop.showPreview = function(event){
 		var data = event.target.result,
 			index = event.target.index,
 			file = event.target.file,
 			getBinaryDataReader = new FileReader();
-
+		
 		$("#dropPreview").html("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
-			concierge.dragDrop.prepareUpload(file, index, evt.target.result, false);
+			matrixTools.dragDrop.prepareUpload(file, index, evt.target.result, false);
 		}, false);
 		getBinaryDataReader.readAsBinaryString(file);
 	};
 	
-	concierge.dragDrop.isBulkFileTool = function(){
+	matrixTools.dragDrop.isBulkFileTool = function(){
 		return (typeof(local_file_table) === "undefined" ? false : true);
 	};
-
 	
-	concierge.dragDrop.init();
+	matrixTools.dragDrop.isParseFile = function(){
+		return $("input[type=file][name*='assoc_file_']").length === 0 ? false : true;
+	};
+	
+	matrixTools.dragDrop.init();
 });

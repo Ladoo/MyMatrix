@@ -1,4 +1,4 @@
-#matrixtoolbar-help-menu {
+#matrixTools-help-menu {
 	background-color: black;
 	opacity: 0.8;
 	padding: 8px;
@@ -11,7 +11,7 @@
 	border-radius: 4px;
 }
 
-#matrixtoolbar-help-menu h1 {
+#matrixTools-help-menu h1 {
 	color: #fffdd1;
 	font-size: 1.4em;
 	margin: 0;
@@ -19,42 +19,42 @@
 	clear: both;
 }
 
-#matrixtoolbar-help-menu h1:first-of-type {
+#matrixTools-help-menu h1:first-of-type {
 	padding-top: 0;
 }
 
-#matrixtoolbar-help-menu p {
+#matrixTools-help-menu p {
 	float: right;
 	color: white;
 	margin-bottom: -15px;
 	cursor: pointer;
 }
 
-#matrixtoolbar-help-menu p:hover {
+#matrixTools-help-menu p:hover {
 	font-weight: bold;
 }
 
-#matrixtoolbar-help-menu ul {
+#matrixTools-help-menu ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-#matrixtoolbar-help-menu li {
+#matrixTools-help-menu li {
 	display: block;
 	clear: both;
 	padding: 8px 0;
 }
 
-#matrixtoolbar-help-menu div {
+#matrixTools-help-menu div {
 	color: white;
 }
 
-#matrixtoolbar-help-menu .key {
+#matrixTools-help-menu .key {
 	float: left;
 	width: 16%;
 }
 
-#matrixtoolbar-help-menu .action {
+#matrixTools-help-menu .action {
 	float: left;
 }
