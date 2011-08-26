@@ -13,8 +13,10 @@ matrixTools.preferences = {
 	init: function(){
 		matrixTools.prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("matrixTools.");
 		matrixTools.prefManager.QueryInterface(Components.interfaces.nsIPrefBranch2);
-		document.getElementById("matrixTools-enabled").setAttribute("checked", matrixTools.prefManager.getBoolPref("enabled"));
 		matrixTools.prefManager.addObserver("", this, false);
+	},
+	setDefaults: function(){
+		document.getElementById("matrixTools-enabled").setAttribute("checked", matrixTools.prefManager.getBoolPref("enabled"));
 		matrixTools.plugins.forEach(function(feature){
 			try {
 			 	document.getElementById("matrixTools-" + feature.id).setAttribute("checked", matrixTools.prefManager.getBoolPref(feature.id));
@@ -22,7 +24,7 @@ matrixTools.preferences = {
 			catch (e) {
 				matrixTools.error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
 			}
-		});	
+		});		
 	},
 	toggleButton: function(){
 		if (!matrixTools.isMatrixSite() && !matrixTools.isMatrixBackend()) {
