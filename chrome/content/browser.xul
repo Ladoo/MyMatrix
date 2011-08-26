@@ -1,38 +1,8 @@
 <?xml version="1.0"?> 
-<?xml-stylesheet href="chrome://matrixdevelopertoolbar/skin/skin.css" type="text/css"?> 
-<!DOCTYPE sample SYSTEM "chrome://matrixdevelopertoolbar/locale/translations.dtd">
-
-<overlay id="matrixdevelopertoolbar" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	
-	<script src="matrix_toolbar.js"></script>
-	<script src="preferences.js"></script>
-	<script src="feature_definitions.js"></script>
-	
-
-	<toolbar id="nav-bar">
-		<toolbox>
-			<toolbarbutton id="matrixtools-button" class="toolbarbutton-1 matrixtools-button-inactive" disabled="false" removable="true" type="menu-button" label="Matrix Tools">
-				<menupopup id="matrixtools-button-popup">
-					<menuitem id="matrixdevelopertoolbar-enabled" label="Toolbar Enabled" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="enabled" />
-					<menuseparator/>
-					<groupbox>
-						<caption label="Plugins" />
-						<menuitem id="matrixdevelopertoolbar-seamlesssaving" label="Seamless Saving" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="seamlesssaving" />
-						<menuitem id="matrixdevelopertoolbar-syntaxhighlighter" label="Syntax Highlighting" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="syntaxhighlighter" />
-						<menuitem id="matrixdevelopertoolbar-dragdropfiles" label="Drag &amp; Drop Files" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="dragdropfiles" />
-						<menuitem id="matrixdevelopertoolbar-remapmanageruncheck" label="Remap Manager Mass Uncheck" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="remapmanageruncheck" />
-						<menuitem id="matrixdevelopertoolbar-lockshelper" label="Locks Helper" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="lockshelper" />
-						<menuitem id="matrixdevelopertoolbar-keyboardShortcuts" label="Keyboard Shortcuts Guide" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="keyboardShortcuts" />
-					</groupbox>
-					<groupbox>
-						<caption label="Experimental Plugins" />
-						<menuitem id="matrixdevelopertoolbar-wysiwygreplace" label="Replace WYSIWYG" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="wysiwygreplace" />
-						<menuitem id="matrixdevelopertoolbar-autocollapse" label="Auto Collapse" type="checkbox" oncommand="mdt.preferences.onToggleOption(this)" option="autocollapse" />
-					</groupbox>
-				</menupopup>
-			</toolbarbutton>
-		</toolbox>
-	</toolbar>
-
-	
+<?xul-overlay href="buttonOverlay.xul"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="lib/helpers/lib.js"></script>
+	<script type="application/x-javascript" src="matrixTools.js"></script>
+	<script type="application/x-javascript" src="plugins.js"></script>
+	<script type="application/x-javascript" src="preferences.js"></script>
 </overlay>
