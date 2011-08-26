@@ -1,9 +1,0 @@
-pref("matrixtoolbar.enabled", true);
-pref("matrixtoolbar.seamlesssaving", true);
-pref("matrixtoolbar.syntaxhighlighter", true);
-pref("matrixtoolbar.dragdropfiles", true);
-pref("matrixtoolbar.remapmanageruncheck", true);
-pref("matrixtoolbar.smartTypeSelector", true);
-pref("matrixtoolbar.lockshelper", true);
-pref("matrixtoolbar.keyboardShortcuts", true);
-pref("matrixtoolbar.wysiwygreplace", false);

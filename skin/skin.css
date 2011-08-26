@@ -1,9 +1,9 @@
 .matrixTools-button-inactive {
-	list-style-image: url("chrome://matrixdevelopertoolbar/skin/button-inactive.png");
+	list-style-image: url("chrome://matrixTools/skin/button-inactive.png");
 }
 
 .matrixTools-button-active {
-	list-style-image: url("chrome://matrixdevelopertoolbar/skin/button-active.png");
+	list-style-image: url("chrome://matrixTools/skin/button-active.png");
 }
 
 #matrixTools-button caption {

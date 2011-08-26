@@ -2,7 +2,7 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>matrixdevelopertoolbar@ladoo.com.au</em:id>
+    <em:id>matrixTools@ladoo.com.au</em:id>
     <em:version>1.0</em:version>
     <em:type>2</em:type>
     
@@ -15,10 +15,10 @@
     </em:targetApplication>
    
     
-    <em:name>Squiz Matrix Developer Toolbar</em:name>
+    <em:name>Squiz Matrix Tools</em:name>
     <em:description>A series of tools and enhancements to empower you and make you a more efficient user of MySource / Squiz Matrix.</em:description>
     <em:creator>Anton Babushkin</em:creator>
     <em:homepageURL>http://www.ladoo.com.au/</em:homepageURL>
-	<em:optionsURL>chrome://matrixdevelopertoolbar/content/options.xul</em:optionsURL>
+	<em:optionsURL>chrome://matrixTools/content/options.xul</em:optionsURL>
   </Description>      
 </RDF>

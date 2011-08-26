@@ -1,5 +1,7 @@
 $(document).ready(function(){
-	matrixTools.dragDrop = {};
+	matrixTools.dragDrop = {
+		files: [] // array of hashes that represent filenames + filedata
+	};
 	
 	// Drag Enter (File Upload)
 	function dragActive(){
@@ -22,6 +24,39 @@ $(document).ready(function(){
 		}
 	}
 	
+	function changeCommitAction(){
+		var $commitButton = $("#sq_commit_button");
+		matrixTools.dragDrop.oldSubmit = $commitButton.attr("onclick");
+		$commitButton.attr("onclick", "").unbind("click").bind("click", function(){
+			var $rootNodeSelector = $("#sq_asset_finder_bulk_file_import_local_upload_root_asset_assetid");
+			$(this).attr("disabled", true);
+			if ($rootNodeSelector.length > 0 && $rootNodeSelector.val().length === 0) {
+				alert ("You need specify a Root Node before the upload can proceed.");
+				$(this).attr("disabled", false);
+			} else {
+				updateFilesList();
+				matrixTools.dragDrop.beginUpload();
+				$(this).attr("disabled", true);
+			}
+			return false;
+		});		
+	}
+	
+	// Checks if a person has removed any files from the upload list (e.g. in the Bulk File Upload Tool)
+	// Updates the file object list
+	function updateFilesList(){
+		var files = [];
+		if (matrixTools.dragDrop.isBulkFileTool()) {
+			for (var counter = 0; counter < matrixTools.dragDrop.files.length; counter++) {
+				var file = matrixTools.dragDrop.files[counter];
+				if ($("#bulk_file_import_table_container span[id*=bulk_file_upload_file_chooser_]:contains('" + file.data.name + "')").length !== 0) {
+					files.push(file);
+				}
+			}
+			matrixTools.dragDrop.files = files;
+		}
+	}
+	
 	// Not sure why I need to implement this
 	// Is there something wrong with the way I'm capturing dragenter and dragleave or just a general problem with this API?
 	function notInDropZone($dropZone, e){
@@ -35,7 +70,6 @@ $(document).ready(function(){
 	}
 	
 	matrixTools.dragDrop.init = function(){
-		$("#sq-content").append("<div id='dropPreview'></div>");
 		var $inputRow;
 		if (!matrixTools.dragDrop.isParseFile()) {
 			$inputRow = $("input[type=file]").parents("tr:first");
@@ -47,6 +81,7 @@ $(document).ready(function(){
 		if (matrixTools.dragDrop.isBulkFileTool()) {
 			$("#bulk_file_import_table_container").before(dropBoxHTML);
 		} else {
+			$dropZone.parents("table:first").find("td.sq-backend-data:first").append("<div id='dropPreview'></div>");
 			$dropZone.append(dropBoxHTML);
 		}
 		dragNotActive(); 
@@ -79,14 +114,12 @@ $(document).ready(function(){
 	};
 	
 	matrixTools.dragDrop.prepareUpload = function(file, index, bin){
+		changeCommitAction();
 		if (!matrixTools.dragDrop.isBulkFileTool() && !matrixTools.dragDrop.isParseFile()) {
-			var $input = $("#main_form input[type=file]").hide();
-			$input.prevAll("input").remove();
-			$input.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
-			
-			var data = new FormData();
-			data.append($input.attr("name"), file);
-			matrixTools.dragDrop.formData = data;			
+			var $file = $("#main_form input[type=file]").hide();
+			$file.prevAll("input").remove();
+			$file.before("<input type='text' class='sq-form-field drag-temp' value='" + file.name + "' /> <input type='button' id='drag-temp-browse' class='sq-form-field drag-temp' value='Browse…' />");
+			$("#main_form input[name*=_filename]").parents("tr:first").hide();		
 		} 
 		
 		if (matrixTools.dragDrop.isBulkFileTool()) {
@@ -97,15 +130,12 @@ $(document).ready(function(){
 			$file.remove();
 			
 			local_file_table.fileSelected($newInput[0], $newInput.attr("name").match(/\d.?/)[0]);
-			
-			if (matrixTools.dragDrop.formData) {
-				matrixTools.dragDrop.formData.append($file.attr("name"), file);
-			} else {
-				var data = new FormData();
-				data.append($file.attr("name"), file);
-				matrixTools.dragDrop.formData = data;	
-			}
 		}
+		
+		matrixTools.dragDrop.files.push({
+			name: $file.attr("name"),
+			data: file
+		});
 		
 		if (matrixTools.dragDrop.isParseFile()) {
 			// var $input = $("input[type=file][name*='assoc_file_']").hide();
@@ -131,12 +161,19 @@ $(document).ready(function(){
 			// completely restore previous state
 			$("#sq_commit_button").unbind("click").attr("onclick", matrixTools.dragDrop.oldSubmit);
 			$("#main_form input[type=file]").show().trigger("click");
+			$("#main_form input[name*=_filename]").parents("tr:first").show();
+			
 			return false;
 		});
 	};
 	
 	matrixTools.dragDrop.beginUpload = function(){
-		var d = matrixTools.dragDrop.formData;
+		var d = new FormData();
+		for (var counter = 0; counter < matrixTools.dragDrop.files.length; counter++) {
+			var file = matrixTools.dragDrop.files[counter];
+			d.append(file.name, file.data);
+		}
+		
 		$("#main_form").find("input,select,textarea").each(function(){
 			var $this = $(this);
 			if (typeof($this.attr("name")) !== "undefined" && $this.attr("type") !== "file") {
@@ -151,11 +188,11 @@ $(document).ready(function(){
 			processData: false,
 			contentType: false,
 			success: function(data){
+				document.forms[0]['changes'].value = 0;
 				if (typeof(local_file_table) === "undefined") {
 					var location = data.match(/action="(?:[^\\"]+|\\.)*"/)[0];
 					window.location.href = location;
 				} else {
-					document.forms[0]['changes'].value = '0';
 					window.location.reload();
 				}
 			}
@@ -169,21 +206,6 @@ $(document).ready(function(){
 		
 		event.stopPropagation();
 		event.preventDefault();
-		
-		var $commitButton = $("#sq_commit_button");
-		matrixTools.dragDrop.oldSubmit = $commitButton.attr("onclick");
-		$commitButton.attr("onclick", "").unbind("click").bind("click", function(){
-			var $rootNodeSelector = $("#sq_asset_finder_bulk_file_import_local_upload_root_asset_assetid");
-			$(this).attr("disabled", true);
-			if ($rootNodeSelector.length > 0 && $rootNodeSelector.val().length === 0) {
-				alert ("You need specify a Root Node before the upload can proceed.");
-				$(this).attr("disabled", false);
-			} else {		
-				matrixTools.dragDrop.beginUpload();
-				$(this).attr("disabled", true);
-			}
-			return false;
-		});		
 	
 		for (var i = 0; i < count; i++) {
 			var file = files[i],
@@ -219,7 +241,7 @@ $(document).ready(function(){
 			index = event.target.index,
 			file = event.target.file,
 			getBinaryDataReader = new FileReader();
-
+		
 		$("#dropPreview").html("<img id='item " + index + "' src='" + data + "' />");
 		getBinaryDataReader.addEventListener("loadend", function(evt){
 			matrixTools.dragDrop.prepareUpload(file, index, evt.target.result, false);

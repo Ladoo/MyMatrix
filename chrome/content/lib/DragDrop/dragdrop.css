@@ -1,7 +1,7 @@
 #dropPreview {
-	position: absolute;
-	top: 85px;
-	right: 20px;
+	float: right;
+	margin-bottom: -200px;
+	margin-top: -50px;
 }
 
 #dropPreview img {

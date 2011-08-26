@@ -1,9 +1,9 @@
-content     matrixdevelopertoolbar    chrome/content/
-content     matrixdevelopertoolbar    chrome/content/ contentaccessible=yes
-overlay chrome://browser/content/browser.xul chrome://matrixdevelopertoolbar/content/browser.xul
-#overlay chrome://global/content/customizeToolbar.xul chrome://matrixdevelopertoolbar/content/browser.xul
+content     matrixTools    chrome/content/
+content     matrixTools    chrome/content/ contentaccessible=yes
+overlay chrome://browser/content/browser.xul chrome://matrixTools/content/browser.xul
+#overlay chrome://global/content/customizeToolbar.xul chrome://matrixTools/content/browser.xul
 
-locale	matrixdevelopertoolbar	en-US	locale/en-US/
+locale	matrixTools	en-US	locale/en-US/
 
-skin	matrixdevelopertoolbar	classic/1.0	skin/
-style	chrome://global/content/customizeToolbar.xul	chrome://matrixdevelopertoolbar/skin/skin.css
+skin	matrixTools	classic/1.0	skin/
+style	chrome://global/content/customizeToolbar.xul	chrome://matrixTools/skin/skin.css

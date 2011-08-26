@@ -1,53 +1,53 @@
 /* jQuery Countdown styles 1.5.9. */
-#matrixdevelopertoolbar-lock-countdown.hasCountdown.warning {
+#matrixTools-lock-countdown.hasCountdown.warning {
 	color: #f57e0a;
 }
-#matrixdevelopertoolbar-lock-countdown.hasCountdown.expired {
+#matrixTools-lock-countdown.hasCountdown.expired {
 	color: red;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_rtl {
+#matrixTools-lock-countdown.countdown_rtl {
 	direction: rtl;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_holding span {
+#matrixTools-lock-countdown.countdown_holding span {
 	background-color: #ccc;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_row {
+#matrixTools-lock-countdown.countdown_row {
 	clear: both;
 	width: 100%;
 	padding: 0px 2px;
 	text-align: center;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_show1 .countdown_section {
+#matrixTools-lock-countdown.countdown_show1 .countdown_section {
 	width: 98%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_show2 .countdown_section {
+#matrixTools-lock-countdown.countdown_show2 .countdown_section {
 	width: 48%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_show3 .countdown_section {
+#matrixTools-lock-countdown.countdown_show3 .countdown_section {
 	width: 32.5%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_show4 .countdown_section {
+#matrixTools-lock-countdown.countdown_show4 .countdown_section {
 	width: 24.5%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_show5 .countdown_section {
+#matrixTools-lock-countdown.countdown_show5 .countdown_section {
 	width: 19.5%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_show6 .countdown_section {
+#matrixTools-lock-countdown.countdown_show6 .countdown_section {
 	width: 16.25%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_show7 .countdown_section {
+#matrixTools-lock-countdown.countdown_show7 .countdown_section {
 	width: 14%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_section {
+#matrixTools-lock-countdown.countdown_section {
 	display: block;
 	float: left;
 	font-size: 75%;
 	text-align: center;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_amount {
+#matrixTools-lock-countdown.countdown_amount {
 	font-size: 200%;
 }
-#matrixdevelopertoolbar-lock-countdown.countdown_descr {
+#matrixTools-lock-countdown.countdown_descr {
 	display: block;
 	width: 100%;
 }

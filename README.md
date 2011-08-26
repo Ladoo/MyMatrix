@@ -1,4 +1,4 @@
-Matrix Developer Toolbar
+Matrix Tools
 ======================================================================================================================
 
 This Firefox extensions provides a series of enhancements and tools to empower developers and authors using MySource / Squiz Matrix CMS.
@@ -11,10 +11,8 @@ Features
 --------
 
 * Inline syntax highlighting for RAW bodycopies (e.g Designs, CSS and JavaScript files);
-* Keyword replacement searcher and inline documentation;
 * Enhancements to the user interface when using certain asset types (e.g. Asset Listings);
-* Keyboard shortcut reference and modifier;
-* Quick asset diagnostics;
-* Cache buster;
+* Keyboard shortcut reference;
 * WYSIWYG replacement;
-* Detect if site is running Matrix
+* Seamless Saving
+* Drag and Drop File Uploads
