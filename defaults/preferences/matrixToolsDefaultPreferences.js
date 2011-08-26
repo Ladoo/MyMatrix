@@ -1,3 +1,4 @@
+pref("matrixTools.initialLoad", true);
 pref("matrixTools.enabled", true);
 pref("matrixTools.seamlessSaving", true);
 pref("matrixTools.syntaxHighlighter", true);
