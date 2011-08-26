@@ -19,6 +19,33 @@ var matrixTools = function(){
 		label.setAttribute("class", "toolbarbutton-1 matrixTools-button-inactive");
 	}
 	
+	//https://developer.mozilla.org/En/Code_snippets:Toolbar#Adding_button_by_default
+	//https://developer.mozilla.org/en/XUL_School/Appendix_B%3a_Install_and_Uninstall_Scripts#Install_Scripts
+	/**
+	 * Installs the toolbar button with the given ID into the given
+	 * toolbar, if it is not already present in the document.
+	 *
+	 * @param {string} toolbarId The ID of the toolbar to install to.
+	 * @param {string} id The ID of the button to install.
+	 * @param {string} afterId The ID of the element to insert after. @optional
+	 */	
+	function installButton(toolbarId, id, afterId) {
+	    if (!document.getElementById(id)) {
+	        var toolbar = document.getElementById(toolbarId);
+
+	        var before = toolbar.lastChild;
+	        if (afterId) {
+	            let elem = before = document.getElementById(afterId);
+	            if (elem && elem.parentNode == toolbar)
+	                before = elem.nextElementSibling;
+	        }
+
+	        toolbar.insertItem(id, before);
+	        toolbar.setAttribute("currentset", toolbar.currentSet);
+	        document.persist(toolbar.id, "currentset");
+	    }
+	}
+		
 	return {
 		// general settings
 		settings: {
@@ -41,6 +68,11 @@ var matrixTools = function(){
 		
 		init: function(){
 			matrixTools.preferences.init();
+			if (matrixTools.prefManager.getBoolPref("initialLoad")) {
+			    installButton("nav-bar", "matrixTools-button");
+				matrixTools.prefManager.setBoolPref("initialLoad", false);
+			}
+			matrixTools.preferences.setDefaults();
 			if (matrixTools.preferences.isEnabled()) {
 				gBrowser.addEventListener("load", function(){
 					gBrowser.addEventListener("DOMContentLoaded", matrixTools.bootstrap, false);
