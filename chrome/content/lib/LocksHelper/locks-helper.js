@@ -41,7 +41,7 @@ $(document).ready(function(){
 	var countDownStart = '+' + lockTimeHours + ' +' + lockTimeMinutes + ' +' + lockTimeSeconds;
 	
 	$('#matrixTools-lock-countdown').countdown({ until: countDownStart, compact: false, layout: '{h<} {hn} {hl} {h>} {m<} {mn} {ml} {m>} {s<} {sn} {sl} {s>} until locks expire', 
-		significant: 1, onExpiry: lockExpired, onTick: watchCountdown, labels: ['years','months','weeks','days','hours','minutes','seconds'], 
+		significant: 2, onExpiry: lockExpired, onTick: watchCountdown, labels: ['years','months','weeks','days','hours','minutes','seconds'], 
 		labels1: ['year','month','week','day','hour','minute','second'], 
 		expiryText: 'Locks have expired' });
 	
