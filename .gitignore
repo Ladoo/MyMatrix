@@ -1,13 +1,6 @@
 
-chrome/content/theme/.DS_Store
+*/.DS_Store
 
-chrome/content/lib/SyntaxHighlighter/.DS_Store
+.idea/*
 
-chrome/content/lib/.DS_Store
-
-chrome/content/.DS_Store
-
-chrome/content/lib/WYSIWYG/CKEditor/lang/.DS_Store
-
-chrome/content/lib/WYSIWYG/CKEditor/.DS_Store
-skin/.DS_Store
+Matrix-Toolbar-Anton/*
