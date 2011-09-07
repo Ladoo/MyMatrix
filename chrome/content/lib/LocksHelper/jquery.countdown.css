@@ -1,53 +1,53 @@
 /* jQuery Countdown styles 1.5.9. */
-#matrixTools-lock-countdown.hasCountdown.warning {
+#myMatrix-lock-countdown.hasCountdown.warning {
 	color: #f57e0a;
 }
-#matrixTools-lock-countdown.hasCountdown.expired {
+#myMatrix-lock-countdown.hasCountdown.expired {
 	color: red;
 }
-#matrixTools-lock-countdown.countdown_rtl {
+#myMatrix-lock-countdown.countdown_rtl {
 	direction: rtl;
 }
-#matrixTools-lock-countdown.countdown_holding span {
+#myMatrix-lock-countdown.countdown_holding span {
 	background-color: #ccc;
 }
-#matrixTools-lock-countdown.countdown_row {
+#myMatrix-lock-countdown.countdown_row {
 	clear: both;
 	width: 100%;
 	padding: 0px 2px;
 	text-align: center;
 }
-#matrixTools-lock-countdown.countdown_show1 .countdown_section {
+#myMatrix-lock-countdown.countdown_show1 .countdown_section {
 	width: 98%;
 }
-#matrixTools-lock-countdown.countdown_show2 .countdown_section {
+#myMatrix-lock-countdown.countdown_show2 .countdown_section {
 	width: 48%;
 }
-#matrixTools-lock-countdown.countdown_show3 .countdown_section {
+#myMatrix-lock-countdown.countdown_show3 .countdown_section {
 	width: 32.5%;
 }
-#matrixTools-lock-countdown.countdown_show4 .countdown_section {
+#myMatrix-lock-countdown.countdown_show4 .countdown_section {
 	width: 24.5%;
 }
-#matrixTools-lock-countdown.countdown_show5 .countdown_section {
+#myMatrix-lock-countdown.countdown_show5 .countdown_section {
 	width: 19.5%;
 }
-#matrixTools-lock-countdown.countdown_show6 .countdown_section {
+#myMatrix-lock-countdown.countdown_show6 .countdown_section {
 	width: 16.25%;
 }
-#matrixTools-lock-countdown.countdown_show7 .countdown_section {
+#myMatrix-lock-countdown.countdown_show7 .countdown_section {
 	width: 14%;
 }
-#matrixTools-lock-countdown.countdown_section {
+#myMatrix-lock-countdown.countdown_section {
 	display: block;
 	float: left;
 	font-size: 75%;
 	text-align: center;
 }
-#matrixTools-lock-countdown.countdown_amount {
+#myMatrix-lock-countdown.countdown_amount {
 	font-size: 200%;
 }
-#matrixTools-lock-countdown.countdown_descr {
+#myMatrix-lock-countdown.countdown_descr {
 	display: block;
 	width: 100%;
 }

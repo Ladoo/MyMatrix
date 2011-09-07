@@ -1,7 +1,7 @@
 // Todo: Refactoring love
 $(document).ready(function(){
 	// globals
-	matrixTools.sts = {
+	myMatrix.sts = {
 		selectors: [] // array of selector names and their inherit control names (important for submission of data)
 	};
 	
@@ -20,7 +20,7 @@ $(document).ready(function(){
 	function init(){
 		$selectors.each(function(){
 			var $selector = $(this);
-			matrixTools.sts.selectors.push({
+			myMatrix.sts.selectors.push({
 				selectName: $selector.attr("name"),
 				inheritName: findInheritControl($selector).attr("name")
 			});
@@ -69,8 +69,8 @@ $(document).ready(function(){
 	// Finds a given selector obj based on its name
 	// Only useful for when a user presses the "inherit" button
 	function findSelectorInHistory(name) {
-		for (var counter = 0; counter < matrixTools.sts.selectors.length; counter++) {
-			var sel = matrixTools.sts.selectors[counter];
+		for (var counter = 0; counter < myMatrix.sts.selectors.length; counter++) {
+			var sel = myMatrix.sts.selectors[counter];
 			if (sel.selectName === name) {
 				return sel;
 			}

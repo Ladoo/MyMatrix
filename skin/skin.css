@@ -1,11 +1,11 @@
-.matrixTools-button-inactive {
-	list-style-image: url("chrome://matrixTools/skin/button-inactive.png");
+.myMatrix-button-inactive {
+	list-style-image: url("chrome://myMatrix/skin/button-inactive.png");
 }
 
-.matrixTools-button-active {
-	list-style-image: url("chrome://matrixTools/skin/button-active.png");
+.myMatrix-button-active {
+	list-style-image: url("chrome://myMatrix/skin/button-active.png");
 }
 
-#matrixTools-button caption {
+#myMatrix-button caption {
 	list-style-image: none;
 }

@@ -1,8 +1,8 @@
 $(document).ready(function(){
 	
 	// inject timer and icon	
-	$('#sq_lock_release_manual').before('<div id="matrixTools-lock-countdown" style="position: relative; top: 23px; left: 152px;"></div>');
-	$('#sq_lock_release_manual').before('<img id="matrixTools-lockstatus" src="chrome://matrixTools/content/lib/LocksHelper/lock-helper-green.png" style="position:relative;top:6px;left:130px" />');		
+	$('#sq_lock_release_manual').before('<div id="myMatrix-lock-countdown" style="position: relative; top: 23px; left: 152px;"></div>');
+	$('#sq_lock_release_manual').before('<img id="myMatrix-lockstatus" src="chrome://myMatrix/content/lib/LocksHelper/lock-helper-green.png" style="position:relative;top:6px;left:130px" />');		
 	
 	// scrape the lock time from the page - need to checks due to different page types
 	if( $('#sq_lock_info').length ) {
@@ -40,23 +40,23 @@ $(document).ready(function(){
 	
 	var countDownStart = '+' + lockTimeHours + ' +' + lockTimeMinutes + ' +' + lockTimeSeconds;
 	
-	$('#matrixTools-lock-countdown').countdown({ until: countDownStart, compact: false, layout: '{h<} {hn} {hl} {h>} {m<} {mn} {ml} {m>} {s<} {sn} {sl} {s>} until locks expire', 
+	$('#myMatrix-lock-countdown').countdown({ until: countDownStart, compact: false, layout: '{h<} {hn} {hl} {h>} {m<} {mn} {ml} {m>} {s<} {sn} {sl} {s>} until locks expire', 
 		significant: 2, onExpiry: lockExpired, onTick: watchCountdown, labels: ['years','months','weeks','days','hours','minutes','seconds'], 
 		labels1: ['year','month','week','day','hour','minute','second'], 
 		expiryText: 'Locks have expired' });
 	
 	// lock expired, 
 	function lockExpired() {
-		$('#matrixTools-lockstatus').attr('src','chrome://matrixTools/content/lib/LocksHelper/lock-helper-red.png');
-		$('#matrixTools-lock-countdown').removeClass('warning');
-		$('#matrixTools-lock-countdown').addClass('expired');
+		$('#myMatrix-lockstatus').attr('src','chrome://myMatrix/content/lib/LocksHelper/lock-helper-red.png');
+		$('#myMatrix-lock-countdown').removeClass('warning');
+		$('#myMatrix-lock-countdown').addClass('expired');
 	}
 
 	// lock expiry warning (in seconds)
 	function watchCountdown(periods) {
 		if( $.countdown.periodsToSeconds(periods) === 30 ) {
-			$('#matrixTools-lockstatus').attr('src','chrome://matrixTools/content/lib/LocksHelper/lock-helper-yellow.png');
-			$('#matrixTools-lock-countdown').addClass('warning');
+			$('#myMatrix-lockstatus').attr('src','chrome://myMatrix/content/lib/LocksHelper/lock-helper-yellow.png');
+			$('#myMatrix-lock-countdown').addClass('warning');
 		}
 	}
 	

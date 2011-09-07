@@ -1,4 +1,4 @@
-#matrixTools-help-menu {
+#myMatrix-help-menu {
 	background-color: black;
 	opacity: 0.8;
 	padding: 8px;
@@ -11,7 +11,7 @@
 	border-radius: 4px;
 }
 
-#matrixTools-help-menu h1 {
+#myMatrix-help-menu h1 {
 	color: #fffdd1;
 	font-size: 1.4em;
 	margin: 0;
@@ -19,42 +19,42 @@
 	clear: both;
 }
 
-#matrixTools-help-menu h1:first-of-type {
+#myMatrix-help-menu h1:first-of-type {
 	padding-top: 0;
 }
 
-#matrixTools-help-menu p {
+#myMatrix-help-menu p {
 	float: right;
 	color: white;
 	margin-bottom: -15px;
 	cursor: pointer;
 }
 
-#matrixTools-help-menu p:hover {
+#myMatrix-help-menu p:hover {
 	font-weight: bold;
 }
 
-#matrixTools-help-menu ul {
+#myMatrix-help-menu ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-#matrixTools-help-menu li {
+#myMatrix-help-menu li {
 	display: block;
 	clear: both;
 	padding: 8px 0;
 }
 
-#matrixTools-help-menu div {
+#myMatrix-help-menu div {
 	color: white;
 }
 
-#matrixTools-help-menu .key {
+#myMatrix-help-menu .key {
 	float: left;
 	width: 16%;
 }
 
-#matrixTools-help-menu .action {
+#myMatrix-help-menu .action {
 	float: left;
 }
