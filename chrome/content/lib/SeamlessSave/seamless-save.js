@@ -1,7 +1,16 @@
 $(document).ready(function(){
-
+	
+	function updateTextAreas(){
+		$("textarea:hidden").each(function(){
+			var editor = window["editor_" + $(this).attr("id")];
+			if (typeof(editor) !== "undefined" && editor._htmlArea) {
+				$(this).val(editor.getHTML());
+			}
+		});
+	}
+	
 	//inject the saving message box into the page (hidden by default)
-	$('#sq_commit_button').after('<div id="matrixTools-seamless-save-message" style="background:rgba(0,0,0,0.8);color:#fff;display:none;position:fixed;bottom:8px;right:65px;padding:5px 30px;text-align:center;"><p style="margin:0;padding:0;color:white">Saving...</p></div>');
+	$('#sq_commit_button').after('<div id="seamlessSave"></div>');
 	
 	//get the default button action
 	var defaultButtonAction = $("#sq_commit_button").attr("onclick");
@@ -15,7 +24,7 @@ $(document).ready(function(){
     }; 
  
 	//add ajax click event
-	$('#sq_commit_button').click(function() {
+	$('#sq_commit_button').click(function(){
 		//check if user has updated div details
 		$("#main_form [name*=bodycopy_saved]").each(function(){ 
 			if ( $(this).val().length > 0 ) {
@@ -25,15 +34,16 @@ $(document).ready(function(){
 			} 
 		})
 		//check if user has added new nested content
-		if ( $('td[id*="content_type_nest_content"]:contains("No page has been selected")').length ) {
+		if ($('td[id*="content_type_nest_content"]:contains("No page has been selected")').length){
 			$('#sq_commit_button').attr('onclick',defaultButtonAction);
 			document.forms["main_form"].submit();
 			return false;
 		}
 		//ajax submit
-		if( $('#sq_commit_button').attr('onclick') === '' ) {
-			$('#matrixTools-seamless-save-message').html("Saving...");
-			$('#matrixTools-seamless-save-message').html("Saving...");
+		if ($('#sq_commit_button').attr('onclick') === '') {
+			$(this).val("Saving...");
+			$("#seamlessSave").addClass("seamlessSave-saving");
+			updateTextAreas(); // just incase the wysiwyg textareas haven't been updated... (bug: 48)
 			$('#main_form').ajaxSubmit(options); 
 			return false;
 		}
@@ -44,15 +54,21 @@ $(document).ready(function(){
 //callback functions for pre and post submit - display/hide save alert
 function showMessage() {
 	$('#sq_commit_button').attr('disabled',true);
-	$('#matrixTools-seamless-save-message').fadeIn('slow');
+	$('#seamlessSave').show();
 }
 function hideMessage(data, status, xhr) {
 	$.get(window.location.href, function(data){
 		if (data.search(/sq_lock_release_manual/) > -1) {
-			$('#matrixTools-seamless-save-message').html("Saved!...").delay(3000).fadeOut('slow');
+			$("#seamlessSave").removeClass("seamlessSave-saving").addClass("seamlessSave-success").delay(3000).fadeOut(function(){
+				$(this).removeClass("seamlessSave-success");
+			});
 		} else {
-			$('#matrixTools-seamless-save-message').html("Error!...").delay(3000).fadeOut('slow');
+			$("#seamlessSave").removeClass("seamlessSave-saving").addClass("seamlessSave-error").text("Error - could not save, your locks have been released.").delay(3000).fadeOut(function(){
+				$(this).text("").removeClass("seamlessSave-error");
+			});
 		}
+		
+		$('#sq_commit_button').val("Save").attr('disabled', false);
+		document.forms[0]['changes'].value = 0;
 	});
-	$('#sq_commit_button').attr('disabled',false);	
 }
