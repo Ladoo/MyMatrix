@@ -113,7 +113,8 @@ matrixTools.plugins = [
 			}
 			return ( 
 					(tab.assetType === "news_item") || 
-					(tab.screenBrowsing === "contents" && tab.assetType === "bodycopy") || (browseButtonExists)
+					(tab.screenBrowsing === "contents" && tab.assetType === "bodycopy") || (browseButtonExists) && 
+					(tab.assetType !== "design_customisation" && tab.assetType !== "design")
 				) ? true : false;
 		},
 		init: function(){
@@ -197,6 +198,7 @@ matrixTools.plugins = [
 			main = tab.mainFrame;
 			if ( main.document.getElementById("sq_commit_button") ) {
 				var pathToFiles = matrixTools.settings.paths.lib + "SeamlessSave/";
+				matrixTools.injectStyleSheet("seamless-save-css", pathToFiles + "seamless-save.css");
 				matrixTools.injectScript("jquery-form-js", pathToFiles + "jquery.form.js");
 				matrixTools.injectScript("seamless-save-js", pathToFiles + "seamless-save.js");
 			}
