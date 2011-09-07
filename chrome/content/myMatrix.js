@@ -1,22 +1,22 @@
-var matrixTools = function(){
+var myMatrix = function(){
 	// privates (stop looking)
 	var ffConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 		
 	function isMatrix(){
-		var button = document.getElementById("matrixTools-button");
-		button.className = "toolbarbutton-1 matrixTools-button-active";
+		var button = document.getElementById("myMatrix-button");
+		button.className = "toolbarbutton-1 myMatrix-button-active";
 		button.setAttribute("disabled", false);
 	}
 	
 	function isNotMatrix(){
-		var button = document.getElementById("matrixTools-button");
-		button.className = "toolbarbutton-1 matrixTools-button-inactive";
+		var button = document.getElementById("myMatrix-button");
+		button.className = "toolbarbutton-1 myMatrix-button-inactive";
 		button.setAttribute("disabled", true);
 	}
 	
 	function toolbarDisabled() {
-		var label = document.getElementById("matrixTools-button");
-		label.setAttribute("class", "toolbarbutton-1 matrixTools-button-inactive");
+		var label = document.getElementById("myMatrix-button");
+		label.setAttribute("class", "toolbarbutton-1 myMatrix-button-inactive");
 	}
 	
 	//https://developer.mozilla.org/En/Code_snippets:Toolbar#Adding_button_by_default
@@ -51,8 +51,8 @@ var matrixTools = function(){
 		settings: {
 			debug: true,
 			paths: {
-				content: "chrome://matrixTools/content/",
-				lib: "chrome://matrixTools/content/lib/"
+				content: "chrome://MyMatrix/content/",
+				lib: "chrome://MyMatrix/content/lib/"
 			}
 		},
 		
@@ -67,16 +67,16 @@ var matrixTools = function(){
 		},
 		
 		init: function(){
-			matrixTools.preferences.init();
-			if (matrixTools.prefManager.getBoolPref("initialLoad")) {
-			    installButton("nav-bar", "matrixTools-button");
-				matrixTools.prefManager.setBoolPref("initialLoad", false);
+			myMatrix.preferences.init();
+			if (myMatrix.prefManager.getBoolPref("initialLoad")) {
+			    installButton("nav-bar", "myMatrix-button");
+				myMatrix.prefManager.setBoolPref("initialLoad", false);
 			}
-			matrixTools.preferences.setDefaults();
-			if (matrixTools.preferences.isEnabled()) {
+			myMatrix.preferences.setDefaults();
+			if (myMatrix.preferences.isEnabled()) {
 				gBrowser.addEventListener("load", function(){
-					gBrowser.addEventListener("DOMContentLoaded", matrixTools.bootstrap, false);
-					gBrowser.tabContainer.addEventListener("TabSelect", matrixTools.bootstrap, false);
+					gBrowser.addEventListener("DOMContentLoaded", myMatrix.bootstrap, false);
+					gBrowser.tabContainer.addEventListener("TabSelect", myMatrix.bootstrap, false);
 				}, true);
 			}
 			else {
@@ -85,16 +85,16 @@ var matrixTools = function(){
 		},
 		
 		bootstrap: function(){
-			if (matrixTools.isMatrixBackend()) {
-				matrixTools.aboutTab.mainFrame = content.frames[3];
-				matrixTools.insertPageHelpers();
-				matrixTools.determineAssetType();
-				matrixTools.determineAssetScreen();
+			if (myMatrix.isMatrixBackend()) {
+				myMatrix.aboutTab.mainFrame = content.frames[3];
+				myMatrix.insertPageHelpers();
+				myMatrix.determineAssetType();
+				myMatrix.determineAssetScreen();
 				isMatrix();
-				matrixTools.determineFeatures();
-				matrixTools.dump(matrixTools.aboutTab);
+				myMatrix.determineFeatures();
+				myMatrix.dump(myMatrix.aboutTab);
 			}
-			else if (matrixTools.isMatrixSite()) {
+			else if (myMatrix.isMatrixSite()) {
 				isMatrix();
 			}
 			else {
@@ -104,11 +104,11 @@ var matrixTools = function(){
 				
 		// main public methods
 		error: function(message) {
-			if (matrixTools.settings.debug) Components.utils.reportError(message);
+			if (myMatrix.settings.debug) Components.utils.reportError(message);
 		},
 		
 		dump: function(obj) {
-			if (matrixTools.settings.debug) {
+			if (myMatrix.settings.debug) {
 				var out = '';
 				for (var i in obj) {
 					out += i + ": " + obj[i] + "\n";
@@ -118,9 +118,9 @@ var matrixTools = function(){
 		},
 		
 		injectScript: function(id, src, callback){
-			var main = matrixTools.aboutTab.mainFrame.document;
+			var main = myMatrix.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
-			id = "matrixTools-" + id;
+			id = "myMatrix-" + id;
 			if (!main.getElementById(id)) {
 				var script = main.createElement("script");
 				script.setAttribute("type", "text/javascript");
@@ -138,9 +138,9 @@ var matrixTools = function(){
 		},
 		
 		injectStyleSheet: function(id, href){
-			var main = matrixTools.aboutTab.mainFrame.document;
+			var main = myMatrix.aboutTab.mainFrame.document;
 			var head = main.getElementsByTagName("head")[0];
-			id = "matrixTools-" + id;
+			id = "myMatrix-" + id;
 			if (!main.getElementById(id)) {
 				var css = main.createElement("link");
 				css.setAttribute("type", "text/css");
@@ -156,54 +156,54 @@ var matrixTools = function(){
 		},
 		
 		insertPageHelpers: function(){
-			matrixTools.injectScript("jquery", "chrome://matrixTools/content/lib/jquery-1.6.2.min.js");
-			matrixTools.injectScript("matrixTools", "chrome://matrixTools/content/lib/matrixTools.js");
+			myMatrix.injectScript("jquery", this.settings.paths.lib + "jquery-1.6.2.min.js");
+			myMatrix.injectScript("myMatrix", this.settings.paths.lib + "myMatrix.js");
 		},
 
 		determineAssetType: function(){
 			// wrap it in a try catch clause so that the toolbar still functions even if we can't detect the asset type
 			try {
-				var assetType = matrixTools.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
+				var assetType = myMatrix.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-heading-icon")[0].getElementsByTagName("img")[0].getAttribute("src").match(/asset_types\/.*\//)[0].replace(/asset_types/, "").replace(/\//g, "");
 				if (typeof(assetType) !== "undefined") {
-					matrixTools.aboutTab.assetType = assetType;
+					myMatrix.aboutTab.assetType = assetType;
 				}
 			} catch (e) {
-				matrixTools.error("Cannot determine asset type: " + e.message);
+				myMatrix.error("Cannot determine asset type: " + e.message);
 			}
 		},
 		
 		determineAssetScreen: function(){
 			try {
-				var screenMenu = matrixTools.aboutTab.mainFrame.document.getElementById("screen_menu");
+				var screenMenu = myMatrix.aboutTab.mainFrame.document.getElementById("screen_menu");
 				if (screenMenu) {
-					matrixTools.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
+					myMatrix.aboutTab.screenBrowsing = screenMenu.options[screenMenu.selectedIndex].value.match(/asset_ei_screen=.*?&/)[0].replace(/asset_ei_screen=/, "").replace(/&/, "");
 				} else {
-					matrixTools.aboutTab.screenBrowsing = matrixTools.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-main-heading")[0].textContent.replace(/\t/g, '').replace(/\s/, '');
+					myMatrix.aboutTab.screenBrowsing = myMatrix.aboutTab.mainFrame.document.getElementsByClassName("sq-backend-main-heading")[0].textContent.replace(/\t/g, '').replace(/\s/, '');
 				} 
 			} catch (e) {
-				matrixTools.error("Cannot determine asset screen: " + e.message);
+				myMatrix.error("Cannot determine asset screen: " + e.message);
 			}
 		},
 		
 		determineFeatures: function(){
 			try {
-				matrixTools.aboutTab.featuresAvailable = [];
-				matrixTools.plugins.forEach(function(feature){
+				myMatrix.aboutTab.featuresAvailable = [];
+				myMatrix.plugins.forEach(function(feature){
 					try {
 						if (feature.detect()){
-							matrixTools.aboutTab.featuresAvailable.push(feature.id);
-							if (matrixTools.prefManager.getBoolPref(feature.id)) {
+							myMatrix.aboutTab.featuresAvailable.push(feature.id);
+							if (myMatrix.prefManager.getBoolPref(feature.id)) {
 								feature.init();
 							} else {
 								feature.destroy();
 							}
 						}
 					} catch (e) {
-						matrixTools.error("Feature detection failed (" + feature.id + "): " + e.message);
+						myMatrix.error("Feature detection failed (" + feature.id + "): " + e.message);
 					}
 				});	
 			} catch (e) {
-				matrixTools.error("Cannot detect features: " + e.message);		
+				myMatrix.error("Cannot detect features: " + e.message);		
 			}
 		},
 		
@@ -215,14 +215,14 @@ var matrixTools = function(){
 				callback();
 			} else {
 				setTimeout(function(){
-					matrixTools.objectHasLoaded(obj, where, callback);
+					myMatrix.objectHasLoaded(obj, where, callback);
 				}, 30);
 			}
 		},
 		
 		isMatrixBackend: function(){
-			matrixTools.aboutTab.isMatrixBackend = content.document.title.match(/(Squiz|MySource).*Administration Interface/) ? true : false;
-			return matrixTools.aboutTab.isMatrixBackend;
+			myMatrix.aboutTab.isMatrixBackend = content.document.title.match(/(Squiz|MySource).*Administration Interface/) ? true : false;
+			return myMatrix.aboutTab.isMatrixBackend;
 		},
 		
 		isMatrixSite: function(){
@@ -232,7 +232,7 @@ var matrixTools = function(){
 			var headComments = content.document.head.innerHTML.search(/Running MySource Matrix/);
 			var webPaths = content.document.body.innerHTML.search(/__data/);
 			if (headComments > 0 || webPaths > 0) {
-				matrixTools.aboutTab.isMatrixSite = true;
+				myMatrix.aboutTab.isMatrixSite = true;
 				return true;
 			} else {
 				return false;
@@ -241,4 +241,4 @@ var matrixTools = function(){
 	};
 }();
 
-window.addEventListener("load", matrixTools.init, false);
+window.addEventListener("load", myMatrix.init, false);

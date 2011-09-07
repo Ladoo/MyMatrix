@@ -13,7 +13,7 @@
 	* (function - bool) detect - code that will detect if this feature is present on the current screen.
 */
 
-matrixTools.plugins = [
+myMatrix.plugins = [
 	{
 		"id": "syntaxHighlighter",
 		"name": "Syntax Highlighter",
@@ -21,25 +21,25 @@ matrixTools.plugins = [
 		"layout_type": "checkbox",
 		"experimental": true,
 		detect: function(){
-			var textareas = matrixTools.aboutTab.mainFrame.document.getElementsByTagName("textarea"), tExists = false;
+			var textareas = myMatrix.aboutTab.mainFrame.document.getElementsByTagName("textarea"), tExists = false;
 			for (var counter in textareas) {
 				var t = textareas[counter];
 				if (typeof(t.id) !== "undefined" && t.id.search(/wysiwyg/) === -1) {
 					tExists = true;
 				}
 			}
-			return ((matrixTools.aboutTab.screenBrowsing.search(/(edit_file|parse_file|contents)/) > -1) && tExists) ? true : false;
+			return ((myMatrix.aboutTab.screenBrowsing.search(/(edit_file|parse_file|contents)/) > -1) && tExists) ? true : false;
 		},
 		init: function(){
-			var pathToFiles = matrixTools.settings.paths.lib + "SyntaxHighlighter/CodeMirror/";
+			var pathToFiles = myMatrix.settings.paths.lib + "SyntaxHighlighter/CodeMirror/";
 			
-			matrixTools.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js");
-			matrixTools.injectScript("codemirror-js-init", pathToFiles + "codemirror-init.js");
-			matrixTools.injectStyleSheet("codemirror-css", pathToFiles + "codemirror.css");
-			matrixTools.injectStyleSheet("codemirror-theme-default", pathToFiles + "default.css");
-			matrixTools.injectStyleSheet("codemirror-theme-elegant", pathToFiles + "elegant.css");
-			matrixTools.injectStyleSheet("codemirror-theme-neat", pathToFiles + "neat.css");
-			matrixTools.injectStyleSheet("codemirror-theme-night", pathToFiles + "night.css");
+			myMatrix.injectScript("codemirror-js", pathToFiles + "codemirror-compressed.js");
+			myMatrix.injectScript("codemirror-js-init", pathToFiles + "codemirror-init.js");
+			myMatrix.injectStyleSheet("codemirror-css", pathToFiles + "codemirror.css");
+			myMatrix.injectStyleSheet("codemirror-theme-default", pathToFiles + "default.css");
+			myMatrix.injectStyleSheet("codemirror-theme-elegant", pathToFiles + "elegant.css");
+			myMatrix.injectStyleSheet("codemirror-theme-neat", pathToFiles + "neat.css");
+			myMatrix.injectStyleSheet("codemirror-theme-night", pathToFiles + "night.css");
 		},
 		destroy: function(){
 		}
@@ -60,7 +60,7 @@ matrixTools.plugins = [
 		],
 		detect: function(){
 			var wysiwygExists = false;
-			var tables = matrixTools.aboutTab.mainFrame.document.getElementsByTagName("table");
+			var tables = myMatrix.aboutTab.mainFrame.document.getElementsByTagName("table");
 			for (var counter in tables) {
 				var t = tables[counter];
 				if (typeof(t.getAttribute) !== "undefined") {
@@ -72,12 +72,12 @@ matrixTools.plugins = [
 				}
 			}
 
-			return ( (matrixTools.aboutTab.assetType === "bodycopy") && wysiwygExists ) ? true : false;
+			return ( (myMatrix.aboutTab.assetType === "bodycopy") && wysiwygExists ) ? true : false;
 		},
 		init: function(){
-			var pathToFiles = matrixTools.settings.paths.lib + "WYSIWYG/CKEditor/";
-			matrixTools.injectScript("ckeditor-main-js", pathToFiles + "ckeditor.js");
-			matrixTools.injectScript("ckeditor-init-js", pathToFiles + "ckeditor-init.js");	
+			var pathToFiles = myMatrix.settings.paths.lib + "WYSIWYG/CKEditor/";
+			myMatrix.injectScript("ckeditor-main-js", pathToFiles + "ckeditor.js");
+			myMatrix.injectScript("ckeditor-init-js", pathToFiles + "ckeditor-init.js");	
 		},
 		destroy: function(){
 		}
@@ -92,7 +92,7 @@ matrixTools.plugins = [
 			// Works in these situations:
 			// 1) There is a browse button on the page
 			// 2) You're editing a page (e.g. Standard Page, News Item, etc.)
-			var tab = matrixTools.aboutTab, 
+			var tab = myMatrix.aboutTab, 
 				main = tab.mainFrame,
 				mainForm = main.document.getElementById("main_form");
 			
@@ -118,9 +118,9 @@ matrixTools.plugins = [
 				) ? true : false;
 		},
 		init: function(){
-			var pathToFiles = matrixTools.settings.paths.lib + "DragDrop/";
-			matrixTools.injectScript("dragdrop-js", pathToFiles + "dragdrop.js");
-			matrixTools.injectStyleSheet("dragdrop-css", pathToFiles + "dragdrop.css");
+			var pathToFiles = myMatrix.settings.paths.lib + "DragDrop/";
+			myMatrix.injectScript("dragdrop-js", pathToFiles + "dragdrop.js");
+			myMatrix.injectStyleSheet("dragdrop-css", pathToFiles + "dragdrop.css");
 		},
 		destroy: function(){
 		}
@@ -132,7 +132,7 @@ matrixTools.plugins = [
 		"layout_type": "checkbox",
 		"experimental": false,
 		detect: function(){
-			var tab = matrixTools.aboutTab,
+			var tab = myMatrix.aboutTab,
 				main = tab.mainFrame,
 				selectFields = main.document.getElementById("main_form").getElementsByTagName("select"),
 				regex = /(types\[type_code\]\[\]|create_types\[\]|add_layouts\[\]|new_type)/,
@@ -150,9 +150,9 @@ matrixTools.plugins = [
 			return exists;
 		},
 		init: function(){
-			var pathToFiles = matrixTools.settings.paths.lib + "SmartTypeSelector/";
-			matrixTools.injectScript("sts-js", pathToFiles + "sts.js");
-			matrixTools.injectStyleSheet("sts-css", pathToFiles + "sts.css");		
+			var pathToFiles = myMatrix.settings.paths.lib + "SmartTypeSelector/";
+			myMatrix.injectScript("sts-js", pathToFiles + "sts.js");
+			myMatrix.injectStyleSheet("sts-css", pathToFiles + "sts.css");		
 		},
 		destroy: function(){
 		}
@@ -164,14 +164,14 @@ matrixTools.plugins = [
 		"layout_type": "checkbox",
 		"experimental": false,
 		detect: function(){
-			return (matrixTools.aboutTab.assetType === 'remap_manager') ? true : false;
+			return (myMatrix.aboutTab.assetType === 'remap_manager') ? true : false;
 		},
 		init: function(){
-			var tab = matrixTools.aboutTab; 
+			var tab = myMatrix.aboutTab; 
 			main = tab.mainFrame;
-			if ( main.document.getElementById("matrixTools-remap-massuncheck-all") == null ) {
-				var pathToFiles = matrixTools.settings.paths.lib + "RemapMassUncheck/";
-				matrixTools.injectScript("remap-uncheck-js", pathToFiles + "remap-uncheck.js");
+			if ( main.document.getElementById("myMatrix-remap-massuncheck-all") == null ) {
+				var pathToFiles = myMatrix.settings.paths.lib + "RemapMassUncheck/";
+				myMatrix.injectScript("remap-uncheck-js", pathToFiles + "remap-uncheck.js");
 			}
 		},
 		destroy: function(){
@@ -190,17 +190,17 @@ matrixTools.plugins = [
 				"contents": [ "bodycopy" ]
 			};
 			return ( 
-				typeof(allowedTypes[matrixTools.aboutTab.screenBrowsing]) !== "undefined" && inArray(matrixTools.aboutTab.assetType,allowedTypes[matrixTools.aboutTab.screenBrowsing]) > -1
+				typeof(allowedTypes[myMatrix.aboutTab.screenBrowsing]) !== "undefined" && inArray(myMatrix.aboutTab.assetType,allowedTypes[myMatrix.aboutTab.screenBrowsing]) > -1
 			) ? true : false;
 		},
 		init: function(){
-			var tab = matrixTools.aboutTab; 
+			var tab = myMatrix.aboutTab; 
 			main = tab.mainFrame;
 			if ( main.document.getElementById("sq_commit_button") ) {
-				var pathToFiles = matrixTools.settings.paths.lib + "SeamlessSave/";
-				matrixTools.injectStyleSheet("seamless-save-css", pathToFiles + "seamless-save.css");
-				matrixTools.injectScript("jquery-form-js", pathToFiles + "jquery.form.js");
-				matrixTools.injectScript("seamless-save-js", pathToFiles + "seamless-save.js");
+				var pathToFiles = myMatrix.settings.paths.lib + "SeamlessSave/";
+				myMatrix.injectStyleSheet("seamless-save-css", pathToFiles + "seamless-save.css");
+				myMatrix.injectScript("jquery-form-js", pathToFiles + "jquery.form.js");
+				myMatrix.injectScript("seamless-save-js", pathToFiles + "seamless-save.js");
 			}
 		},
 		destroy: function(){
@@ -213,7 +213,7 @@ matrixTools.plugins = [
 		"layout_type": "checkbox",
 		"experimental": false,
 		detect: function(){
-			var tab = matrixTools.aboutTab; 
+			var tab = myMatrix.aboutTab; 
 			main = tab.mainFrame;
 			if ( main.document.getElementById("sq_lock_release_manual") ) {
 				return true
@@ -222,10 +222,10 @@ matrixTools.plugins = [
 			}
 		},
 		init: function(){
-			var pathToFiles = matrixTools.settings.paths.lib + "LocksHelper/";
-			matrixTools.injectScript("locks-helper-js", pathToFiles + "locks-helper.js");
-			matrixTools.injectScript("locks-countdown-js", pathToFiles + "jquery.countdown.js");
-			matrixTools.injectStyleSheet("locks-countdown-css", pathToFiles + "jquery.countdown.css");
+			var pathToFiles = myMatrix.settings.paths.lib + "LocksHelper/";
+			myMatrix.injectScript("locks-helper-js", pathToFiles + "locks-helper.js");
+			myMatrix.injectScript("locks-countdown-js", pathToFiles + "jquery.countdown.js");
+			myMatrix.injectStyleSheet("locks-countdown-css", pathToFiles + "jquery.countdown.css");
 		},
 		destroy: function(){
 		}
@@ -236,21 +236,21 @@ matrixTools.plugins = [
 		"description": "Keyboard shortcut reference guide.",
 		"experimental": false,
 		detect: function(){
-			return matrixTools.aboutTab.isMatrixBackend;
+			return myMatrix.aboutTab.isMatrixBackend;
 		},
 		init: function(){
 			var self = this;
-			matrixTools.injectStyleSheet("keyboard-shortcuts-css", matrixTools.settings.paths.lib + "KeyboardShortcuts/keyboard-shortcuts.css");
+			myMatrix.injectStyleSheet("keyboard-shortcuts-css", myMatrix.settings.paths.lib + "KeyboardShortcuts/keyboard-shortcuts.css");
 			window.addEventListener("keypress", function(e){
-				var main = matrixTools.aboutTab.mainFrame.document;
+				var main = myMatrix.aboutTab.mainFrame.document;
 				if (e.shiftKey && e.keyCode === 27) {
-					if (!main.getElementById("matrixTools-help-menu")) {
+					if (!main.getElementById("myMatrix-help-menu")) {
 						var helpMenu = main.createElement("div"), close = main.createElement("p"), shortCutKeys;
-						helpMenu.setAttribute("id", "matrixTools-help-menu");
+						helpMenu.setAttribute("id", "myMatrix-help-menu");
 						close.textContent = "Close";
 						close.addEventListener("click", function(){
-							var main = matrixTools.aboutTab.mainFrame.document;
-							main.body.removeChild(main.getElementById("matrixTools-help-menu"));
+							var main = myMatrix.aboutTab.mainFrame.document;
+							main.body.removeChild(main.getElementById("myMatrix-help-menu"));
 						}, false);
 						main.body.appendChild(helpMenu)
 						helpMenu.appendChild(close);
@@ -274,7 +274,7 @@ matrixTools.plugins = [
 					}
 				}
 				if (!e.shiftKey && e.keyCode === 27) {
-					main.body.removeChild(main.getElementById("matrixTools-help-menu"));
+					main.body.removeChild(main.getElementById("myMatrix-help-menu"));
 				}					
 			}, false);
 		},

@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://matrixTools/skin/skin.css"?> 
+<?xml-stylesheet href="chrome://myMatrix/skin/skin.css"?> 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
 	<toolbarpalette id="BrowserToolbarPalette">
-		<toolbarbutton id="matrixTools-button" class="toolbarbutton-1 matrixTools-button-inactive" type="menu-button" label="Matrix Tools">
-			<menupopup id="matrixTools-button-popup">
-				<menuitem id="matrixTools-enabled" label="Toolbar Enabled" type="checkbox" option="enabled" oncommand="matrixTools.preferences.toggleOption(this)" />
+		<toolbarbutton id="myMatrix-button" class="toolbarbutton-1 myMatrix-button-inactive" type="menu-button" label="Matrix Tools">
+			<menupopup id="myMatrix-button-popup">
+				<menuitem id="myMatrix-enabled" label="Toolbar Enabled" type="checkbox" option="enabled" oncommand="myMatrix.preferences.toggleOption(this)" />
 				<menuseparator />
-				<menuitem id="matrixTools-seamlessSaving" label="Seamless Saving" type="checkbox" option="seamlessSaving" oncommand="matrixTools.preferences.toggleOption(this)" />
-				<menuitem id="matrixTools-syntaxHighlighter" label="Syntax Highlighting" type="checkbox" option="syntaxHighlighter" oncommand="matrixTools.preferences.toggleOption(this)" />
-				<menuitem id="matrixTools-dragDropFiles" label="Drag &amp; Drop Files" type="checkbox" option="dragDropFiles" oncommand="matrixTools.preferences.toggleOption(this)" />
-				<menuitem id="matrixTools-remapManagerUncheck" label="Remap Manager Mass Uncheck" type="checkbox" option="remapManagerUncheck" oncommand="matrixTools.preferences.toggleOption(this)" />
-				<menuitem id="matrixTools-locksHelper" label="Locks Helper" type="checkbox" option="locksHelper" oncommand="matrixTools.preferences.toggleOption(this)" />
-				<menuitem id="matrixTools-smartTypeSelector" label="Smart Type Selector" type="checkbox" option="smartTypeSelector" oncommand="matrixTools.preferences.toggleOption(this)" />
-				<menuitem id="matrixTools-keyboardShortcuts" label="Keyboard Shortcuts Guide" type="checkbox" option="keyboardShortcuts" oncommand="matrixTools.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-seamlessSaving" label="Seamless Saving" type="checkbox" option="seamlessSaving" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-syntaxHighlighter" label="Syntax Highlighting" type="checkbox" option="syntaxHighlighter" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-dragDropFiles" label="Drag &amp; Drop Files" type="checkbox" option="dragDropFiles" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-remapManagerUncheck" label="Remap Manager Mass Uncheck" type="checkbox" option="remapManagerUncheck" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-locksHelper" label="Locks Helper" type="checkbox" option="locksHelper" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-smartTypeSelector" label="Smart Type Selector" type="checkbox" option="smartTypeSelector" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-keyboardShortcuts" label="Keyboard Shortcuts Guide" type="checkbox" option="keyboardShortcuts" oncommand="myMatrix.preferences.toggleOption(this)" />
 				<menuseparator />
-				<menuitem id="matrixTools-wysiwygReplace" label="Replace WYSIWYG" type="checkbox" option="wysiwygReplace" oncommand="matrixTools.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-wysiwygReplace" label="Replace WYSIWYG" type="checkbox" option="wysiwygReplace" oncommand="myMatrix.preferences.toggleOption(this)" />
 			</menupopup>
 		</toolbarbutton>
 	</toolbarpalette>
