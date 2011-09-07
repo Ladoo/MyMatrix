@@ -6,50 +6,50 @@
 
 */
 
-matrixTools.preferences = {
+myMatrix.preferences = {
 	isEnabled: function() {
-		return matrixTools.prefManager.getBoolPref("enabled");
+		return myMatrix.prefManager.getBoolPref("enabled");
 	},
 	init: function(){
-		matrixTools.prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("matrixTools.");
-		matrixTools.prefManager.QueryInterface(Components.interfaces.nsIPrefBranch2);
-		matrixTools.prefManager.addObserver("", this, false);
+		myMatrix.prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("myMatrix.");
+		myMatrix.prefManager.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		myMatrix.prefManager.addObserver("", this, false);
 	},
 	setDefaults: function(){
-		document.getElementById("matrixTools-enabled").setAttribute("checked", matrixTools.prefManager.getBoolPref("enabled"));
-		matrixTools.plugins.forEach(function(feature){
+		document.getElementById("myMatrix-enabled").setAttribute("checked", myMatrix.prefManager.getBoolPref("enabled"));
+		myMatrix.plugins.forEach(function(feature){
 			try {
-			 	document.getElementById("matrixTools-" + feature.id).setAttribute("checked", matrixTools.prefManager.getBoolPref(feature.id));
+			 	document.getElementById("myMatrix-" + feature.id).setAttribute("checked", myMatrix.prefManager.getBoolPref(feature.id));
 			} 
 			catch (e) {
-				matrixTools.error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
+				myMatrix.error("Preference listener initilisation failed for: (" + feature.id + "): " + e.message);
 			}
 		});		
 	},
 	toggleButton: function(){
-		if (!matrixTools.isMatrixSite() && !matrixTools.isMatrixBackend()) {
+		if (!myMatrix.isMatrixSite() && !myMatrix.isMatrixBackend()) {
 			return;
 		}
 		
-		var label = document.getElementById("matrixTools-button"), state = false, cs;
-		if (matrixTools.prefManager.getBoolPref("enabled")) {
+		var label = document.getElementById("myMatrix-button"), state = false, cs;
+		if (myMatrix.prefManager.getBoolPref("enabled")) {
 			state = false;
-			cs = "matrixTools-button-inactive";
+			cs = "myMatrix-button-inactive";
 		} else {
 			state = true;
-			cs = "matrixTools-button-active";
+			cs = "myMatrix-button-active";
 		}
-		matrixTools.prefManager.setBoolPref("enabled", state);
+		myMatrix.prefManager.setBoolPref("enabled", state);
 		label.setAttribute("class", "toolbarbutton-1 " + cs);
-		document.getElementById("matrixTools-enabled").setAttribute("checked", state);	
+		document.getElementById("myMatrix-enabled").setAttribute("checked", state);	
 	},
 	toggleOption: function(menuitem) {
 		try {
 			var checkS = menuitem.getAttribute("checked").length === 0 ? false : true;
-			matrixTools.prefManager.setBoolPref(menuitem.getAttribute("option"), checkS);
-			matrixTools.determineFeatures();
+			myMatrix.prefManager.setBoolPref(menuitem.getAttribute("option"), checkS);
+			myMatrix.determineFeatures();
 		} catch (e) {
-			matrixTools.error(e.message);
+			myMatrix.error(e.message);
 		}
 	},
 	observe: function(){

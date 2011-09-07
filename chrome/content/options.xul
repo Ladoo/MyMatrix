@@ -3,13 +3,13 @@
 <prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" buttons="accept" buttonlabelaccept="Close" title="Preferences">
 	  <prefpane id="saveoptions" label="Matrix Developer Toolbar Preferences">
 			<preferences>
-				<preference id="pref-toolbar-enabled" name="extensions.matrixTools.enabled" type="bool" instantApply="true"/>
-				<preference id="pref-seamless-saving" name="extensions.matrixTools.seamlessSaving" type="bool" instantApply="true"/>
-				<preference id="pref-syntax-highlighter" name="extensions.matrixTools.syntaxHighlighter" type="bool" instantApply="true"/>
-				<preference id="pref-wsyiwyg-replace" name="extensions.matrixTools.wysiwygReplace" type="bool" instantApply="true"/>
-				<preference id="pref-drag-drop-files" name="extensions.matrixTools.dragDropFiles" type="bool" instantApply="true"/>
-				<preference id="pref-remap-uncheck" name="extensions.matrixTools.remapManagerUncheck" type="bool" instantApply="true"/>
-				<preference id="pref-locks-helper" name="extensions.matrixTools.locksHelper" type="bool" instantApply="true"/>
+				<preference id="pref-toolbar-enabled" name="extensions.myMatrix.enabled" type="bool" instantApply="true"/>
+				<preference id="pref-seamless-saving" name="extensions.myMatrix.seamlessSaving" type="bool" instantApply="true"/>
+				<preference id="pref-syntax-highlighter" name="extensions.myMatrix.syntaxHighlighter" type="bool" instantApply="true"/>
+				<preference id="pref-wsyiwyg-replace" name="extensions.myMatrix.wysiwygReplace" type="bool" instantApply="true"/>
+				<preference id="pref-drag-drop-files" name="extensions.myMatrix.dragDropFiles" type="bool" instantApply="true"/>
+				<preference id="pref-remap-uncheck" name="extensions.myMatrix.remapManagerUncheck" type="bool" instantApply="true"/>
+				<preference id="pref-locks-helper" name="extensions.myMatrix.locksHelper" type="bool" instantApply="true"/>
 			</preferences>
 		<checkbox label="Toolbar Enabled" preference="pref-toolbar-enabled"/>
 		<checkbox label="Seamless Saving" preference="pref-seamless-saving"/>
