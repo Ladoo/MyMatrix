@@ -3,7 +3,7 @@ myMatrix.codeMirror = {
 };
 
 $(document).ready(function(){
-	$('textarea[id*=\"bodycopy\"], textarea[id*=\"file\"], textarea[id*=\"content_type_raw_html\"],').each(function(){
+	$('textarea[id*=\"file\"], textarea[id*=\"content_type_raw_html\"],').each(function(){
 		var cm = CodeMirror.fromTextArea(this);
 		var mode = "";
 		if (this.id.search(/js/) > -1) {
