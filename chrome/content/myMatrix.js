@@ -51,8 +51,8 @@ var myMatrix = function(){
 		settings: {
 			debug: true,
 			paths: {
-				content: "chrome://MyMatrix/content/",
-				lib: "chrome://MyMatrix/content/lib/"
+				content: "chrome://mymatrix/content/",
+				lib: "chrome://mymatrix/content/lib/"
 			}
 		},
 		

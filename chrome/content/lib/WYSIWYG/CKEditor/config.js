@@ -8,7 +8,7 @@ CKEDITOR.editorConfig = function(config){
 	config.toolbar_Coder = [
 		{
 			name: "document",
-			items: [ "Save", "-", "Templates" ]
+			items: [ "Templates" ]
 		},
 		{
 			name: "clipboard",
