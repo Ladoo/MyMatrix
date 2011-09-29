@@ -1,0 +1,22 @@
+#seamlessSave {
+	display: none;
+	position: fixed;
+	bottom: 14px;
+	right: 65px;
+	width: 16px;
+	height: 14px;
+}
+
+.seamlessSave-saving {
+	background: url(saving.gif) no-repeat center center;
+	right: 85px !important;
+}
+
+.seamlessSave-success {
+	background: url(success.png) no-repeat center center;
+}
+
+.seamlessSave-error {
+	background: url(error.png) no-repeat left center;
+	width: 287px !important;
+}

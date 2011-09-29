@@ -1,0 +1,23 @@
+#myMatrix-lock-countdown {
+    position: relative;
+    top: 6px;
+    left: 152px;
+    margin-bottom: -31px;
+}
+
+#myMatrix-lockstatus {
+    position: relative;
+    top: 19px;
+    left: 130px;
+    background: url(lock-helper-green.png) no-repeat center center;
+    width: 19px;
+    height: 21px;
+}
+
+.myMatrix-lock-countdown-warning {
+    background: url(lock-helper-yellow.png) no-repeat center center;
+}
+
+.myMatrix-lock-countdown-expired {
+    background: url(lock-helper-red.png) no-repeat center center;
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://mymatrix/skin/skin.css"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="myMatrix-button" class="toolbarbutton-1 myMatrix-button-inactive" type="menu-button" label="Matrix Tools">
+			<menupopup id="myMatrix-button-popup">
+				<menuitem id="myMatrix-enabled" label="Toolbar Enabled" type="checkbox" option="enabled" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuseparator />
+				<menuitem id="myMatrix-seamlessSaving" label="Seamless Saving" type="checkbox" option="seamlessSaving" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-syntaxHighlighter" label="Syntax Highlighting" type="checkbox" option="syntaxHighlighter" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-dragDropFiles" label="Drag &amp; Drop Files" type="checkbox" option="dragDropFiles" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-remapManagerUncheck" label="Remap Manager Mass Uncheck" type="checkbox" option="remapManagerUncheck" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-locksHelper" label="Locks Helper" type="checkbox" option="locksHelper" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-smartTypeSelector" label="Smart Type Selector" type="checkbox" option="smartTypeSelector" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuitem id="myMatrix-keyboardShortcuts" label="Keyboard Shortcuts Guide" type="checkbox" option="keyboardShortcuts" oncommand="myMatrix.preferences.toggleOption(this)" />
+				<menuseparator />
+				<menuitem id="myMatrix-wysiwygReplace" label="Replace WYSIWYG" type="checkbox" option="wysiwygReplace" oncommand="myMatrix.preferences.toggleOption(this)" />
+			</menupopup>
+		</toolbarbutton>
+	</toolbarpalette>
+</overlay>

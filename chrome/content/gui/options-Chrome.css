@@ -1,0 +1,25 @@
+body {
+    font-family: "Helvetica Neue", Arial, Verdana, sans-serif;
+    font-size: 0.85em;
+    width: 230px;
+}
+
+fieldset {
+    border: none;
+    border-bottom: 1px solid #dedede;
+    padding: 5px 0;
+    margin: 5px 0;
+}
+
+fieldset:last-of-type {
+    border: none;
+}
+
+legend {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+#experimental {
+    display: none
+}
