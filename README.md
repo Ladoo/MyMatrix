@@ -1,7 +1,7 @@
 MyMatrix
 ======================================================================================================================
 
-This Firefox extensions provides a series of enhancements and tools to empower developers and authors using MySource / Squiz Matrix CMS.
+This browser extensions provides a series of enhancements and tools to empower developers, designers and authors using MySource / Squiz Matrix CMS.
 
 If you want to make yourself a more efficient MySource / Squiz Matrix user then this is the extension for you.
 
@@ -16,4 +16,3 @@ Features
 * Enhancements to the user interface when using certain asset types (e.g. Asset Listings);
 * Keyboard shortcut reference and
 * WYSIWYG replacement (experimental).
-
