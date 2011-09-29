@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="options-Chrome.css" />
+
+    <script src="../helpers/lib.js"></script>
+    <script src="../core/myMatrix.js"></script>
+    <script src="../core/myMatrix-Chrome.js"></script>
+    <script src="../preferences/preferences.js"></script>
+    <script src="../preferences/preferences-Chrome.js"></script>
+    <script src="../plugins/plugins.js"></script>
+    <script src="../gui/gui.js"></script>
+    <script src="../gui/gui-Chrome.js"></script>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", function() {
+            myMatrix.preferences.init();
+            myMatrix.gui.drawOptions();
+        });
+    </script>
+</head>
+<body>
+    <form>
+        <fieldset>
+            <input type="checkbox" id="enabled" /> <label for="enabled">Toolbar Enabled</label>
+        </fieldset>
+        <fieldset id="plugins">
+            <legend>Plugins</legend>
+        </fieldset>
+        <fieldset id="experimental">
+            <legend>Experimental</legend>
+        </fieldset>
+    </form>
+</body>
+</html>

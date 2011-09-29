@@ -1,8 +1,8 @@
-content     mymatrix    chrome/content/
-content     mymatrix    chrome/content/ contentaccessible=yes
-overlay chrome://browser/content/browser.xul chrome://mymatrix/content/browser.xul
+content mymatrix chrome/content/
+content mymatrix chrome/content/ contentaccessible=yes
+locale  mymatrix en-US locale/en-US/
 
-locale	mymatrix	en-US	locale/en-US/
+skin mymatrix classic/1.0	skin/
+style chrome://global/content/customizeToolbar.xul chrome://mymatrix/skin/skin.css
 
-skin	mymatrix	classic/1.0	skin/
-style	chrome://global/content/customizeToolbar.xul	chrome://mymatrix/skin/skin.css
+overlay chrome://browser/content/browser.xul                    chrome://mymatrix/content/gui/browser.xul
