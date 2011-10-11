@@ -17,7 +17,11 @@ var myMatrix = {
         if (myMatrix.aboutTab.isMatrixBackend) {
             myMatrix.determineAssetType();
             myMatrix.determineAssetScreen();
-            myMatrix.sendRequest({ msg: "myMatrix-MatrixBackendDetected" });
+            if (typeof(jQuery) === "undefined") {
+                myMatrix.sendRequest({ msg: "myMatrix-MatrixBackendDetected" });
+            } else {
+                myMatrix.sendRequest({ msg: "myMatrix-HighlightButton" });
+            }
         } else if (myMatrix.aboutTab.isMatrixSite) {
             myMatrix.sendRequest({ msg: "myMatrix-MatrixSiteDetected" });
         } else {

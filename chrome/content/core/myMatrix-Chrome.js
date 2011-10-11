@@ -31,6 +31,10 @@ myMatrix.init = function() {
                 }
                 break;
 
+            case "myMatrix-HighlightButton":
+                myMatrix.gui.highlightButton();
+                break;
+
             case "myMatrix-EmbedFiles":
                 var plugin = request.data;
                 try {
@@ -102,4 +106,3 @@ chrome.tabs.onSelectionChanged.addListener(function(tabID){
         msg: "myMatrix-StatusUpdate"
     })
 });
-

@@ -184,7 +184,7 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
                 var allowedTypes = {
                     "parse_file": [ "design", "design_css" ],
                     "edit_file": [ "css_file", "js_file", "text_file", "xml_file", "xml_file", "xsl_file" ],
-                    "contents": [ "bodycopy" ]
+                    "contents": [ "bodycopy", "paint_layout_bodycopy" ]
                 };
                 return (
                     typeof(allowedTypes[myMatrix.aboutTab.assetScreen]) !== "undefined" &&
