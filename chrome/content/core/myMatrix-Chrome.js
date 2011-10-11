@@ -106,4 +106,3 @@ chrome.tabs.onSelectionChanged.addListener(function(tabID){
         msg: "myMatrix-StatusUpdate"
     })
 });
-
