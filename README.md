@@ -5,7 +5,7 @@ This browser extensions provides a series of enhancements and tools to empower d
 
 If you want to make yourself a more efficient MySource / Squiz Matrix user then this is the extension for you.
 
-**Latest release**: 1.1 RC1
+**Latest release**: 1.1
 
 **Supported browsers**:
 
