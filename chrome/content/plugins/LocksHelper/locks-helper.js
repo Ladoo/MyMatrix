@@ -3,15 +3,15 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
 
         // lock expired,
         function lockExpired() {
-            $('#myMatrix-lock-countdown').removeClass('myMatrix-lock-countdown-warning');
-            $('#myMatrix-lock-countdown').addClass('myMatrix-lock-countdown-expired');
+            $('#myMatrix-lockstatus').removeClass('myMatrix-lock-countdown-warning');
+            $('#myMatrix-lockstatus').addClass('myMatrix-lock-countdown-expired');
         }
 
         // lock expiry warning (in seconds)
         function watchCountdown(periods) {
             if (typeof($.countdown.periodsToSeconds) !== "undefined") {
                 if ($.countdown.periodsToSeconds(periods) === 30) {
-                    $('#myMatrix-lock-countdown').addClass('myMatrix-lock-countdown-warning');
+                    $('#myMatrix-lockstatus').addClass('myMatrix-lock-countdown-warning');
                 }
             }
         }
@@ -21,43 +21,47 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
 
         // scrape the lock time from the page - need to checks due to different page types
         if ($('#sq_lock_info').length) {
-            lockTime = $('#sq_lock_info').html();
+            var lockTime = $.trim($('#sq_lock_info .sq-backend-table-cell:last').text());
         } else {
-            lockTime = $('.sq-lock-message').html();
+            var lockTime = $('.sq-lock-message').html();
         }
 
         //hours
-        var pattHours = /[0-9] hour/i;
-        lockTimeHours = lockTime.match(pattHours);
-        if (!lockTimeHours) {
-            lockTimeHours = '0h';
+        var pattHours = /\d?\d?\s?hour/;
+        if (lockTime.search(pattHours) === -1) {
+            var lockTimeHours = '0h';
         } else {
-            lockTimeHours = String(lockTimeHours).replace(" hour", "h");
+            var lockTimeHours = lockTime.match(pattHours)[0].replace(" hours", "h");
         }
 
         // minutes
-        var pattMinutes = /[0-5] minute|[0-5][0-9] minute/i;
-        lockTimeMinutes = lockTime.match(pattMinutes);
-        if (!lockTimeMinutes) {
-            lockTimeMinutes = '0m';
+        var pattMinutes = /\d?\d?\s?minute/;
+        if (lockTime.search(pattMinutes) === -1) {
+            var lockTimeMinutes = '0m';
         } else {
-            lockTimeMinutes = String(lockTimeMinutes).replace(" minute", "m");
+            var lockTimeMinutes = lockTime.match(pattMinutes)[0].replace(" minutes", "m");
         }
 
         //seconds
-        var pattSeconds = /[0-5] second|[0-5][0-9] second/i;
-        lockTimeSeconds = lockTime.match(pattSeconds);
-        if (!lockTimeSeconds) {
-            lockTimeSeconds = '0s';
+        var pattSeconds = /\d?\d?\s?second/;
+        if (lockTime.search(pattSeconds) === -1) {
+            var lockTimeSeconds = '0s';
         } else {
-            lockTimeSeconds = String(lockTimeSeconds).replace(" second", "s");
+            var lockTimeSeconds = lockTime.match(pattSeconds)[0].replace(" seconds", "s");
         }
 
-        var countDownStart = '+' + lockTimeHours + ' +' + lockTimeMinutes + ' +' + lockTimeSeconds;
-
-        $('#myMatrix-lock-countdown').countdown({ until: countDownStart, compact: false, layout: '{h<} {hn} {hl} {h>} {m<} {mn} {ml} {m>} {s<} {sn} {sl} {s>} until locks expire',
-            significant: 2, onExpiry: lockExpired, onTick: watchCountdown, labels: ['years','months','weeks','days','hours','minutes','seconds'],
+        var countDownStart = '+' + lockTimeHours + '+' + lockTimeMinutes + ' +' + lockTimeSeconds;
+        console.log(countDownStart);
+        $('#myMatrix-lock-countdown').countdown({
+            until: countDownStart,
+            compact: false,
+            layout: '{h<} {hn} {hl} {h>} {m<} {mn} {ml} {m>} {s<} {sn} {sl} {s>} until locks expire',
+            significant: 1,
+            onExpiry: lockExpired,
+            onTick: watchCountdown,
+            labels: ['years','months','weeks','days','hours','minutes','seconds'],
             labels1: ['year','month','week','day','hour','minute','second'],
-            expiryText: 'Locks have expired' });
+            expiryText: 'Locks have expired'
+        });
     });
 }

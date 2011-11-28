@@ -3,14 +3,14 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>mymatrix@matrixusers.com</em:id>
-    <em:version>1.1</em:version>
+    <em:version>1.2</em:version>
     <em:type>2</em:type>
     
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>4.0</em:minVersion>
-        <em:maxVersion>7.*</em:maxVersion>
+        <em:maxVersion>9.*</em:maxVersion>
       </Description>
     </em:targetApplication>
    
@@ -23,7 +23,5 @@
 	<em:contributor>Nathan Cram</em:contributor>
 	<em:iconURL>chrome://mymatrix/skin/icon.png</em:iconURL>
     <em:homepageURL>http://matrixusers.com/tools/mymatrix/</em:homepageURL>
-	<em:updateURL>http://matrixusers.com/mymatrix/update.rdf</em:updateURL>
-	<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdpc0VJk42OWOZSQNtUvjH8lFoPWVeaThbaoewJV8FACevhDJF05ywfMtiqlsFLkfVWxLVohu58YyK8mebqNXEqJje6Q8YjHoVlu/r2XcZFWj3IYUPZ2PA/sd/pR9XZh6gAb5H32HtANuV1cCoiDNa29pcJrt7nadVNHKLeH/d9QIDAQAB</em:updateKey>
   </Description>
 </RDF>

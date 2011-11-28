@@ -31,9 +31,12 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
             "description": "Coding in Matrix is finally beautiful.",
             "layout_type": "checkbox",
             "experimental": false,
-            "path": "SyntaxHighlighter/CodeMirror/",
-            "css": [ "codemirror.css", "default.css", "elegant.css", "neat.css", "night.css" ],
-            "js": [ "codemirror-compressed.js", "codemirror-init.js" ],
+            //"path": "SyntaxHighlighter/CodeMirror/",
+            //"css": [ "codemirror.css", "default.css", "elegant.css", "neat.css", "night.css" ],
+            //"js": [ "codemirror-compressed.js", "codemirror-init.js" ],
+            "path": "SyntaxHighlighter/ace/",
+            "js": [ "ace.js", "mode-css.js", "mode-javascript.js", "mode-json.js", "mode-xml.js", "mode-html.js", "theme-textmate.js", "ace-init.js" ],
+
             detect: function(){
                 var textareas = document.getElementsByTagName("textarea"), tExists = false;
                 for (var counter in textareas) {

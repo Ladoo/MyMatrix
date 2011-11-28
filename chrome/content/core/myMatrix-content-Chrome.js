@@ -33,31 +33,33 @@ if (window.location.href.search(/sq_backend_page=main/i) > -1) {
         switch (response.msg) {
             case "myMatrix-StartPlugins":
                 myMatrix.objectHasLoaded("plugins", myMatrix, function() {
-                    if (!myMatrix.aboutTab.declarablePlugins.length) { // Prevents this from being initiated more than once
-                        myMatrix.determineDeclarablePlugins();
-                        response.data.forEach(function(pluginID) {
-                            if ($.inArray(pluginID, myMatrix.aboutTab.declarablePlugins) !== -1) {
-                                var plugin = myMatrix.findPluginJSON(pluginID);
-                                myMatrix.sendRequest({
-                                    msg: "myMatrix-EmbedFiles",
-                                    data: plugin
-                                });
-                                if (typeof(plugin.img_elements) !== "undefined" && plugin.img_elements.length > 0) {
-                                    myMatrix.elementsHaveLoaded(plugin.img_elements, function(elID) {
-                                        var $el = $("#" + elID);
-                                        myMatrix.updateImageReference($el, plugin);
-                                        myMatrix.watchElement($el, "class", plugin, function($e, p){
-                                            myMatrix.updateImageReference($e, p);
-                                        });
+                    myMatrix.objectHasLoaded("$", window, function(){
+                        if (!myMatrix.aboutTab.declarablePlugins.length) { // Prevents this from being initiated more than once
+                            myMatrix.determineDeclarablePlugins();
+                            response.data.forEach(function(pluginID) {
+                                if ($.inArray(pluginID, myMatrix.aboutTab.declarablePlugins) !== -1) {
+                                    var plugin = myMatrix.findPluginJSON(pluginID);
+                                    myMatrix.sendRequest({
+                                        msg: "myMatrix-EmbedFiles",
+                                        data: plugin
                                     });
+                                    if (typeof(plugin.img_elements) !== "undefined" && plugin.img_elements.length > 0) {
+                                        myMatrix.elementsHaveLoaded(plugin.img_elements, function(elID) {
+                                            var $el = $("#" + elID);
+                                            myMatrix.updateImageReference($el, plugin);
+                                            myMatrix.watchElement($el, "class", plugin, function($e, p){
+                                                myMatrix.updateImageReference($e, p);
+                                            });
+                                        });
+                                    }
                                 }
-                            }
-                        });
+                            });
 
-                        myMatrix.sendRequest({
-                            msg: "myMatrix-CleanTopFrame"
-                        });
-                    }
+                            myMatrix.sendRequest({
+                                msg: "myMatrix-CleanTopFrame"
+                            });
+                        }
+                    });
                 });
 
                 break;

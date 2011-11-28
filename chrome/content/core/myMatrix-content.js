@@ -7,7 +7,7 @@ var myMatrix = {
       declarablePlugins: []
     },
     settings: {
-        maxElementHasLoadedIterations: 5
+        maxElementHasLoadedIterations: 20
     },
 
     init: function() {
@@ -115,7 +115,9 @@ var myMatrix = {
             if (counter < myMatrix.settings.maxElementHasLoadedIterations) {
                 setTimeout(function(){
                     myMatrix.elementHasLoaded(elID, callback, counter);
-                }, 30);
+                }, 100);
+            } else {
+                console.log("Failed to detect: " + elID + ". Aborting.");
             }
         }
     },
