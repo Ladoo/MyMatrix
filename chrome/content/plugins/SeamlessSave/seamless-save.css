@@ -1,15 +1,14 @@
 #seamlessSave {
 	display: none;
-	position: fixed;
-	bottom: 14px;
-	right: 65px;
 	width: 16px;
 	height: 14px;
+    position: relative;
+    top: 2px;
+    right: 4px;
 }
 
 .seamlessSave-saving {
 	background: url(saving.gif) no-repeat center center;
-	right: 85px !important;
 }
 
 .seamlessSave-success {

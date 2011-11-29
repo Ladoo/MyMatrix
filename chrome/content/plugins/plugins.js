@@ -31,11 +31,11 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
             "description": "Coding in Matrix is finally beautiful.",
             "layout_type": "checkbox",
             "experimental": false,
-            //"path": "SyntaxHighlighter/CodeMirror/",
-            //"css": [ "codemirror.css", "default.css", "elegant.css", "neat.css", "night.css" ],
-            //"js": [ "codemirror-compressed.js", "codemirror-init.js" ],
-            "path": "SyntaxHighlighter/ace/",
-            "js": [ "ace.js", "mode-css.js", "mode-javascript.js", "mode-json.js", "mode-xml.js", "mode-html.js", "theme-textmate.js", "ace-init.js" ],
+            "path": "SyntaxHighlighter/CodeMirror/",
+            "css": [ "codemirror.css", "default.css", "elegant.css", "neat.css", "night.css" ],
+            "js": [ "codemirror-compressed.js", "codemirror-init.js" ],
+            //"path": "SyntaxHighlighter/ace/",
+            //"js": [ "ace.js", "mode-css.js", "mode-javascript.js", "mode-json.js", "mode-xml.js", "mode-html.js", "theme-textmate.js", "ace-init.js" ],
 
             detect: function(){
                 var textareas = document.getElementsByTagName("textarea"), tExists = false;
@@ -187,7 +187,7 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
                 var allowedTypes = {
                     "parse_file": [ "design", "design_css" ],
                     "edit_file": [ "css_file", "js_file", "text_file", "xml_file", "xml_file", "xsl_file" ],
-                    "contents": [ "bodycopy", "paint_layout_bodycopy" ]
+                    "contents": [ "bodycopy", "paint_layout_bodycopy", "layout" ]
                 };
                 return (
                     typeof(allowedTypes[myMatrix.aboutTab.assetScreen]) !== "undefined" &&

@@ -51,7 +51,6 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
         }
 
         var countDownStart = '+' + lockTimeHours + '+' + lockTimeMinutes + ' +' + lockTimeSeconds;
-        console.log(countDownStart);
         $('#myMatrix-lock-countdown').countdown({
             until: countDownStart,
             compact: false,
