@@ -5,21 +5,25 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
         myMatrix.sts = {
             selectors: [], // array of selector names and their inherit control names (important for submission of data)
             searchForAssetType: function($input){
-                var $groups = $input.parent().next();
+                var $groups = $input.parent().next(), $query = $.trim($input.val().toLowerCase());
 
-                if ($input.val().length > 0) {
+                if ($query.length > 0) {
                     $input.prev().show();
-                    var $results = $($.grep($groups.find(".group li"), function(e){
-                        var reg = new RegExp($input.val(), "i");
-                        return reg.test($(e).text());
-                    }));
-                    if ($results.length > 0) {
+                    var results = [];
+                    $groups.find("label").each(function(){
+                        var text = $.trim($(this).text().toLowerCase());
+                        if (text.search($query) !== -1) {
+                            results.push($(this).parent()[0]);
+                        }
+                    });
+
+                    if (results.length > 0) {
                         $groups.addClass("no-grid");
                         if ($groups.children(".search-results-heading").length === 0) {
                             $groups.prepend("<strong class='search-results-heading'>Search results</strong>");
                         }
                         $groups.find("li").hide();
-                        $results.each(function(){
+                        $(results).each(function(){
                             $(this).show();
                         });
                     } else {

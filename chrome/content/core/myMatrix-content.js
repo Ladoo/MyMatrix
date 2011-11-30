@@ -135,6 +135,15 @@ var myMatrix = {
 
     isCorrectFrame: function() {
         return window.location.href.search(/(sq_backend_page=main)/i) > -1;
+    },
+
+    getAssetID: function() {
+        if (typeof($) !== "undefined") {
+            myMatrix.sendRequest({
+                msg: "myMatrix-AssetID",
+                data: $("#sq-content > .sq-backend-main-headings .sq-backend-main-heading div:first").attr("id").match(/\d.*-m/)[0].replace(/-m/, "")
+             });
+        }
     }
 }
 

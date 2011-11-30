@@ -14,6 +14,11 @@
     height: auto;
     border: none;
     padding-left:  0;
+    padding-top: 0;
+}
+
+.sst-selector .no-grid .group ul {
+    margin: 0;
 }
 
 .sst-selector .no-grid .group strong {
@@ -22,7 +27,7 @@
 
 .sst-selector .search-results-heading {
     display: block !important;
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 .sst-selector .search {

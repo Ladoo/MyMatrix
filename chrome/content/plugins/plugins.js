@@ -215,6 +215,21 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
             destroy: function(){}
         },
         {
+            "id": "cacheBuster",
+            "name": "Clear cache",
+            "description": "Clears the cache on the current asset the user is viewing.",
+            "layout_type": "action_button",
+            "experimental": false,
+            "path": "CacheBuster/",
+            "css": [ "cache-buster.css" ],
+            "js": [ "cache-buster.js" ],
+            detect: function(){
+                return myMatrix.aboutTab.isMatrixBackend;
+            },
+            init: function(){},
+            destroy: function(){}
+        },
+        {
             "id": "keyboardShortcuts",
             "name": "Keyboard Shortcut Guide",
             "description": "Keyboard shortcut reference guide.",
