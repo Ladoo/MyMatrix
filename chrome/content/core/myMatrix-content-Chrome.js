@@ -68,8 +68,12 @@ if (window.location.href.search(/sq_backend_page=main/i) > -1) {
                 myMatrix.init();
                 break;
 
-            case "myMatrix-GetAssetID":
+            case "myMatrix-getAssetID":
                 myMatrix.getAssetID();
+                break;
+
+            case "myMatrix-GetRealAssetID":
+                myMatrix.getRealAssetID();
                 break;
 
             default:

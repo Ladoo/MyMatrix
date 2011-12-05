@@ -9,7 +9,7 @@ $(document).ready(function(){
             // Listen for events from content scripts
             chrome.extension.onRequest.addListener(function(request, sender) {
                 switch (request.msg) {
-                    case "myMatrix-AssetID":
+                    case "myMatrix-RealAssetID":
                         assetID = request.data;
                         break;
                     default:
@@ -19,7 +19,7 @@ $(document).ready(function(){
 
             // Get the current asset ID (if available)
             chrome.tabs.sendRequest(tab.id, {
-                msg: "myMatrix-GetAssetID"
+                msg: "myMatrix-GetRealAssetID"
             });
 
             $("#cacheBuster").bind("click", function(){
@@ -31,8 +31,10 @@ $(document).ready(function(){
                         var data = new FormData();
                         data.append("process_form", 1);
                         data.append("changes", 0);
+                        data.append("allowconfirm", 1);
+                        data.append("committed_tool_type_code", "tool_clear_matrix_cache");
                         data.append("tool_clear_matrix_cache_assetid[assetid]", assetID);
-                        data.append("tool_clear_matrix_cache_assetid[url]", "//");
+                        data.append("tool_clear_matrix_cache_assetid[url]", "///");
                         data.append("tool_clear_matrix_cache_level", "dependants");
                         data.append("tool_clear_matrix_cache_clear_now", 1);
                         data.append("sq_lock_release", 1);
@@ -46,6 +48,7 @@ $(document).ready(function(){
                             success: function(data){
                                 $("img").hide();
                                 $("#cacheBuster").attr("disabled", false);
+                                // TODO: Clear Squid cache (if appropriate)
                             }
                         });
                     }
