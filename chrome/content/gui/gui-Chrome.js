@@ -16,7 +16,7 @@ myMatrix.gui.drawOptions = function() {
         var state = (myMatrix.preferences.getPreference(plugin.id)) ? "checked" : "",
             checkbox_html = "<div id='" + plugin.id + "Wrapper'><input id='"+ plugin.id + "' type='checkbox' value='" + plugin.id + "' " + state + " /> <label for='" + plugin.id + "'>" + plugin.name + "</label></div>",
             button_html = "<div id='" + plugin.id + "Wrapper'><input type='button' id='" + plugin.id + "' value='" + plugin.name + "' /></div>"
-        if (typeof(plugin.platforms) === "undefined" || !plugin.platforms || inArray(plugin.platforms, "chrome") !== -1) {
+        if (typeof(plugin.platforms) === "undefined" || !plugin.platforms || $.inArray(plugin.platforms, "chrome") !== -1) {
             if (plugin.layout_type == "checkbox") {
                 if (plugin.experimental) {
                     experimental.innerHTML += checkbox_html;

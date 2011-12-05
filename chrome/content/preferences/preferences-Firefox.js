@@ -18,14 +18,18 @@ myMatrix.preferences.isEnabled = function(){
 
 myMatrix.preferences.toggleOption = function(option) {
     try {
-        // TODO: Move the attribute checking to the GUI layer. This method should only handle booleans.
-        var checkS = option.getAttribute("checked").length === 0 ? false : true;
-        this.setPreference(option.getAttribute("option"), checkS);
+        if (option.tagName !== "BUTTON") {
+            // TODO: Move the attribute checking to the GUI layer. This method should only handle booleans.
+            var checkS = option.getAttribute("checked").length === 0 ? false : true;
+            this.setPreference(option.getAttribute("option"), checkS);
 
-        if (!this.isEnabled()) {
-            myMatrix.gui.dimButton();
+            if (!this.isEnabled()) {
+                myMatrix.gui.dimButton();
+            } else {
+                myMatrix.gui.highlightButton();
+            }
         } else {
-            myMatrix.gui.highlightButton();
+            
         }
 
     } catch (e) {

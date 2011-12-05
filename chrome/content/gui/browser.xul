@@ -1,7 +1,6 @@
 <?xml version="1.0"?> 
 <?xul-overlay href="buttonOverlay.xul"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/javascript" src="../helpers/lib.js"></script>
 	<script type="application/javascript" src="../core/myMatrix.js"></script>
     <script type="application/javascript" src="../core/myMatrix-Firefox.js"></script>
 	<script type="application/javascript" src="../plugins/plugins.js"></script>

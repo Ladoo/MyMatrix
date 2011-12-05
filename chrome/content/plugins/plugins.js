@@ -57,7 +57,7 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
             "description": "",
             "layout_type": "checkbox",
             "experimental": true,
-            "platforms": [ "firefox "],
+            "platforms": [ "firefox" ],
             "path": "WYSIWYG/CKEditor/",
             "js": [ "ckeditor.js", "config.js", "ckeditor-init.js" ],
             "css": [ "contents.css" ],
