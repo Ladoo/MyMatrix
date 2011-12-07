@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://mymatrix/skin/skin.css"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	
+
+    <!-- TODO: Move to a script file so that the options are drawn automatically based on the plugins available. -->
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="myMatrix-button" class="toolbarbutton-1 myMatrix-button-inactive" type="menu-button" label="Matrix Tools">
 			<menupopup id="myMatrix-button-popup">
@@ -14,7 +15,7 @@
 				<menuitem id="myMatrix-locksHelper" label="Locks Helper" type="checkbox" option="locksHelper" oncommand="myMatrix.preferences.toggleOption(this)" />
 				<menuitem id="myMatrix-smartTypeSelector" label="Smart Type Selector" type="checkbox" option="smartTypeSelector" oncommand="myMatrix.preferences.toggleOption(this)" />
 				<menuitem id="myMatrix-keyboardShortcuts" label="Keyboard Shortcuts Guide" type="checkbox" option="keyboardShortcuts" oncommand="myMatrix.preferences.toggleOption(this)" />
-				<menuseparator />
+                <menuseparator />
 				<menuitem id="myMatrix-wysiwygReplace" label="Replace WYSIWYG" type="checkbox" option="wysiwygReplace" oncommand="myMatrix.preferences.toggleOption(this)" />
 			</menupopup>
 		</toolbarbutton>

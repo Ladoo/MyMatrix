@@ -7,7 +7,7 @@ var myMatrix = {
       declarablePlugins: []
     },
     settings: {
-        maxElementHasLoadedIterations: 5
+        maxElementHasLoadedIterations: 20
     },
 
     init: function() {
@@ -115,7 +115,9 @@ var myMatrix = {
             if (counter < myMatrix.settings.maxElementHasLoadedIterations) {
                 setTimeout(function(){
                     myMatrix.elementHasLoaded(elID, callback, counter);
-                }, 30);
+                }, 100);
+            } else {
+                console.log("Failed to detect: " + elID + ". Aborting.");
             }
         }
     },
@@ -133,6 +135,29 @@ var myMatrix = {
 
     isCorrectFrame: function() {
         return window.location.href.search(/(sq_backend_page=main)/i) > -1;
+    },
+
+    // TODO: This should use the same technique as getRealAssetID
+    getAssetID: function() {
+        if (typeof($) !== "undefined") {
+            myMatrix.sendRequest({
+                msg: "myMatrix-AssetID",
+                data: $("#sq-content > .sq-backend-main-headings .sq-backend-main-heading div:first").attr("id").match(/\d.*-m/)[0].replace(/-m/, "")
+             });
+        }
+    },
+
+    // TODO: Should this API be merged with getAssetID?? Seems like it's almost the same thing!
+    getRealAssetID: function() {
+        if (typeof($) !== "undefined") {
+            var assetIDs = $("#main_form").attr("action").match(/sq_asset_path=\d.*/)[0].split(",");
+            var assetID = assetIDs[assetIDs.length - 1];
+
+            myMatrix.sendRequest({
+               msg: "myMatrix-RealAssetID",
+               data: assetID
+            });
+        }
     }
 }
 

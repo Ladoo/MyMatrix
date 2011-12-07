@@ -15,15 +15,19 @@ myMatrix.init = function() {
     myMatrix.console = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 
     if (gBrowser) {
-        gBrowser.addEventListener("load", function(){
-            gBrowser.addEventListener("DOMContentLoaded", myMatrix.bootstrap, false);
-            gBrowser.tabContainer.addEventListener("TabSelect", function(){
-                myMatrix.gui.dimButton();
-                myMatrix.sendRequest({
-                    msg: "myMatrix-StatusUpdate"
-                });
-            }, false);
-        }, true);
+            myMatrix.gBrowserLoadEventFired = false;
+            gBrowser.addEventListener("load", function(){
+                if (!myMatrix.gBrowserLoadEventFired) {
+                    myMatrix.gBrowserLoadEventFired = true;
+                    gBrowser.addEventListener("DOMContentLoaded", myMatrix.bootstrap, false);
+                    gBrowser.tabContainer.addEventListener("TabSelect", function(){
+                        myMatrix.gui.dimButton();
+                        myMatrix.sendRequest({
+                            msg: "myMatrix-StatusUpdate"
+                        });
+                    }, false);
+                }
+            }, true);
     } else {
         myMatrix.error("Could not find the global browser object. Important event binding failed.");
     }
@@ -31,6 +35,10 @@ myMatrix.init = function() {
 
 myMatrix.error = function(message){
     if (myMatrix.settings.debug) Components.utils.reportError(message);
+}
+
+myMatrix.log = function(message) {
+    if (myMatrix.settings.debug) myMatrix.console.logStringMessage(message);
 }
 
 myMatrix.dump = function(obj){
@@ -144,6 +152,10 @@ myMatrix.onRequest = function(response) {
 
         case "myMatrix-NotMatrix":
             myMatrix.gui.dimButton();
+            break;
+
+        case "myMatrix-HighlightButton":
+            myMatrix.gui.highlightButton();
             break;
 
         default:

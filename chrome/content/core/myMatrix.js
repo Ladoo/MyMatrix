@@ -16,12 +16,12 @@ var myMatrix = {
         isMatrixSite: false,
         assetType: "",
         assetScreen: "",
-        enabledPlugins: [],
-        mainFrame: null
+        enabledPlugins: []
     },
 
     // interfaces
     error: function(message) {},
+    log: function(message) {},
     dump: function(obj) {},
 
     // common methods

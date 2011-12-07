@@ -6,6 +6,7 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
 
     $(document).ready(function(){
         $('textarea[id*=\"file\"], textarea[id*=\"content_type_raw_html\"],').each(function(){
+            $(this).css("position", "relative");
             var cm = CodeMirror.fromTextArea(this);
             var mode = "";
             if (this.id.search(/js/) > -1) {

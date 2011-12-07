@@ -3,7 +3,38 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
     $(document).ready(function(){
         // globals
         myMatrix.sts = {
-            selectors: [] // array of selector names and their inherit control names (important for submission of data)
+            selectors: [], // array of selector names and their inherit control names (important for submission of data)
+            searchForAssetType: function($input){
+                var $groups = $input.parent().next(), $query = $.trim($input.val().toLowerCase());
+
+                if ($query.length > 0) {
+                    $input.prev().show();
+                    var results = [];
+                    $groups.find("label").each(function(){
+                        var text = $.trim($(this).text().toLowerCase());
+                        if (text.search($query) !== -1) {
+                            results.push($(this).parent()[0]);
+                        }
+                    });
+
+                    if (results.length > 0) {
+                        $groups.addClass("no-grid");
+                        if ($groups.children(".search-results-heading").length === 0) {
+                            $groups.prepend("<strong class='search-results-heading'>Search results</strong>");
+                        }
+                        $groups.find("li").hide();
+                        $(results).each(function(){
+                            $(this).show();
+                        });
+                    } else {
+                        $groups.children(".search-results-heading").remove();
+                        $groups.removeClass("no-grid").find("li").show();
+                    }
+                } else {
+                    $groups.children(".search-results-heading").remove();
+                    $groups.removeClass("no-grid").find("li").show();
+                }
+            }
         };
 
         // privates
@@ -16,7 +47,7 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
                 "Files": [ "image", "mp3_file", "video_file", "file" ],
                 "All other types": []
             };
-
+ 
         // functions
         function init(){
 
@@ -34,7 +65,7 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
 
                     // construct the initial ui (before type formats are placed in there)
                     // <input type='text' value='' />
-                    $selector.after("<div class='sst-selector'><div class='search'>Show: <a href='#' class='all current'>All</a> <a href='#' class='selected'>Selected (<span>0</span>)</a></div><div class='groups'></div></div>");
+                    $selector.after("<div class='sst-selector'><div class='search'>Show: <a href='#' class='all current'>All</a> <a href='#' class='selected'>Selected (<span>0</span>)</a> <input type='text' value='Type to search for assets' class='default' /></div><div class='groups'></div></div>");
                     var $sst = $selector.next().children(".groups");
 
                     // group each type format under the appropriate section
@@ -101,7 +132,7 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
         }
 
         function determineSelectedItems($from){
-            $from.find("a span").text($from.find("input:checked").length);
+            $from.find("a.selected span").text($from.find("input:checked").length);
         }
 
         function bindHandlers($container){
@@ -115,12 +146,16 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
 
                 var $c = $container.children(".groups");
                 if ($this.hasClass("selected")) {
-                    $c.children(".group").hide();
-                    $c.append("<div class='group full additional'><strong>Selected asset types</strong><ul></ul></div>");
-                    $c.find("input:checked").parent().clone(true, true).appendTo($c.children(":last"));
+                    $c.addClass("no-grid");
+                    $c.prepend("<strong class='search-results-heading'>Selected asset types</strong>");
+                    $c.find("li").hide();
+                    $c.find("input:checked").each(function(){
+                        $(this).parent().show();
+                    });
                 } else {
-                    $c.children(".additional").remove();
-                    $c.children(".group").show();
+                    $c.children(".additional, .search-results-heading").remove();
+                    $c.removeClass("no-grid");
+                    $c.find("li").show();
                 }
 
                 return false;
@@ -152,6 +187,41 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
                 determineSelectedItems($container);
                 return false;
             });
+
+            // bind the search input field
+            $container.children(".search").children("input")
+                .bind("focus", function(){
+                    if ($(this).hasClass("default")) {
+                        $(this).val("").removeClass("default");
+                    }
+                })
+                .bind("blur", function(){
+                    if ($(this).val().length === 0) {
+                        $(this).val("Type to search for assets").addClass("default");
+                    }
+                })
+                .bind("keydown", function(){
+                   myMatrix.sts.keyDown = true;
+                    // unset keydown var after 80 ms
+                    clearTimeout(myMatrix.sts.keyDownTimeout);
+                    myMatrix.sts.keyDownTimeout = setTimeout(function(){
+                        myMatrix.sts.keyDown = false;
+                    }, 200);
+                })
+                .bind("keyup", function(){
+                    var $this = $(this);
+                    setTimeout(function(){
+                        // if key is not down, then perform a search
+                        if (!myMatrix.sts.keyDown) {
+                            clearTimeout(myMatrix.sts.keyDownTimeout);
+                            myMatrix.sts.searchForAssetType($this);
+                        }
+                    }, 400);
+                });
+        }
+
+        function capitaliseFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
         // Adds an empty hidden input field
