@@ -5,11 +5,11 @@ This browser extensions provides a series of enhancements and tools to empower d
 
 If you want to make yourself a more efficient MySource / Squiz Matrix user then this is the extension for you.
 
-**Latest release**: 1.1
+**Latest release**: 1.2
 
 **Supported browsers**:
 
-* Firefox 4.0 - 7.x
+* Firefox 4.0 - 10.x
 * Google Chrome
 
 Features
@@ -19,5 +19,5 @@ Features
 * Seamless Saving;
 * Inline syntax highlighting for RAW bodycopies (e.g Designs, CSS and JavaScript files);
 * Enhancements to the user interface when using certain asset types (e.g. Asset Listings);
-* Keyboard shortcut reference and
+* Cache buster (Google Chrome);
 * WYSIWYG replacement (experimental).
