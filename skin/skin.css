@@ -6,6 +6,6 @@
 	list-style-image: url("chrome://myMatrix/skin/button-active.png");
 }
 
-#myMatrix-button caption {
+#myMatrix-button caption, #myMatrix-clearCache {
 	list-style-image: none;
 }

@@ -8,6 +8,7 @@
   -moz-box-shadow: 0 2px 2px #999999;
   cursor: text;
   min-width: 660px;
+  position: relative;
 }
 
 .CodeMirror-scroll {

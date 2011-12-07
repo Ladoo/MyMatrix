@@ -34,6 +34,9 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
             "path": "SyntaxHighlighter/CodeMirror/",
             "css": [ "codemirror.css", "default.css", "elegant.css", "neat.css", "night.css" ],
             "js": [ "codemirror-compressed.js", "codemirror-init.js" ],
+            //"path": "SyntaxHighlighter/ace/",
+            //"js": [ "ace.js", "mode-css.js", "mode-javascript.js", "mode-json.js", "mode-xml.js", "mode-html.js", "theme-textmate.js", "ace-init.js" ],
+
             detect: function(){
                 var textareas = document.getElementsByTagName("textarea"), tExists = false;
                 for (var counter in textareas) {
@@ -54,7 +57,7 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
             "description": "",
             "layout_type": "checkbox",
             "experimental": true,
-            "platforms": [ "firefox "],
+            "platforms": [ "firefox" ],
             "path": "WYSIWYG/CKEditor/",
             "js": [ "ckeditor.js", "config.js", "ckeditor-init.js" ],
             "css": [ "contents.css" ],
@@ -184,7 +187,7 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
                 var allowedTypes = {
                     "parse_file": [ "design", "design_css" ],
                     "edit_file": [ "css_file", "js_file", "text_file", "xml_file", "xml_file", "xsl_file" ],
-                    "contents": [ "bodycopy", "paint_layout_bodycopy" ]
+                    "contents": [ "bodycopy", "paint_layout_bodycopy", "layout" ]
                 };
                 return (
                     typeof(allowedTypes[myMatrix.aboutTab.assetScreen]) !== "undefined" &&
@@ -207,6 +210,21 @@ if ( mwscope.location.href.search(/(sq_backend_page=main|chrome-extension|browse
             "img_elements": [ "myMatrix-lockstatus" ],
             detect: function(){
                 return document.getElementById("sq_lock_release_manual") ? true : false
+            },
+            init: function(){},
+            destroy: function(){}
+        },
+        {
+            "id": "cacheBuster",
+            "name": "Clear cache",
+            "description": "Clears the cache on the current asset the user is viewing.",
+            "layout_type": "action_button",
+            "experimental": false,
+            "path": "CacheBuster/",
+            "css": [ "cache-buster.css" ],
+            "js": [ "cache-buster.js" ],
+            detect: function(){
+                return myMatrix.aboutTab.isMatrixBackend;
             },
             init: function(){},
             destroy: function(){}

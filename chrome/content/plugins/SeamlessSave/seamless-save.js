@@ -8,7 +8,7 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
     //callback functions for pre and post submit - display/hide save alert
     function showMessage() {
         $('#sq_commit_button').attr('disabled',true);
-        $('#seamlessSave').show();
+        $('#seamlessSave').css("display", "inline-block");
     }
     function hideMessage(data, status, xhr) {
         $.get(window.location.href, function(data){
@@ -51,7 +51,7 @@ if ( (typeof(myMatrix) !== "undefined") && myMatrix.isCorrectFrame() ) {
         }
 
         //inject the saving message box into the page (hidden by default)
-        $('#sq_commit_button').after('<div id="seamlessSave"></div>');
+        $('#sq_commit_button').before('<div id="seamlessSave"></div>');
 
         //get the default button action
         myMatrix.seamlessSave.defaultCommitAction = $("#sq_commit_button").attr("onclick");

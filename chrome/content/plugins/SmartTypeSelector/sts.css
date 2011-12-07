@@ -5,7 +5,29 @@
 .sst-selector .groups {
 	height: 230px;
 	overflow-y: scroll;
-	width: 100%%
+	width: 100%;
+}
+
+.sst-selector .no-grid .group {
+    float: none;
+    width: 100%;
+    height: auto;
+    border: none;
+    padding-left:  0;
+    padding-top: 0;
+}
+
+.sst-selector .no-grid .group ul {
+    margin: 0;
+}
+
+.sst-selector .no-grid .group strong {
+    display: none;
+}
+
+.sst-selector .search-results-heading {
+    display: block !important;
+    margin: 10px 0;
 }
 
 .sst-selector .search {
@@ -18,7 +40,14 @@
 }
 
 .sst-selector .search input {
-	width: 30%
+	width: 30%;
+    float: right;
+    margin-right: 5px;
+    margin-top: -2px;
+}
+
+.sst-selector .search input.default {
+    color: #999;
 }
 
 .sst-selector .search a {
@@ -33,6 +62,17 @@
 .sst-selector .search a.current {
 	background-color: #342939;
     color: white;
+}
+
+.sst-selector .search a.search-results {
+    display: none;
+}
+
+.sst-selector .search a.search-results span {
+    position: relative;
+    top: -5px;
+    left: 3px;
+    color: red;
 }
 
 .sst-selector .group {

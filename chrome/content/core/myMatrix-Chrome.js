@@ -39,12 +39,12 @@ myMatrix.init = function() {
                 var plugin = request.data;
                 try {
                     if (typeof(plugin) !== "undefined") {
-                        if (typeof(plugin.js) !== "undefined" && plugin.js) {
+                        if (typeof(plugin.js) !== "undefined" && plugin.js && plugin.layout_type !== "action_button") {
                             plugin.js.forEach(function(file) {
                                 myMatrix.executeScript(sender.tab.id, myMatrix.settings.paths.plugins + plugin.path + file);
                             });
                         }
-                        if (typeof(plugin.css) !== "undefined" && plugin.css) {
+                        if (typeof(plugin.css) !== "undefined" && plugin.css && plugin.layout_type !== "action_button") {
                             plugin.css.forEach(function(file) {
                                 myMatrix.insertCSS(sender.tab.id, myMatrix.settings.paths.plugins + plugin.path + file);
                             });

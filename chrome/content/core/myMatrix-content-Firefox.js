@@ -16,17 +16,19 @@ myMatrix.onRequest = function(response) {
     switch (response.msg) {
         case "myMatrix-StartPlugins":
             myMatrix.objectHasLoaded("plugins", myMatrix, function(){
-                if (myMatrix.aboutTab.declarablePlugins.length === 0) { // Prevents this from being initiated more than once
-                    myMatrix.determineDeclarablePlugins();
-                    response.data.forEach(function(pluginID) {
-                        if ($.inArray(pluginID, myMatrix.aboutTab.declarablePlugins) !== -1) {
-                            myMatrix.sendRequest({
-                                msg: "myMatrix-EmbedFiles",
-                                data: myMatrix.findPluginJSON(pluginID)
-                            });
-                        }
-                    });
-                }
+                myMatrix.objectHasLoaded("jQuery", window, function(){
+                    if (myMatrix.aboutTab.declarablePlugins.length === 0) { // Prevents this from being initiated more than once
+                        myMatrix.determineDeclarablePlugins();
+                        response.data.forEach(function(pluginID) {
+                            if ($.inArray(pluginID, myMatrix.aboutTab.declarablePlugins) !== -1) {
+                                myMatrix.sendRequest({
+                                    msg: "myMatrix-EmbedFiles",
+                                    data: myMatrix.findPluginJSON(pluginID)
+                                });
+                            }
+                        });
+                    }
+                });
             });
             break;
 
