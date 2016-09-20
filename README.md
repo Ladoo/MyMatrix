@@ -1,6 +1,8 @@
 MyMatrix
 ======================================================================================================================
 
+**DEPRECATED: Sorry everyone, this project has been deprecated for quite some time now.**
+
 This browser extensions provides a series of enhancements and tools to empower developers, designers and authors using MySource / Squiz Matrix CMS.
 
 If you want to make yourself a more efficient MySource / Squiz Matrix user then this is the extension for you.
